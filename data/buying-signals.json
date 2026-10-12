@@ -1,0 +1,540 @@
+{
+  "benchmark": "Buying signal detection",
+  "source": "gong-io-research/call-playbook",
+  "revision": "d83dd6557965c261c2de9fbf0fa04589aad528fd",
+  "cohort_sha256": "ba8100e7949a151b5913ceec8b63797fdd80fe2d7971a0aec0da4439ccf0f19d",
+  "split": "test",
+  "decisions_per_model": 1000,
+  "signals": [
+    {
+      "id": "business_goals",
+      "label": "business goals"
+    },
+    {
+      "id": "decision_criteria",
+      "label": "decision criteria"
+    },
+    {
+      "id": "decision_makers",
+      "label": "decision makers"
+    },
+    {
+      "id": "decision_making_process",
+      "label": "decision making process"
+    },
+    {
+      "id": "pain_points",
+      "label": "pain points"
+    }
+  ],
+  "models": [
+    {
+      "id": "luna-decisions",
+      "model_id": "openai/gpt-6-luna-decisions",
+      "backend": "openrouter_decisions",
+      "workers": 1,
+      "macro": {
+        "f1": 0.7566001262164945,
+        "precision": 0.7605233476201219,
+        "recall": 0.8152515644555696,
+        "accuracy": 0.8150000000000001,
+        "auroc": 0.8838186072345803,
+        "ece": 0.12911999999999998
+      },
+      "min_task_f1": 0.5858585858585859,
+      "by_signal": {
+        "business_goals": {
+          "f1": 0.8285714285714286,
+          "precision": 0.7909090909090909,
+          "recall": 0.87,
+          "accuracy": 0.82,
+          "auroc": 0.91455,
+          "ece": 0.08239999999999997,
+          "n": 200,
+          "positive": 100
+        },
+        "decision_criteria": {
+          "f1": 0.764705882352941,
+          "precision": 0.7090909090909091,
+          "recall": 0.8297872340425532,
+          "accuracy": 0.76,
+          "auroc": 0.7942593336009635,
+          "ece": 0.1386,
+          "n": 200,
+          "positive": 94
+        },
+        "decision_makers": {
+          "f1": 0.7777777777777778,
+          "precision": 0.6363636363636364,
+          "recall": 1,
+          "accuracy": 0.9,
+          "auroc": 0.961038961038961,
+          "ece": 0.12105000000000002,
+          "n": 200,
+          "positive": 35
+        },
+        "decision_making_process": {
+          "f1": 0.5858585858585859,
+          "precision": 0.9354838709677419,
+          "recall": 0.4264705882352941,
+          "accuracy": 0.795,
+          "auroc": 0.8646947415329769,
+          "ece": 0.17565,
+          "n": 200,
+          "positive": 68
+        },
+        "pain_points": {
+          "f1": 0.8260869565217392,
+          "precision": 0.7307692307692307,
+          "recall": 0.95,
+          "accuracy": 0.8,
+          "auroc": 0.88455,
+          "ece": 0.12789999999999999,
+          "n": 200,
+          "positive": 100
+        }
+      },
+      "latency_ms": {
+        "p50": 244.71937562339008,
+        "p95": 352.6171312900257,
+        "p99": 1266.2697912147269
+      }
+    },
+    {
+      "id": "openai-latest",
+      "model_id": "openai/gpt-6.1-sol",
+      "backend": "openrouter_chat",
+      "workers": 8,
+      "macro": {
+        "f1": 0.7433328014806405,
+        "precision": 0.7033906244679078,
+        "recall": 0.8750992311818344,
+        "accuracy": 0.787,
+        "auroc": 0.9197621643355346,
+        "ece": 0.182513
+      },
+      "min_task_f1": 0.6355140186915887,
+      "by_signal": {
+        "business_goals": {
+          "f1": 0.8378378378378378,
+          "precision": 0.7622950819672131,
+          "recall": 0.93,
+          "accuracy": 0.82,
+          "auroc": 0.9258,
+          "ece": 0.11850000000000004,
+          "n": 200,
+          "positive": 100
+        },
+        "decision_criteria": {
+          "f1": 0.7848101265822784,
+          "precision": 0.6503496503496503,
+          "recall": 0.9893617021276596,
+          "accuracy": 0.745,
+          "auroc": 0.894971898835809,
+          "ece": 0.2301400000000001,
+          "n": 200,
+          "positive": 94
+        },
+        "decision_makers": {
+          "f1": 0.6355140186915887,
+          "precision": 0.4722222222222222,
+          "recall": 0.9714285714285714,
+          "accuracy": 0.805,
+          "auroc": 0.9536796536796537,
+          "ece": 0.19303,
+          "n": 200,
+          "positive": 35
+        },
+        "decision_making_process": {
+          "f1": 0.6730769230769229,
+          "precision": 0.9722222222222222,
+          "recall": 0.5147058823529411,
+          "accuracy": 0.83,
+          "auroc": 0.9493092691622104,
+          "ece": 0.146815,
+          "n": 200,
+          "positive": 68
+        },
+        "pain_points": {
+          "f1": 0.7854251012145749,
+          "precision": 0.6598639455782312,
+          "recall": 0.97,
+          "accuracy": 0.735,
+          "auroc": 0.87505,
+          "ece": 0.22407999999999995,
+          "n": 200,
+          "positive": 100
+        }
+      },
+      "latency_ms": {
+        "p50": 3139.661583583802,
+        "p95": 5484.174845321104,
+        "p99": 6791.080346559173
+      }
+    },
+    {
+      "id": "jev-latest",
+      "model_id": "~typesafe/jev-latest",
+      "backend": "openrouter_decisions",
+      "workers": 1,
+      "macro": {
+        "f1": 0.7282178389085907,
+        "precision": 0.7064582033998841,
+        "recall": 0.8400375469336672,
+        "accuracy": 0.7729999999999999,
+        "auroc": 0.8993155161750114,
+        "ece": 0.15275
+      },
+      "min_task_f1": 0.6470588235294118,
+      "by_signal": {
+        "business_goals": {
+          "f1": 0.803921568627451,
+          "precision": 0.7884615384615384,
+          "recall": 0.82,
+          "accuracy": 0.8,
+          "auroc": 0.9091,
+          "ece": 0.08445000000000001,
+          "n": 200,
+          "positive": 100
+        },
+        "decision_criteria": {
+          "f1": 0.7543859649122806,
+          "precision": 0.6417910447761194,
+          "recall": 0.9148936170212766,
+          "accuracy": 0.72,
+          "auroc": 0.8356081894821357,
+          "ece": 0.12570000000000003,
+          "n": 200,
+          "positive": 94
+        },
+        "decision_makers": {
+          "f1": 0.6730769230769231,
+          "precision": 0.5072463768115942,
+          "recall": 1,
+          "accuracy": 0.83,
+          "auroc": 0.9574891774891775,
+          "ece": 0.23555,
+          "n": 200,
+          "positive": 35
+        },
+        "decision_making_process": {
+          "f1": 0.6470588235294118,
+          "precision": 0.9705882352941176,
+          "recall": 0.4852941176470588,
+          "accuracy": 0.82,
+          "auroc": 0.9050802139037433,
+          "ece": 0.09425,
+          "n": 200,
+          "positive": 68
+        },
+        "pain_points": {
+          "f1": 0.7626459143968872,
+          "precision": 0.6242038216560509,
+          "recall": 0.98,
+          "accuracy": 0.695,
+          "auroc": 0.8893,
+          "ece": 0.22379999999999997,
+          "n": 200,
+          "positive": 100
+        }
+      },
+      "latency_ms": {
+        "p50": 210.1040417328477,
+        "p95": 310.60615612659603,
+        "p99": 379.19261738657946
+      }
+    },
+    {
+      "id": "mo",
+      "model_id": "modaic/mo",
+      "backend": "modaic",
+      "workers": 1,
+      "macro": {
+        "f1": 0.7205087108548686,
+        "precision": 0.829794489813918,
+        "recall": 0.7084083676023601,
+        "accuracy": 0.8210000000000001,
+        "auroc": 0.9175060514424376,
+        "ece": 0.11271839219239832
+      },
+      "min_task_f1": 0.3764705882352941,
+      "by_signal": {
+        "business_goals": {
+          "f1": 0.8087431693989071,
+          "precision": 0.891566265060241,
+          "recall": 0.74,
+          "accuracy": 0.825,
+          "auroc": 0.92315,
+          "ece": 0.10684280143616413,
+          "n": 200,
+          "positive": 100
+        },
+        "decision_criteria": {
+          "f1": 0.7802197802197802,
+          "precision": 0.8068181818181818,
+          "recall": 0.7553191489361702,
+          "accuracy": 0.8,
+          "auroc": 0.8767061421116018,
+          "ece": 0.05611006438597503,
+          "n": 200,
+          "positive": 94
+        },
+        "decision_makers": {
+          "f1": 0.8095238095238094,
+          "precision": 0.6938775510204082,
+          "recall": 0.9714285714285714,
+          "accuracy": 0.92,
+          "auroc": 0.9708225108225108,
+          "ece": 0.11863964003432952,
+          "n": 200,
+          "positive": 35
+        },
+        "decision_making_process": {
+          "f1": 0.3764705882352941,
+          "precision": 0.9411764705882353,
+          "recall": 0.23529411764705882,
+          "accuracy": 0.735,
+          "auroc": 0.9131016042780749,
+          "ece": 0.22213884462259062,
+          "n": 200,
+          "positive": 68
+        },
+        "pain_points": {
+          "f1": 0.8275862068965517,
+          "precision": 0.8155339805825242,
+          "recall": 0.84,
+          "accuracy": 0.825,
+          "auroc": 0.90375,
+          "ece": 0.05986061048293227,
+          "n": 200,
+          "positive": 100
+        }
+      },
+      "latency_ms": {
+        "p50": 117.30866646394134,
+        "p95": 195.10741035919636,
+        "p99": 284.1649669362232
+      }
+    },
+    {
+      "id": "mo-fast",
+      "model_id": "modaic/mo-fast",
+      "backend": "modaic",
+      "workers": 1,
+      "macro": {
+        "f1": 0.7182041507847053,
+        "precision": 0.7165535884601245,
+        "recall": 0.8236070087609513,
+        "accuracy": 0.774,
+        "auroc": 0.9036263497856352,
+        "ece": 0.16004472582324694
+      },
+      "min_task_f1": 0.5982905982905983,
+      "by_signal": {
+        "business_goals": {
+          "f1": 0.8064516129032259,
+          "precision": 0.872093023255814,
+          "recall": 0.75,
+          "accuracy": 0.82,
+          "auroc": 0.9166,
+          "ece": 0.08130889686661778,
+          "n": 200,
+          "positive": 100
+        },
+        "decision_criteria": {
+          "f1": 0.7725321888412017,
+          "precision": 0.6474820143884892,
+          "recall": 0.9574468085106383,
+          "accuracy": 0.735,
+          "auroc": 0.8426334805299077,
+          "ece": 0.1601720557307455,
+          "n": 200,
+          "positive": 94
+        },
+        "decision_makers": {
+          "f1": 0.5982905982905983,
+          "precision": 0.4268292682926829,
+          "recall": 1,
+          "accuracy": 0.765,
+          "auroc": 0.9471861471861471,
+          "ece": 0.2658206065903417,
+          "n": 200,
+          "positive": 35
+        },
+        "decision_making_process": {
+          "f1": 0.6336633663366337,
+          "precision": 0.9696969696969697,
+          "recall": 0.47058823529411764,
+          "accuracy": 0.815,
+          "auroc": 0.9337121212121212,
+          "ece": 0.13405857164358587,
+          "n": 200,
+          "positive": 68
+        },
+        "pain_points": {
+          "f1": 0.7800829875518672,
+          "precision": 0.6666666666666666,
+          "recall": 0.94,
+          "accuracy": 0.735,
+          "auroc": 0.878,
+          "ece": 0.1588634982849438,
+          "n": 200,
+          "positive": 100
+        }
+      },
+      "latency_ms": {
+        "p50": 119.67899929732084,
+        "p95": 186.25836237333715,
+        "p99": 283.1342973699793
+      }
+    },
+    {
+      "id": "perplexity-decider",
+      "model_id": "perplexity/pplx-decider-v1.1-27b",
+      "backend": "openrouter_decisions",
+      "workers": 1,
+      "macro": {
+        "f1": 0.7028639514278459,
+        "precision": 0.8530264360932461,
+        "recall": 0.6643618809225817,
+        "accuracy": 0.8140000000000001,
+        "auroc": 0.9174011838207055,
+        "ece": 0.11491588913892348
+      },
+      "min_task_f1": 0.34146341463414637,
+      "by_signal": {
+        "business_goals": {
+          "f1": 0.8087431693989071,
+          "precision": 0.891566265060241,
+          "recall": 0.74,
+          "accuracy": 0.825,
+          "auroc": 0.9198,
+          "ece": 0.09498838612193972,
+          "n": 200,
+          "positive": 100
+        },
+        "decision_criteria": {
+          "f1": 0.7283236994219654,
+          "precision": 0.7974683544303798,
+          "recall": 0.6702127659574468,
+          "accuracy": 0.765,
+          "auroc": 0.8797671617824167,
+          "ece": 0.07893812395481696,
+          "n": 200,
+          "positive": 94
+        },
+        "decision_makers": {
+          "f1": 0.8157894736842105,
+          "precision": 0.7560975609756098,
+          "recall": 0.8857142857142857,
+          "accuracy": 0.93,
+          "auroc": 0.9686580086580087,
+          "ece": 0.08371759586702572,
+          "n": 200,
+          "positive": 35
+        },
+        "decision_making_process": {
+          "f1": 0.34146341463414637,
+          "precision": 1,
+          "recall": 0.20588235294117646,
+          "accuracy": 0.73,
+          "auroc": 0.9177807486631016,
+          "ece": 0.23583208704825495,
+          "n": 200,
+          "positive": 68
+        },
+        "pain_points": {
+          "f1": 0.82,
+          "precision": 0.82,
+          "recall": 0.82,
+          "accuracy": 0.82,
+          "auroc": 0.901,
+          "ece": 0.08110325270257998,
+          "n": 200,
+          "positive": 100
+        }
+      },
+      "latency_ms": {
+        "p50": 375.5554163362831,
+        "p95": 509.06622505281115,
+        "p99": 566.8984530167653
+      }
+    },
+    {
+      "id": "clef",
+      "model_id": "cloudflare/clef",
+      "backend": "openrouter_decisions",
+      "workers": 1,
+      "macro": {
+        "f1": 0.6248187763632789,
+        "precision": 0.7751788403401306,
+        "recall": 0.5900407652422672,
+        "accuracy": 0.769,
+        "auroc": 0.8818123581087484,
+        "ece": 0.1603545
+      },
+      "min_task_f1": 0.3132530120481928,
+      "by_signal": {
+        "business_goals": {
+          "f1": 0.7816091954022989,
+          "precision": 0.918918918918919,
+          "recall": 0.68,
+          "accuracy": 0.81,
+          "auroc": 0.89565,
+          "ece": 0.13424650000000002,
+          "n": 200,
+          "positive": 100
+        },
+        "decision_criteria": {
+          "f1": 0.5503355704697986,
+          "precision": 0.7454545454545455,
+          "recall": 0.43617021276595747,
+          "accuracy": 0.665,
+          "auroc": 0.8123745483741469,
+          "ece": 0.22076300000000001,
+          "n": 200,
+          "positive": 94
+        },
+        "decision_makers": {
+          "f1": 0.6753246753246753,
+          "precision": 0.6190476190476191,
+          "recall": 0.7428571428571429,
+          "accuracy": 0.875,
+          "auroc": 0.9298701298701298,
+          "ece": 0.095723,
+          "n": 200,
+          "positive": 35
+        },
+        "decision_making_process": {
+          "f1": 0.3132530120481928,
+          "precision": 0.8666666666666667,
+          "recall": 0.19117647058823528,
+          "accuracy": 0.715,
+          "auroc": 0.8751671122994652,
+          "ece": 0.22862749999999998,
+          "n": 200,
+          "positive": 68
+        },
+        "pain_points": {
+          "f1": 0.8035714285714286,
+          "precision": 0.7258064516129032,
+          "recall": 0.9,
+          "accuracy": 0.78,
+          "auroc": 0.896,
+          "ece": 0.12241250000000001,
+          "n": 200,
+          "positive": 100
+        }
+      },
+      "latency_ms": {
+        "p50": 394.49093770235777,
+        "p95": 1475.3938349662349,
+        "p99": 2624.6688890876244
+      }
+    }
+  ],
+  "baseline_macro_f1": {
+    "always_present": 0.5556248285277909,
+    "always_absent": 0
+  }
+}
