@@ -1,0 +1,11 @@
+[project]
+name = "mo-benchmarks-buying-signals"
+version = "0.1.0"
+description = "Reproducible Gong Call Playbook buying-signal benchmark"
+requires-python = ">=3.13"
+dependencies = [
+  "httpx==0.28.1",
+  "huggingface-hub==1.30.0",
+  "modaic==0.50.0",
+  "python-dotenv==1.2.3",
+]

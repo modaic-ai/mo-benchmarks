@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
 
-const source = resolve(process.argv[2] ?? "../mo-examples/benchmarks/buying-signals/outputs");
+const source = resolve(process.argv[2] ?? "benchmarks/buying-signals/outputs");
 const target = resolve("data/buying-signals.json");
 
 function reportFiles(dir) {
