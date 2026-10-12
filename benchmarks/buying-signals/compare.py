@@ -9,6 +9,9 @@ from pathlib import Path
 from questions import TASKS
 
 
+DISPLAY_NAMES = {"mo": "Mo", "mo-fast": "Mo Fast"}
+
+
 def leaderboard(output_dir: Path) -> str:
     reports = [json.loads(path.read_text(encoding="utf-8")) for path in output_dir.rglob("*-test-report.json")]
     if not reports:
@@ -25,13 +28,14 @@ def leaderboard(output_dir: Path) -> str:
         run = report["prediction_run"]
         macro = report["macro"]
         latency = report["latency"]
-        values = [run["name"], run["model"], run["backend"], str(latency["workers"]), *(f"{macro[name]:.3f}" for name in ("accuracy", "precision", "f1")),
+        values = [DISPLAY_NAMES.get(run["name"], run["name"]), run["model"], run["backend"], str(latency["workers"]), *(f"{macro[name]:.3f}" for name in ("accuracy", "precision", "f1")),
                   f"{report['min_task_f1']:.3f}", *(f"{macro[name]:.3f}" for name in ("recall", "auroc", "ece")),
                   *(f"{latency[name]:.0f}" for name in ("p50_ms", "p95_ms", "p99_ms"))]
         lines.append("| " + " | ".join(values) + " |")
     lines += ["", "## Per-signal F1", "", "| Model | " + " | ".join(TASKS) + " |", "|---|" + "---:|" * len(TASKS)]
     for report in reports:
-        lines.append("| " + report["prediction_run"]["name"] + " | " + " | ".join(f"{report['by_task'][task]['f1']:.3f}" for task in TASKS) + " |")
+        name = report["prediction_run"]["name"]
+        lines.append("| " + DISPLAY_NAMES.get(name, name) + " | " + " | ".join(f"{report['by_task'][task]['f1']:.3f}" for task in TASKS) + " |")
     lines += ["", "Latency excludes retries and backoff. Worker count is in each report's provenance; runs with multiple workers measure latency under concurrent load. GPT chat JSON and native Noul probabilities have distinct backends.", ""]
     return "\n".join(lines)
 

@@ -30,8 +30,8 @@ const displayNames: Record<string, string> = {
   "luna-decisions": "Luna decisions",
   "openai-latest": "GPT-6.1 Sol",
   "jev-latest": "Jev latest",
-  mo: "modaic/mo",
-  "mo-fast": "modaic/mo-fast",
+  mo: "Mo",
+  "mo-fast": "Mo Fast",
   "perplexity-decider": "Perplexity decider",
   clef: "Clef",
 };
@@ -39,8 +39,8 @@ const chartNames: Record<string, string> = {
   "luna-decisions": "Luna",
   "openai-latest": "GPT-6.1",
   "jev-latest": "Jev",
-  mo: "mo",
-  "mo-fast": "mo-fast",
+  mo: "Mo",
+  "mo-fast": "Mo Fast",
   "perplexity-decider": "Perplexity",
   clef: "Clef",
 };
