@@ -103,8 +103,10 @@ export function BenchmarkPage() {
             Who catches the signals?
           </h1>
           <p className="mt-3 max-w-[600px] text-[13px] leading-[1.65] text-[#696969]">
-            Seven decision models tested on five buying signals from Gong Call
-            Playbook. Each model made 1,000 decisions on test examples.
+            Each model estimates the probability that a specified buying signal
+            is present in a speaker-tagged sales-call excerpt. We score those
+            probabilities and decisions at a fixed 0.5 threshold against Gong’s
+            held-out labels across five tasks—1,000 decisions per model.
           </p>
         </div>
         <div className="border-l-[3px] border-[#2D6598] pl-4">
