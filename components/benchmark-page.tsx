@@ -74,15 +74,15 @@ export function BenchmarkPage() {
         <a href="https://github.com/modaic-ai/mo-benchmarks" target="_blank" rel="noreferrer" className="text-[11px] text-[#2a6496] hover:underline">GitHub ↗</a>
       </header>
 
-      <section id="top" className="grid gap-8 border-b border-[#e5e5e3] py-10 sm:py-14 md:grid-cols-[minmax(0,1fr)_230px] md:items-end md:gap-12">
+      <section id="top" className="grid gap-6 border-b border-[#e5e5e3] py-8 sm:py-10 md:grid-cols-[minmax(0,1fr)_190px] md:items-end md:gap-8">
         <div>
           <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#888]">Buying signal detection</p>
-          <h1 className="mt-4 max-w-[690px] text-[clamp(2.15rem,4.5vw,3.8rem)] font-semibold leading-[1.07] tracking-[-0.055em] text-[#171717]">Who catches the signals?</h1>
-          <p className="mt-4 max-w-[600px] text-[13px] leading-[1.65] text-[#696969]">Seven decision models tested on five buying signals from Gong Call Playbook. Each model made 1,000 decisions on test examples.</p>
+          <h1 className="mt-3 max-w-[690px] text-[clamp(1.75rem,3.3vw,2.75rem)] font-semibold leading-[1.12] tracking-[-0.045em] text-[#171717]">Who catches the signals?</h1>
+          <p className="mt-3 max-w-[600px] text-[13px] leading-[1.65] text-[#696969]">Seven decision models tested on five buying signals from Gong Call Playbook. Each model made 1,000 decisions on test examples.</p>
         </div>
         <div className="border-l-[3px] border-[#2D6598] pl-4">
           <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-[#777]">Best accuracy</p>
-          <p className="mt-1 text-[clamp(3.3rem,6vw,4.25rem)] font-semibold leading-none tracking-[-0.075em] text-[#171717]">{percent(accuracyWinner.macro.accuracy)}</p>
+          <p className="mt-1 text-[clamp(2.4rem,4.5vw,3rem)] font-semibold leading-none tracking-[-0.06em] text-[#171717]">{percent(accuracyWinner.macro.accuracy)}</p>
           <p className="mt-2 text-[12px] font-medium text-[#2D6598]">{displayNames[accuracyWinner.id]}</p>
         </div>
       </section>
