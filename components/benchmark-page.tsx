@@ -129,7 +129,7 @@ export function BenchmarkPage() {
       </section>
 
       <section className="mt-9 border-t border-[#e5e5e3] pt-4">
-        <details className="group">
+        <details open className="group">
           <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[12px] font-medium text-[#333] marker:hidden">Full results <span className="text-[17px] font-normal text-[#999] group-open:rotate-45">+</span></summary>
           <div className="mt-4 overflow-x-auto">
             <table className="w-full min-w-[740px] border-collapse text-left text-[11px] tabular-nums">
