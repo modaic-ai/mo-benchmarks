@@ -70,100 +70,290 @@ export function BenchmarkPage() {
   return (
     <main className="mx-auto max-w-[1120px] px-5 pb-14 pt-6 font-sans text-[#454545] sm:px-10 sm:pt-8">
       <header className="flex items-center justify-between gap-5 border-b border-[#e5e5e3] pb-5">
-        <a href="#top" className="flex items-center gap-2.5 text-[15px] font-semibold tracking-[-0.02em] text-[#171717]">
-          <Image src="/mo-logo.png" alt="Modaic" width={697} height={629} className="h-auto w-7 shrink-0 [image-rendering:pixelated]" priority />
+        <a
+          href="#top"
+          className="flex items-center gap-2.5 text-[15px] font-semibold tracking-[-0.02em] text-[#171717]"
+        >
+          <Image
+            src="/mo-logo.png"
+            alt="Modaic"
+            width={697}
+            height={629}
+            className="h-auto w-7 shrink-0 [image-rendering:pixelated]"
+            priority
+          />
           <span>Benchmarks</span>
         </a>
-        <a href="https://github.com/modaic-ai/mo-benchmarks" target="_blank" rel="noreferrer" className="text-[11px] text-[#2a6496] hover:underline">GitHub ↗</a>
+        <a
+          href="https://github.com/modaic-ai/mo-benchmarks"
+          target="_blank"
+          rel="noreferrer"
+          className="text-[11px] text-[#2a6496] hover:underline"
+        >
+          GitHub ↗
+        </a>
       </header>
 
-      <section id="top" className="grid gap-6 border-b border-[#e5e5e3] py-8 sm:py-10 md:grid-cols-[minmax(0,1fr)_190px] md:items-end md:gap-8">
+      <section
+        id="top"
+        className="grid gap-6 border-b border-[#e5e5e3] py-8 sm:py-10 md:grid-cols-[minmax(0,1fr)_190px] md:items-end md:gap-8"
+      >
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#888]">Buying signal detection</p>
-          <h1 className="mt-3 max-w-[690px] text-[clamp(1.75rem,3.3vw,2.75rem)] font-semibold leading-[1.12] tracking-[-0.045em] text-[#171717]">Who catches the signals?</h1>
-          <p className="mt-3 max-w-[600px] text-[13px] leading-[1.65] text-[#696969]">Seven decision models tested on five buying signals from Gong Call Playbook. Each model made 1,000 decisions on test examples.</p>
+          <h1 className="text-[19px] font-semibold tracking-[-0.03em] text-[#171717]">
+            Who catches the signals?
+          </h1>
+          <p className="mt-3 max-w-[600px] text-[13px] leading-[1.65] text-[#696969]">
+            Seven decision models tested on five buying signals from Gong Call
+            Playbook. Each model made 1,000 decisions on test examples.
+          </p>
         </div>
         <div className="border-l-[3px] border-[#2D6598] pl-4">
-          <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-[#777]">Best accuracy</p>
-          <p className="mt-1 text-[clamp(2.4rem,4.5vw,3rem)] font-semibold leading-none tracking-[-0.06em] text-[#171717]">{percent(accuracyWinner.macro.accuracy)}</p>
-          <p className="mt-2 text-[12px] font-medium text-[#2D6598]">{displayNames[accuracyWinner.id]}</p>
+          <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-[#777]">
+            Best accuracy
+          </p>
+          <p className="text-[19px] font-semibold tracking-[-0.03em] text-[#171717]">
+            {percent(accuracyWinner.macro.accuracy)}
+          </p>
+          <p className="mt-2 text-[12px] font-medium text-[#2D6598]">
+            {displayNames[accuracyWinner.id]}
+          </p>
         </div>
       </section>
 
       <section id="results" className="pt-9 sm:pt-11">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="text-[19px] font-semibold tracking-[-0.03em] text-[#171717]">Model comparison</h2>
-            <p className="mt-1 text-[11px] text-[#888]">Macro average across five tasks · 0.5 decision threshold</p>
+            <h2 className="text-[19px] font-semibold tracking-[-0.03em] text-[#171717]">
+              Model comparison
+            </h2>
+            <p className="mt-1 text-[11px] text-[#888]">
+              Macro average across five tasks · 0.5 decision threshold
+            </p>
           </div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#999]">{metric === "ece" ? "Lower is better" : "Higher is better"}</p>
         </div>
 
-        <div className="mt-6 flex flex-wrap gap-2" role="group" aria-label="Choose metric">
+        <div
+          className="mt-6 flex flex-wrap gap-2"
+          role="group"
+          aria-label="Choose metric"
+        >
           {metrics.map((item) => (
-            <button key={item} type="button" aria-pressed={metric === item} onClick={() => setMetric(item)} className={cn(
-              "rounded-full border px-3 py-1.5 text-[11px] font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2D6598]",
-              metric === item ? "border-[#2D6598] bg-[#2D6598] text-white" : "border-[#e1e1df] bg-white text-[#666] hover:border-[#8faaba] hover:text-[#2D6598]",
-            )} aria-label={item === "ece" ? "ECE, lower is better" : metricLabels[item]}>{metricLabels[item]}{item === "ece" ? " ↓" : ""}</button>
+            <button
+              key={item}
+              type="button"
+              aria-pressed={metric === item}
+              onClick={() => setMetric(item)}
+              className={cn(
+                "rounded-full border px-3 py-1.5 text-[11px] font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2D6598]",
+                metric === item
+                  ? "border-[#2D6598] bg-[#2D6598] text-white"
+                  : "border-[#e1e1df] bg-white text-[#666] hover:border-[#8faaba] hover:text-[#2D6598]",
+              )}
+              aria-label={
+                item === "ece" ? "ECE, lower is better" : metricLabels[item]
+              }
+            >
+              {metricLabels[item]}
+              {item === "ece" ? " ↓" : ""}
+            </button>
           ))}
         </div>
 
         <div className="mt-5 overflow-x-auto rounded-lg border border-[#e8e8e6] bg-[#fcfcfb] px-3 pb-3 pt-6 sm:px-6">
           <div className="min-w-[590px]">
-            <p className="px-2 text-[12px] font-medium text-[#333]">{metricLabels[metric]} by model{metric === "ece" && <span className="ml-2 text-[#8a5b43]">↓ Lower is better</span>}</p>
-            <ChartContainer config={chartConfig} className="mt-3 h-[350px] w-full aspect-auto">
-              <BarChart accessibilityLayer data={chartData} margin={{ top: 24, right: 16, bottom: 5, left: -10 }}>
+            <p className="px-2 text-[12px] font-medium text-[#333]">
+              {metricLabels[metric]} by model
+              {metric === "ece" && (
+                <span className="ml-2 text-[#8a5b43]">↓ Lower is better</span>
+              )}
+            </p>
+            <ChartContainer
+              config={chartConfig}
+              className="mt-3 h-[350px] w-full aspect-auto"
+            >
+              <BarChart
+                accessibilityLayer
+                data={chartData}
+                margin={{ top: 24, right: 16, bottom: 5, left: -10 }}
+              >
                 <CartesianGrid vertical={false} stroke="#e7e9e9" />
-                <XAxis dataKey="name" tickLine={false} axisLine={false} interval={0} tick={{ fill: "#666", fontSize: 11 }} tickMargin={12} />
-                <YAxis type="number" domain={[chartMin, chartMax]} ticks={chartTicks} allowDataOverflow tickFormatter={(value: number) => `${Math.round(value * 100)}%`} tickLine={false} axisLine={false} tick={{ fill: "#999", fontSize: 10 }} />
-                <ChartTooltip cursor={{ fill: "#edf1f2" }} content={<ChartTooltipContent hideLabel formatter={(value) => <span className="font-mono font-medium text-[#222]">{percent(Number(value))}</span>} />} />
+                <XAxis
+                  dataKey="name"
+                  tickLine={false}
+                  axisLine={false}
+                  interval={0}
+                  tick={{ fill: "#666", fontSize: 11 }}
+                  tickMargin={12}
+                />
+                <YAxis
+                  type="number"
+                  domain={[chartMin, chartMax]}
+                  ticks={chartTicks}
+                  allowDataOverflow
+                  tickFormatter={(value: number) =>
+                    `${Math.round(value * 100)}%`
+                  }
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fill: "#999", fontSize: 10 }}
+                />
+                <ChartTooltip
+                  cursor={{ fill: "#edf1f2" }}
+                  content={
+                    <ChartTooltipContent
+                      hideLabel
+                      formatter={(value) => (
+                        <span className="font-mono font-medium text-[#222]">
+                          {percent(Number(value))}
+                        </span>
+                      )}
+                    />
+                  }
+                />
                 <Bar dataKey="score" radius={[3, 3, 0, 0]} maxBarSize={62}>
-                  {chartData.map((item) => <Cell key={item.id} fill={chartColors[item.id]} />)}
-                  <LabelList dataKey="score" position="top" formatter={(value) => percent(Number(value))} className="fill-[#555] text-[10px] font-medium" />
+                  {chartData.map((item) => (
+                    <Cell key={item.id} fill={chartColors[item.id]} />
+                  ))}
+                  <LabelList
+                    dataKey="score"
+                    position="top"
+                    formatter={(value) => percent(Number(value))}
+                    className="fill-[#555] text-[10px] font-medium"
+                  />
                 </Bar>
               </BarChart>
             </ChartContainer>
           </div>
         </div>
-        <p className="mt-3 text-[10px] leading-[1.5] text-[#888]">Each bar is the unweighted average of five test-set {metricLabels[metric].toLowerCase()} scores. The y-axis is truncated to make close scores easier to compare.</p>
+        <p className="mt-3 text-[10px] leading-[1.5] text-[#888]">
+          Each bar is the unweighted average of five test-set{" "}
+          {metricLabels[metric].toLowerCase()} scores. The y-axis is truncated
+          to make close scores easier to compare.
+        </p>
       </section>
 
       <section className="mt-9 border-t border-[#e5e5e3] pt-4">
         <details open className="group">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[12px] font-medium text-[#333] marker:hidden">Full results <span className="text-[17px] font-normal text-[#999] group-open:rotate-45">+</span></summary>
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[12px] font-medium text-[#333] marker:hidden">
+            Full results{" "}
+            <span className="text-[17px] font-normal text-[#999] group-open:rotate-45">
+              +
+            </span>
+          </summary>
           <div className="mt-4 overflow-x-auto">
             <table className="w-full min-w-[740px] border-collapse text-left text-[11px] tabular-nums">
-              <caption className="sr-only">All model metrics and median latency, sorted by the selected chart metric</caption>
-              <thead className="text-[#888]"><tr className="border-b border-[#dededc]">
-                <th scope="col" className="py-2 pr-4 font-medium">Model</th>
-                {metrics.map((item) => <th key={item} scope="col" className={cn("px-2 py-2 text-right font-medium", item === metric && "text-[#2D6598]")}>{metricLabels[item]}{item === "ece" ? " ↓" : ""}</th>)}
-                <th scope="col" className="py-2 pl-2 text-right font-medium">p50 ms</th>
-              </tr></thead>
-              <tbody>{ranked.map((model) => <tr key={model.id} className="border-b border-[#ededeb]">
-                <th scope="row" className="py-2.5 pr-4 font-medium text-[#333]">{displayNames[model.id]}</th>
-                {metrics.map((item) => <td key={item} className={cn("px-2 py-2.5 text-right", item === metric ? "font-semibold text-[#2D6598]" : "text-[#666]")}>{score(model.macro[item])}</td>)}
-                <td className="py-2.5 pl-2 text-right text-[#666]">{Math.round(model.latency_ms.p50).toLocaleString()}</td>
-              </tr>)}</tbody>
+              <caption className="sr-only">
+                All model metrics and median latency, sorted by the selected
+                chart metric
+              </caption>
+              <thead className="text-[#888]">
+                <tr className="border-b border-[#dededc]">
+                  <th scope="col" className="py-2 pr-4 font-medium">
+                    Model
+                  </th>
+                  {metrics.map((item) => (
+                    <th
+                      key={item}
+                      scope="col"
+                      className={cn(
+                        "px-2 py-2 text-right font-medium",
+                        item === metric && "text-[#2D6598]",
+                      )}
+                    >
+                      {metricLabels[item]}
+                      {item === "ece" ? " ↓" : ""}
+                    </th>
+                  ))}
+                  <th scope="col" className="py-2 pl-2 text-right font-medium">
+                    p50 ms
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {ranked.map((model) => (
+                  <tr key={model.id} className="border-b border-[#ededeb]">
+                    <th
+                      scope="row"
+                      className="py-2.5 pr-4 font-medium text-[#333]"
+                    >
+                      {displayNames[model.id]}
+                    </th>
+                    {metrics.map((item) => (
+                      <td
+                        key={item}
+                        className={cn(
+                          "px-2 py-2.5 text-right",
+                          item === metric
+                            ? "font-semibold text-[#2D6598]"
+                            : "text-[#666]",
+                        )}
+                      >
+                        {score(model.macro[item])}
+                      </td>
+                    ))}
+                    <td className="py-2.5 pl-2 text-right text-[#666]">
+                      {Math.round(model.latency_ms.p50).toLocaleString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
           </div>
-          <p className="mt-3 text-[10px] leading-[1.5] text-[#888]">GPT-6.1 Sol ran with eight workers; other models ran with one. Latency reflects different concurrency loads and excludes retries.</p>
+          <p className="mt-3 text-[10px] leading-[1.5] text-[#888]">
+            GPT-6.1 Sol ran with eight workers; other models ran with one.
+            Latency reflects different concurrency loads and excludes retries.
+          </p>
         </details>
       </section>
 
       <section id="method" className="mt-5 border-t border-[#e5e5e3] pt-4">
         <details className="group">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[12px] font-medium text-[#333] marker:hidden">Methodology <span className="text-[17px] font-normal text-[#999] group-open:rotate-45">+</span></summary>
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[12px] font-medium text-[#333] marker:hidden">
+            Methodology{" "}
+            <span className="text-[17px] font-normal text-[#999] group-open:rotate-45">
+              +
+            </span>
+          </summary>
           <div className="mt-4 max-w-[780px] space-y-3 text-[11px] leading-[1.65] text-[#666]">
-            <p>Five binary tasks from <a href="https://huggingface.co/datasets/gong-io-research/call-playbook" target="_blank" rel="noreferrer" className="text-[#2a6496] underline">Gong Call Playbook</a> contribute 200 test rows each. No training rows, call excerpts, or individual predictions are published here. Dataset revision <code className="font-mono">{data.revision.slice(0, 12)}</code>.</p>
-            <p>Models return p(signal present). A fixed 0.5 threshold determines the positive class. Reported classification metrics are unweighted means of five task scores. ECE uses ten probability bins; lower ECE is better. No threshold was tuned on test data.</p>
-            <p>Latency percentiles include each successful HTTP attempt only, excluding retries and backoff. This measures signal detection in excerpts, not full-call coverage.</p>
+            <p>
+              Five binary tasks from{" "}
+              <a
+                href="https://huggingface.co/datasets/gong-io-research/call-playbook"
+                target="_blank"
+                rel="noreferrer"
+                className="text-[#2a6496] underline"
+              >
+                Gong Call Playbook
+              </a>{" "}
+              contribute 200 test rows each. No training rows, call excerpts, or
+              individual predictions are published here. Dataset revision{" "}
+              <code className="font-mono">{data.revision.slice(0, 12)}</code>.
+            </p>
+            <p>
+              Models return p(signal present). A fixed 0.5 threshold determines
+              the positive class. Reported classification metrics are unweighted
+              means of five task scores. ECE uses ten probability bins; lower
+              ECE is better. No threshold was tuned on test data.
+            </p>
+            <p>
+              Latency percentiles include each successful HTTP attempt only,
+              excluding retries and backoff. This measures signal detection in
+              excerpts, not full-call coverage.
+            </p>
           </div>
         </details>
       </section>
 
       <footer className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t-2 border-[#222] pt-4 text-[10px] text-[#888]">
         <p>Modaic Benchmarks · October 2026</p>
-        <a href="https://github.com/modaic-ai/mo-benchmarks" target="_blank" rel="noreferrer" className="text-[#2a6496] hover:underline">Source &amp; methods ↗</a>
+        <a
+          href="https://github.com/modaic-ai/mo-benchmarks"
+          target="_blank"
+          rel="noreferrer"
+          className="text-[#2a6496] hover:underline"
+        >
+          Source &amp; methods ↗
+        </a>
       </footer>
     </main>
   );
