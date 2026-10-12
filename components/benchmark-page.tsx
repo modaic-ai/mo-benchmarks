@@ -110,10 +110,7 @@ export function BenchmarkPage() {
 
         <div className="mt-5 overflow-x-auto rounded-lg border border-[#e8e8e6] bg-[#fcfcfb] px-3 pb-3 pt-6 sm:px-6">
           <div className="min-w-[590px]">
-            <div className="flex items-baseline justify-between gap-4 px-2">
-              <p className="text-[12px] font-medium text-[#333]">{metricLabels[metric]} by model{metric === "ece" && <span className="ml-2 text-[#8a5b43]">↓ Lower is better</span>}</p>
-              <p className="font-mono text-[10px] text-[#888]">Y-axis starts at {percent(chartMin)}</p>
-            </div>
+            <p className="px-2 text-[12px] font-medium text-[#333]">{metricLabels[metric]} by model{metric === "ece" && <span className="ml-2 text-[#8a5b43]">↓ Lower is better</span>}</p>
             <ChartContainer config={chartConfig} className="mt-3 h-[350px] w-full aspect-auto">
               <BarChart accessibilityLayer data={chartData} margin={{ top: 24, right: 16, bottom: 5, left: -10 }}>
                 <CartesianGrid vertical={false} stroke="#e7e9e9" />
