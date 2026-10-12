@@ -1,6 +1,6 @@
 # Modaic Benchmarks
 
-A collection of reproducible evaluations for decision models, with aggregate results at [mo-benchmarks.vercel.app](https://mo-benchmarks.vercel.app/). Each benchmark has its own dataset version, protocol, runner, scoring code, and results. The website reads only aggregate data; licensed examples and row-level predictions are not committed.
+A collection of reproducible evaluations for decision models, with aggregate results at [mo-benchmarks.vercel.app](https://bench.modaic.dev/). Each benchmark has its own dataset version, protocol, runner, scoring code, and results. The website reads only aggregate data; licensed examples and row-level predictions are not committed.
 
 ## Benchmarks
 
