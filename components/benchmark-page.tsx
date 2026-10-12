@@ -104,14 +104,14 @@ export function BenchmarkPage() {
             <button key={item} type="button" aria-pressed={metric === item} onClick={() => setMetric(item)} className={cn(
               "rounded-full border px-3 py-1.5 text-[11px] font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2D6598]",
               metric === item ? "border-[#2D6598] bg-[#2D6598] text-white" : "border-[#e1e1df] bg-white text-[#666] hover:border-[#8faaba] hover:text-[#2D6598]",
-            )}>{metricLabels[item]}</button>
+            )} aria-label={item === "ece" ? "ECE, lower is better" : metricLabels[item]}>{metricLabels[item]}{item === "ece" ? " ↓" : ""}</button>
           ))}
         </div>
 
         <div className="mt-5 overflow-x-auto rounded-lg border border-[#e8e8e6] bg-[#fcfcfb] px-3 pb-3 pt-6 sm:px-6">
           <div className="min-w-[590px]">
             <div className="flex items-baseline justify-between gap-4 px-2">
-              <p className="text-[12px] font-medium text-[#333]">{metricLabels[metric]} by model</p>
+              <p className="text-[12px] font-medium text-[#333]">{metricLabels[metric]} by model{metric === "ece" && <span className="ml-2 text-[#8a5b43]">↓ Lower is better</span>}</p>
               <p className="font-mono text-[10px] text-[#888]">Y-axis starts at {percent(chartMin)}</p>
             </div>
             <ChartContainer config={chartConfig} className="mt-3 h-[350px] w-full aspect-auto">
@@ -139,7 +139,7 @@ export function BenchmarkPage() {
               <caption className="sr-only">All model metrics and median latency, sorted by the selected chart metric</caption>
               <thead className="text-[#888]"><tr className="border-b border-[#dededc]">
                 <th scope="col" className="py-2 pr-4 font-medium">Model</th>
-                {metrics.map((item) => <th key={item} scope="col" className={cn("px-2 py-2 text-right font-medium", item === metric && "text-[#2D6598]")}>{metricLabels[item]}</th>)}
+                {metrics.map((item) => <th key={item} scope="col" className={cn("px-2 py-2 text-right font-medium", item === metric && "text-[#2D6598]")}>{metricLabels[item]}{item === "ece" ? " ↓" : ""}</th>)}
                 <th scope="col" className="py-2 pl-2 text-right font-medium">p50 ms</th>
               </tr></thead>
               <tbody>{ranked.map((model) => <tr key={model.id} className="border-b border-[#ededeb]">
@@ -158,7 +158,7 @@ export function BenchmarkPage() {
           <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[12px] font-medium text-[#333] marker:hidden">Methodology <span className="text-[17px] font-normal text-[#999] group-open:rotate-45">+</span></summary>
           <div className="mt-4 max-w-[780px] space-y-3 text-[11px] leading-[1.65] text-[#666]">
             <p>Five binary tasks from <a href="https://huggingface.co/datasets/gong-io-research/call-playbook" target="_blank" rel="noreferrer" className="text-[#2a6496] underline">Gong Call Playbook</a> contribute 200 test rows each. No training rows, call excerpts, or individual predictions are published here. Dataset revision <code className="font-mono">{data.revision.slice(0, 12)}</code>.</p>
-            <p>Models return p(signal present). A fixed 0.5 threshold determines the positive class. Reported classification metrics are unweighted means of five task scores. ECE uses ten probability bins. No threshold was tuned on test data.</p>
+            <p>Models return p(signal present). A fixed 0.5 threshold determines the positive class. Reported classification metrics are unweighted means of five task scores. ECE uses ten probability bins; lower ECE is better. No threshold was tuned on test data.</p>
             <p>Latency percentiles include each successful HTTP attempt only, excluding retries and backoff. This measures signal detection in excerpts, not full-call coverage.</p>
           </div>
         </details>
