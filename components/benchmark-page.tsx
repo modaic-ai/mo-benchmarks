@@ -7,7 +7,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } f
 import rawData from "@/data/buying-signals.json";
 import { cn } from "@/lib/utils";
 
-type Metric = "accuracy" | "f1" | "recall" | "precision" | "auroc" | "ece";
+type Metric = "accuracy" | "precision" | "f1" | "recall" | "auroc" | "ece";
 type Metrics = Record<Metric, number>;
 type Model = {
   id: string;
@@ -22,9 +22,9 @@ type BenchmarkData = {
 };
 
 const data = rawData as BenchmarkData;
-const metrics: Metric[] = ["accuracy", "f1", "recall", "precision", "auroc", "ece"];
+const metrics: Metric[] = ["accuracy", "precision", "f1", "recall", "auroc", "ece"];
 const metricLabels: Record<Metric, string> = {
-  accuracy: "Accuracy", f1: "F1", recall: "Recall", precision: "Precision", auroc: "AUROC", ece: "ECE",
+  accuracy: "Accuracy", precision: "Precision", f1: "F1", recall: "Recall", auroc: "AUROC", ece: "ECE",
 };
 const displayNames: Record<string, string> = {
   "luna-decisions": "Luna decisions",

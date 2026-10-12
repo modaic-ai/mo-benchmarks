@@ -20,13 +20,13 @@ def leaderboard(output_dir: Path) -> str:
     if len(cohorts) != 1:
         raise ValueError("Reports do not share one manifest")
     reports.sort(key=lambda report: report["macro"]["accuracy"], reverse=True)
-    lines = ["# Gong Call Playbook buying-signal benchmark", "", "Test only: 200 examples per signal; 1,000 decisions per model. Primary display metric: macro accuracy at p ≥ 0.5.", "", "| Model | Model ID | Backend | Workers | Macro accuracy | Macro F1 | Min F1 | Macro precision | Macro recall | Macro AUROC | Macro ECE | p50 ms | p95 ms | p99 ms |", "|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
+    lines = ["# Gong Call Playbook buying-signal benchmark", "", "Test only: 200 examples per signal; 1,000 decisions per model. Primary display metric: macro accuracy at p ≥ 0.5.", "", "| Model | Model ID | Backend | Workers | Macro accuracy | Macro precision | Macro F1 | Min F1 | Macro recall | Macro AUROC | Macro ECE | p50 ms | p95 ms | p99 ms |", "|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
     for report in reports:
         run = report["prediction_run"]
         macro = report["macro"]
         latency = report["latency"]
-        values = [run["name"], run["model"], run["backend"], str(latency["workers"]), *(f"{macro[name]:.3f}" for name in ("accuracy", "f1")),
-                  f"{report['min_task_f1']:.3f}", *(f"{macro[name]:.3f}" for name in ("precision", "recall", "auroc", "ece")),
+        values = [run["name"], run["model"], run["backend"], str(latency["workers"]), *(f"{macro[name]:.3f}" for name in ("accuracy", "precision", "f1")),
+                  f"{report['min_task_f1']:.3f}", *(f"{macro[name]:.3f}" for name in ("recall", "auroc", "ece")),
                   *(f"{latency[name]:.0f}" for name in ("p50_ms", "p95_ms", "p99_ms"))]
         lines.append("| " + " | ".join(values) + " |")
     lines += ["", "## Per-signal F1", "", "| Model | " + " | ".join(TASKS) + " |", "|---|" + "---:|" * len(TASKS)]
