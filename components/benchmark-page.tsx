@@ -63,6 +63,9 @@ export function BenchmarkPage() {
   const accuracyWinner = [...data.models].sort((a, b) => b.macro.accuracy - a.macro.accuracy)[0];
   const ranked = [...data.models].sort((a, b) => metric === "ece" ? a.macro.ece - b.macro.ece : b.macro[metric] - a.macro[metric]);
   const chartData = ranked.map((model) => ({ id: model.id, name: chartNames[model.id], score: model.macro[metric] }));
+  const chartMin = Math.floor(Math.min(...chartData.map((item) => item.score)) * 20) / 20;
+  const chartMax = Math.ceil(Math.max(...chartData.map((item) => item.score)) * 20) / 20;
+  const chartTicks = Array.from({ length: Math.round((chartMax - chartMin) * 20) + 1 }, (_, index) => Number((chartMin + index * 0.05).toFixed(2)));
 
   return (
     <main className="mx-auto max-w-[1120px] px-5 pb-14 pt-6 font-sans text-[#454545] sm:px-10 sm:pt-8">
@@ -107,12 +110,15 @@ export function BenchmarkPage() {
 
         <div className="mt-5 overflow-x-auto rounded-lg border border-[#e8e8e6] bg-[#fcfcfb] px-3 pb-3 pt-6 sm:px-6">
           <div className="min-w-[590px]">
-            <p className="px-2 text-[12px] font-medium text-[#333]">{metricLabels[metric]} by model</p>
+            <div className="flex items-baseline justify-between gap-4 px-2">
+              <p className="text-[12px] font-medium text-[#333]">{metricLabels[metric]} by model</p>
+              <p className="font-mono text-[10px] text-[#888]">Y-axis starts at {percent(chartMin)}</p>
+            </div>
             <ChartContainer config={chartConfig} className="mt-3 h-[350px] w-full aspect-auto">
               <BarChart accessibilityLayer data={chartData} margin={{ top: 24, right: 16, bottom: 5, left: -10 }}>
                 <CartesianGrid vertical={false} stroke="#e7e9e9" />
                 <XAxis dataKey="name" tickLine={false} axisLine={false} interval={0} tick={{ fill: "#666", fontSize: 11 }} tickMargin={12} />
-                <YAxis type="number" domain={[0, metric === "ece" ? 0.25 : 1]} ticks={metric === "ece" ? [0, 0.05, 0.1, 0.15, 0.2, 0.25] : [0, 0.25, 0.5, 0.75, 1]} tickFormatter={(value: number) => `${Math.round(value * 100)}%`} tickLine={false} axisLine={false} tick={{ fill: "#999", fontSize: 10 }} />
+                <YAxis type="number" domain={[chartMin, chartMax]} ticks={chartTicks} allowDataOverflow tickFormatter={(value: number) => `${Math.round(value * 100)}%`} tickLine={false} axisLine={false} tick={{ fill: "#999", fontSize: 10 }} />
                 <ChartTooltip cursor={{ fill: "#edf1f2" }} content={<ChartTooltipContent hideLabel formatter={(value) => <span className="font-mono font-medium text-[#222]">{percent(Number(value))}</span>} />} />
                 <Bar dataKey="score" radius={[3, 3, 0, 0]} maxBarSize={62}>
                   {chartData.map((item) => <Cell key={item.id} fill={chartColors[item.id]} />)}
@@ -122,7 +128,7 @@ export function BenchmarkPage() {
             </ChartContainer>
           </div>
         </div>
-        <p className="mt-3 text-[10px] leading-[1.5] text-[#888]">Each bar is the unweighted average of five test-set {metricLabels[metric].toLowerCase()} scores.</p>
+        <p className="mt-3 text-[10px] leading-[1.5] text-[#888]">Each bar is the unweighted average of five test-set {metricLabels[metric].toLowerCase()} scores. The y-axis is truncated to make close scores easier to compare.</p>
       </section>
 
       <section className="mt-9 border-t border-[#e5e5e3] pt-4">
