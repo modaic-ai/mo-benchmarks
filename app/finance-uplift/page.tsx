@@ -1,11 +1,6 @@
-import type { Metadata } from "next";
-import { FinanceUpliftPage } from "@/components/finance-uplift-page";
-
-export const metadata: Metadata = {
-  title: "Modaic Benchmarks — Finance alignment uplift",
-  description: "Measure how Modaic alignment changes Mo's accuracy on held-out finance classification tasks.",
-};
+import { notFound } from "next/navigation";
 
 export default function FinancePage() {
-  return <FinanceUpliftPage />;
+  // The finance uplift page is temporarily unpublished; its component and data are retained.
+  notFound();
 }
