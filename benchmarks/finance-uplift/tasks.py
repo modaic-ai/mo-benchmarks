@@ -18,6 +18,43 @@ FOMC_REVISION = "6b0283f55f0005a6d38d49f271d795c21fccc1a3"
 ESG_TEST_REVISION = "6726cff84d342540a63cf5f09a438ff7cebe8c55"
 ESG_TRAIN_REVISION = "3009e332a34e639cdd78e2f98b5bd9cb6e99d0dc"
 ESG_TRAIN_SHA256 = "60b5307a61202e191117d5d93f38f47d14e4a0bb1da973b5e57e5fe44852bb08"
+TWITTER_TOPIC_REVISION = "acbc8af2a35ccf0916124efcbe9e6cf25f191012"
+TWITTER_TOPIC_FILE_SHA256 = {
+    "topic_train.csv": "63b9ea8183728dd5ddc6a57289341556509ddc0a8d037616519319a316b54490",
+    "topic_valid.csv": "67396d6cd4a21c3755de783f20fb5842f12ae8edb9367eed5d2644dd85ca9243",
+}
+
+TWITTER_TOPIC_LABELS = (
+    "Analyst Update", "Fed | Central Banks", "Company | Product News",
+    "Treasuries | Corporate Debt", "Dividend", "Earnings", "Energy | Oil",
+    "Financials", "Currencies", "General News | Opinion",
+    "Gold | Metals | Materials", "IPO", "Legal | Regulation",
+    "M&A | Investments", "Macro", "Markets", "Politics",
+    "Personnel Change", "Stock Commentary", "Stock Movement",
+)
+
+TWITTER_TOPIC_CRITERIA = {
+    "Analyst Update": "Analyst ratings, recommendations, upgrades, downgrades, or price-target changes.",
+    "Fed | Central Banks": "The Federal Reserve or another central bank, its officials, or monetary-policy decisions.",
+    "Company | Product News": "A company's operations, products, or announcements outside the more specific categories.",
+    "Treasuries | Corporate Debt": "Treasury securities, corporate bonds, yields, credit issuance, or debt markets.",
+    "Dividend": "A company's dividend payment, increase, cut, or policy.",
+    "Earnings": "Company earnings, financial results, guidance, or an earnings report.",
+    "Energy | Oil": "Oil, gas, energy commodities, or energy-sector news.",
+    "Financials": "Banks, insurers, or other financial-services companies and their business.",
+    "Currencies": "Foreign-exchange markets, exchange rates, or currencies.",
+    "General News | Opinion": "Broad news or commentary with no more specific listed topic.",
+    "Gold | Metals | Materials": "Gold, other metals, mining, or materials commodities.",
+    "IPO": "An initial public offering, new stock listing, or the IPO process.",
+    "Legal | Regulation": "A lawsuit, enforcement action, regulation, or legal compliance matter.",
+    "M&A | Investments": "A merger, acquisition, takeover, or investment deal.",
+    "Macro": "Economy-wide conditions or indicators such as inflation, employment, or GDP.",
+    "Markets": "Broad financial-market conditions or movements across multiple assets.",
+    "Politics": "Political events, elections, or government actions outside a specific regulation.",
+    "Personnel Change": "A leadership appointment, departure, promotion, or other personnel change.",
+    "Stock Commentary": "Analysis or opinion about a particular stock outside a specific analyst rating update.",
+    "Stock Movement": "A particular stock's price move or trading activity.",
+}
 
 ESG_LABELS = (
     "Access to Communications", "Biodiversity & Land Use", "Packaging Material & Waste",
@@ -92,6 +129,14 @@ class Task:
 
 
 TASKS = {
+    "twitter-financial-news-topic": Task(
+        slug="twitter-financial-news-topic", repo="zeroshot/twitter-financial-news-topic",
+        revision=TWITTER_TOPIC_REVISION,
+        train_file="topic_train.csv", eval_file="topic_valid.csv",
+        eval_split="validation", question_id="topic",
+        instructions="Classify the primary topic of this finance-related post. Choose the most specific applicable category.",
+        criteria=TWITTER_TOPIC_CRITERIA,
+    ),
     "esg": Task(
         slug="esg", repo="ChanceFocus/flare-mlesg", revision=ESG_TEST_REVISION,
         train_file="FinESG-2023_Train_EN.json",

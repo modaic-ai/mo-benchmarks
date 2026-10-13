@@ -261,6 +261,17 @@ def score(task: Task, baseline: dict[str, dict], final: dict[str, dict], rows: l
     }
 
 
+def macro_f1(records: dict[str, dict], rows: list[dict], labels: tuple[str, ...]) -> float:
+    scores = []
+    for label in labels:
+        true_positive = sum(records[row["id"]]["prediction"] == label and row["truth"] == label for row in rows)
+        false_positive = sum(records[row["id"]]["prediction"] == label and row["truth"] != label for row in rows)
+        false_negative = sum(records[row["id"]]["prediction"] != label and row["truth"] == label for row in rows)
+        denominator = 2 * true_positive + false_positive + false_negative
+        scores.append(2 * true_positive / denominator if denominator else 0.0)
+    return sum(scores) / len(scores)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--task", choices=TASKS, required=True)
@@ -310,6 +321,7 @@ def main() -> None:
             if state.get("alignment_status") != "completed" or state.get("batch_status") not in {"completed", "not_applicable"}:
                 raise RuntimeError("wait for alignment and follow-up batch first")
             baseline = read_jsonl(OUTPUTS / f"{task.slug}.baseline.jsonl")
+            final = None
             if state["result_revision"] == state["baseline_revision"]:
                 report = score(task, baseline, baseline, cohort["eval_rows"])
                 report.update({
@@ -336,6 +348,22 @@ def main() -> None:
                     "source_train_revision": cohort["train_revision"],
                     "near_duplicate_test_rows_excluded": cohort["near_duplicate_test_rows_excluded"],
                     "test_similarity_exclusion": cohort["test_similarity_exclusion"],
+                })
+            if task.slug == "twitter-financial-news-topic":
+                report.update({
+                    "source_repo": cohort["repo"],
+                    "source_revision": cohort["revision"],
+                    "source_file_sha256": cohort["source_file_sha256"],
+                    "evaluation_split": task.eval_split,
+                    "sample_seed": cohort["seed"],
+                    "sampling": "10 rows per topic in both 200-row cohorts",
+                    "preprocessing": "HTML entities decoded and tracking URLs removed",
+                    "test_similarity_exclusion": cohort["test_similarity_exclusion"],
+                    "near_duplicate_test_rows_excluded": cohort["near_duplicate_test_rows_excluded"],
+                    "baseline_macro_f1": macro_f1(baseline, cohort["eval_rows"], tuple(task.criteria)),
+                    "aligned_macro_f1": (
+                        macro_f1(final, cohort["eval_rows"], tuple(task.criteria)) if final else None
+                    ),
                 })
             save_json(OUTPUTS / f"{task.slug}.report.json", report)
             print(json.dumps(report, indent=2), flush=True)

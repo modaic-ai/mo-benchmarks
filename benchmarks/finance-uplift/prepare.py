@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
+import html
 import json
 import random
 import re
@@ -14,13 +15,27 @@ from pathlib import Path
 import pyarrow.parquet as pq
 from huggingface_hub import hf_hub_download
 
-from tasks import BANKING77_LABELS, ESG_TRAIN_REVISION, ESG_TRAIN_SHA256, SEED, TASKS, Task
+from tasks import (
+    BANKING77_LABELS, ESG_TRAIN_REVISION, ESG_TRAIN_SHA256, SEED, TASKS,
+    TWITTER_TOPIC_FILE_SHA256, TWITTER_TOPIC_LABELS, Task,
+)
 
 ROOT = Path(__file__).resolve().parent
 DATA = ROOT / "data"
 
 
 def source_path(task: Task, filename: str) -> Path:
+    if task.slug == "twitter-financial-news-topic":
+        path = DATA / "source" / task.slug / filename
+        if not path.exists():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path = Path(hf_hub_download(
+                repo_id=task.repo, filename=filename, repo_type="dataset",
+                revision=task.revision, local_dir=path.parent,
+            ))
+        if hashlib.sha256(path.read_bytes()).hexdigest() != TWITTER_TOPIC_FILE_SHA256[filename]:
+            raise RuntimeError(f"pinned Twitter topic source checksum changed: {filename}")
+        return path
     if task.slug == "esg" and filename == task.train_file:
         path = DATA / "source" / "esg-train" / filename
         if not path.exists():
@@ -57,7 +72,13 @@ def raw_rows(task: Task, filename: str, split: str) -> list[dict]:
             or (split != "train" and item["label_type"] != "Price or Not")
         ):
             continue
-        if task.slug == "multifin":
+        if task.slug == "twitter-financial-news-topic":
+            label = TWITTER_TOPIC_LABELS[int(item["label"])]
+            text = html.unescape(item["text"])
+            text = re.sub(r"https?://\S+", "", text)
+            text = re.sub(r"\s+", " ", text).strip()
+            state = {"text": text} if text else None
+        elif task.slug == "multifin":
             value, label = item["text"], item["label"]
             state = {"text": value.strip()} if value else None
         elif task.slug == "banking77-routing":
@@ -135,7 +156,7 @@ def prepare(task: Task, max_labels: int = 200, eval_limit: int = 200) -> dict:
         raise ValueError("this pilot is capped at 200 labels per task")
     train_all = raw_rows(task, task.train_file, "train")
     eval_all = raw_rows(task, task.eval_file, task.eval_split)
-    if task.slug in {"german-credit", "gold-headlines", "fomc", "esg"}:
+    if task.slug in {"german-credit", "gold-headlines", "fomc", "esg", "twitter-financial-news-topic"}:
         # The headline release contains nine binary questions for each text.
         # After selecting one question, drop any input with conflicting gold
         # labels, then keep each test input only once.
@@ -156,7 +177,7 @@ def prepare(task: Task, max_labels: int = 200, eval_limit: int = 200) -> dict:
             seen.add(key)
             train_unique.append(row)
     training = sample(train_unique, max_labels, SEED)
-    if task.slug in {"cfpb-routing", "german-credit", "gold-headlines", "fomc", "esg"}:
+    if task.slug in {"cfpb-routing", "german-credit", "gold-headlines", "fomc", "esg", "twitter-financial-news-topic"}:
         # This source's published train and test CSVs contain many duplicate
         # narratives. Do not let duplicates inflate held-out accuracy.
         eval_seen = set()
@@ -169,7 +190,7 @@ def prepare(task: Task, max_labels: int = 200, eval_limit: int = 200) -> dict:
     else:
         eval_unique = eval_all
     near_duplicate_eval_excluded = 0
-    if task.slug == "esg":
+    if task.slug in {"esg", "twitter-financial-news-topic"}:
         train_grams = [fivegrams(row["state"]["text"]) for row in training]
         filtered_eval = []
         for row in eval_unique:
@@ -178,7 +199,8 @@ def prepare(task: Task, max_labels: int = 200, eval_limit: int = 200) -> dict:
                 (len(grams & other) / len(grams | other) for other in train_grams if grams & other),
                 default=0.0,
             )
-            if similarity >= 0.6:
+            threshold = 0.6 if task.slug == "esg" else 0.8
+            if similarity >= threshold:
                 near_duplicate_eval_excluded += 1
             else:
                 filtered_eval.append(row)
@@ -198,6 +220,10 @@ def prepare(task: Task, max_labels: int = 200, eval_limit: int = 200) -> dict:
         cohort["train_revision"] = ESG_TRAIN_REVISION
         cohort["near_duplicate_test_rows_excluded"] = near_duplicate_eval_excluded
         cohort["test_similarity_exclusion"] = "5-token Jaccard >= 0.6 against any selected training article"
+    if task.slug == "twitter-financial-news-topic":
+        cohort["source_file_sha256"] = TWITTER_TOPIC_FILE_SHA256
+        cohort["near_duplicate_test_rows_excluded"] = near_duplicate_eval_excluded
+        cohort["test_similarity_exclusion"] = "5-token Jaccard >= 0.8 against any selected training post"
     fingerprint = hashlib.sha256(json.dumps(cohort, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
     cohort["sha256"] = fingerprint
     DATA.mkdir(parents=True, exist_ok=True)

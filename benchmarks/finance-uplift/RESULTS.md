@@ -1,7 +1,7 @@
 # Finance alignment uplift results
 
 Each run used base `modaic/mo`, at most 200 captured and labeled training
-examples, and a fixed 200-row held-out cohort. Seven alignments produced new
+examples, and a fixed 200-row held-out cohort. Eight alignments produced new
 checkpoints. Their post-alignment scores were measured after the automatic
 batch over captured examples finished with zero failures. FinCalc alignment
 completed without a new checkpoint, so no post-alignment score is claimed.
@@ -16,20 +16,24 @@ completed without a new checkpoint, so no post-alignment score is claimed.
 | [German credit risk](https://huggingface.co/datasets/ChanceFocus/flare-german) | 52.5% | 57.0% | — | +4.5 pp | −4.5 to +13.5 pp |
 | [Gold-price headlines](https://huggingface.co/datasets/ChanceFocus/flare-headlines) | 87.5% | 90.0% | — | +2.5 pp | −0.5 to +6.0 pp |
 | [MultiFin topics](https://huggingface.co/datasets/awinml/MultiFin) | 68.0% | 78.0% | — | +10.0 pp | +4.5 to +15.5 pp |
+| [Twitter financial-news topics](https://huggingface.co/datasets/zeroshot/twitter-financial-news-topic) | 76.5% | 79.0% | — | +2.5 pp | −1.5 to +6.5 pp |
 
-The intervals are paired bootstrap intervals over each task's fixed 200 test
+The intervals are paired bootstrap intervals over each task's fixed 200 held-out
 rows. FOMC corrected 43 previously wrong rows and regressed on 15; MultiFin
 corrected 28 and regressed on 8. German credit corrected 46 and regressed on
 37, yielding a useful +4.5-point gain with a wider interval. Gold corrected
 8 and regressed on 3. ESG corrected and regressed on 7 each. CFPB corrected
-23 and regressed on 22. These are task-specific results from one alignment
-run per task, not a guarantee of uplift on every dataset.
+23 and regressed on 22. Twitter financial-news topics corrected 10 and
+regressed on 5; macro F1 rose from 0.751 to 0.783 across 20 labels. These are
+task-specific results from one alignment run per task, not a guarantee of
+uplift on every dataset.
 
 ## Cohort integrity
 
-- Each training cohort came from data outside the published test split, except
-  MultiFin, whose evaluation split is its published validation split. Exact
-  train/evaluation input overlaps were removed before selecting training rows.
+- Each training cohort came from data outside the published evaluation split.
+  MultiFin and Twitter financial-news topics use their published validation
+  splits; the other tasks use test splits. Exact train/evaluation input
+  overlaps were removed before selecting training rows.
 - ESG uses the [original FinNLP English training release](https://github.com/sagacemente/FinNLP_2023/blob/3009e332a34e639cdd78e2f98b5bd9cb6e99d0dc/FinESG-2023_Train_EN.json),
   whose 33 labels match the Flare test set. One test article with five-token
   Jaccard similarity of at least 0.6 to a selected training article was
@@ -53,6 +57,11 @@ run per task, not a guarantee of uplift on every dataset.
   intent taxonomy, not supplied by the source dataset. Its label-only
   checkpoint was 85.0%; the reasoning checkpoint was 83.5% on exactly the
   same held-out rows.
+- Twitter financial-news topics used 10 posts from each of the 20 classes in
+  both the training and held-out cohorts. Preparation removed duplicate or
+  conflicting inputs and excluded training posts matching the full validation
+  split. Source files are pinned by revision and SHA-256 checksums. The
+  follow-up batch over captured examples completed before held-out scoring.
 
 The source revisions, cohort selection, capture/annotation flow, and commands
 to reproduce the runs are in the [protocol](README.md). Row-level source text

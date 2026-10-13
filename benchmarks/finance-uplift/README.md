@@ -1,17 +1,17 @@
 # Finance alignment uplift pilot
 
 This pilot measures the change in held-out accuracy when a saved Modaic model
-using `modaic/mo` is aligned on labeled examples. The completed tasks cover
-ESG issues, German credit risk, FOMC stance, MultiFin topics, gold-price
-headlines, FinCalc entailment, Banking77 intents, and CFPB complaint routing.
+using `modaic/mo` is aligned on labeled examples. The tasks cover financial
+news topics, ESG issues, German credit risk, FOMC stance, MultiFin topics,
+gold-price headlines, FinCalc entailment, Banking77 intents, and CFPB complaint routing.
 Each task gets its own saved model.
 
 ## Data boundary
 
 `prepare.py` pins the source repositories to exact revisions and selects
-fixed 200-row evaluation cohorts using seed `20261002`. MultiFin uses
-`only_english_highlevel/validation`; the other completed tasks use published
-`test` splits. ESG uses the [original FinNLP English training release](https://github.com/sagacemente/FinNLP_2023/blob/3009e332a34e639cdd78e2f98b5bd9cb6e99d0dc/FinESG-2023_Train_EN.json)
+fixed 200-row evaluation cohorts using seed `20261002`. MultiFin and Twitter
+Financial News Topic use their published validation splits; the other tasks
+use published `test` splits. ESG uses the [original FinNLP English training release](https://github.com/sagacemente/FinNLP_2023/blob/3009e332a34e639cdd78e2f98b5bd9cb6e99d0dc/FinESG-2023_Train_EN.json)
 with 33 labels that exactly match the [Flare ESG test set](https://huggingface.co/datasets/ChanceFocus/flare-mlesg).
 It selects at most 200 rows from each source's separate `train` split for
 alignment. It removes training rows whose normalized text appears anywhere
@@ -21,10 +21,18 @@ its test cohort is deduplicated before sampling. The prepared
 cohorts and row-level decisions are ignored by Git.
 
 For the new tasks, preparation removes any same-text rows with contradictory
-labels and deduplicates test inputs. The ESG evaluation also excludes any
+labels and deduplicates evaluation inputs. The ESG evaluation also excludes any
 test article with five-token Jaccard similarity of at least 0.6 to a selected
 training article; one such article was found. All cohort selection happens
 before baseline or aligned scoring.
+
+For [Twitter Financial News Topic](https://huggingface.co/datasets/zeroshot/twitter-financial-news-topic),
+preparation decodes HTML entities and removes tracking URLs. It drops
+contradictory same-text labels and removes training posts matching any post in
+the full validation split before sampling. The two 200-row cohorts contain
+10 posts per topic across all 20 labels. Its source commit and both CSV
+checksums are pinned in `tasks.py`; near copies of selected training posts
+are excluded from evaluation at five-token Jaccard similarity of at least 0.8.
 
 The saved model receives the same question schema and state as the original
 finance benchmark. Baseline and final evaluation calls use `capture=False`.
@@ -42,7 +50,7 @@ this directory:
 
 ```bash
 uv sync --locked
-for task in esg german-credit fomc multifin gold-headlines fincalc-nli banking77-routing; do
+for task in twitter-financial-news-topic esg german-credit fomc multifin gold-headlines fincalc-nli banking77-routing; do
   uv run --locked python prepare.py --task "$task"
   uv run --locked python run.py --task "$task" --phase baseline
   uv run --locked python run.py --task "$task" --phase train
