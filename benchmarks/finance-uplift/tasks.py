@@ -23,6 +23,20 @@ TWITTER_TOPIC_FILE_SHA256 = {
     "topic_train.csv": "63b9ea8183728dd5ddc6a57289341556509ddc0a8d037616519319a316b54490",
     "topic_valid.csv": "67396d6cd4a21c3755de783f20fb5842f12ae8edb9367eed5d2644dd85ca9243",
 }
+NEW_SOURCE_SHA256 = {
+    "numclaim": {
+        "main/train-00000-of-00001-fd823fc4483525b2.parquet": "d784c8995135a0d9c2db4faedf5775637083b1a3a19a73bf24d6e440fde78983",
+        "main/test-00000-of-00001-3975a72d0d39dec1.parquet": "abc45aa04ab56d6d98661d728ba338d95758e3643c6be20c0cc7470ca6705b7a",
+    },
+    "modernfinbert-sentiment": {
+        "data/train-00000-of-00001-141cb71fa4de7db1.parquet": "8f247fa4f95f595e3a81a98c78254db78773bf0cc433dbac9b339054eca17be5",
+        "data/test-00000-of-00001-0bfa6ce341dc4053.parquet": "94afe70a7ceab558231328459996dba522d32ed5ea4d2887990cc0663584a0c9",
+    },
+    "sentivent-event": {
+        "data/sentivent_unified_sentence/train.parquet": "175d98fa3d50a09646d1aec222b3f3a7644c2e70f32108034cd1cca1d9f04fcb",
+        "data/sentivent_unified_sentence/test.parquet": "4f930e80e7f690a9aa32c6b49fc5b4cb274e8bb59e9b5436f7b0904e02a2f676",
+    },
+}
 
 TWITTER_TOPIC_LABELS = (
     "Analyst Update", "Fed | Central Banks", "Company | Product News",
@@ -129,6 +143,43 @@ class Task:
 
 
 TASKS = {
+    "numclaim": Task(
+        slug="numclaim", repo="gtfintechlab/Numclaim",
+        revision="4bc5a1c18de091c6a22e255fd840816fffdbbd23",
+        train_file="main/train-00000-of-00001-fd823fc4483525b2.parquet",
+        eval_file="main/test-00000-of-00001-3975a72d0d39dec1.parquet",
+        eval_split="test", question_id="numerical_claim",
+        instructions="Classify whether this financial sentence makes a forward-looking numerical claim, rather than reporting a past or current number.",
+        criteria={
+            "INCLAIM": "The sentence forecasts, projects, estimates, expects, or speculates about a future numerical financial result.",
+            "OUTOFCLAIM": "The sentence states past or present numbers, describes an event, or otherwise makes no forward-looking numerical forecast.",
+        },
+    ),
+    "modernfinbert-sentiment": Task(
+        slug="modernfinbert-sentiment", repo="neoyipeng/modernfinbert-training-v2",
+        revision="ce29c90c1899bd7570b106546e5ebf584ad273c7",
+        train_file="data/train-00000-of-00001-141cb71fa4de7db1.parquet",
+        eval_file="data/test-00000-of-00001-0bfa6ce341dc4053.parquet",
+        eval_split="test", question_id="sentiment",
+        instructions="Classify the overall financial sentiment expressed by this text.",
+        criteria={
+            "NEGATIVE": "The overall financial outlook or assessment is adverse, bearish, or pessimistic.",
+            "NEUTRAL": "The text is factual, mixed, or has no clear positive or negative financial sentiment.",
+            "POSITIVE": "The overall financial outlook or assessment is favorable, bullish, or optimistic.",
+        },
+    ),
+    "sentivent-event": Task(
+        slug="sentivent-event", repo="GillesJacobs/sentivent",
+        revision="6a9e8f9fc11ba7db3d8dffe3e5df9e7b062e6441",
+        train_file="data/sentivent_unified_sentence/train.parquet",
+        eval_file="data/sentivent_unified_sentence/test.parquet",
+        eval_split="test", question_id="economic_event",
+        instructions="Does this financial-news sentence explicitly describe a concrete economic or business event?",
+        criteria={
+            "EVENT": "It describes a concrete economic or business event, such as a price move, earnings result, transaction, product launch, leadership change, or other company or market development.",
+            "NO_EVENT": "It contains context, opinion, or background without describing a concrete economic or business event.",
+        },
+    ),
     "twitter-financial-news-topic": Task(
         slug="twitter-financial-news-topic", repo="zeroshot/twitter-financial-news-topic",
         revision=TWITTER_TOPIC_REVISION,

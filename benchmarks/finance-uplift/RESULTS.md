@@ -1,7 +1,7 @@
 # Finance alignment uplift results
 
 Each run used base `modaic/mo`, at most 200 captured and labeled training
-examples, and a fixed 200-row held-out cohort. Eight alignments produced new
+examples, and a fixed 200-row held-out cohort. Eleven alignments produced new
 checkpoints. Their post-alignment scores were measured after the automatic
 batch over captured examples finished with zero failures. FinCalc alignment
 completed without a new checkpoint, so no post-alignment score is claimed.
@@ -11,14 +11,19 @@ completed without a new checkpoint, so no post-alignment score is claimed.
 | [Banking77 intents](https://huggingface.co/datasets/DeepPavlov/banking77) | 87.0% | 85.0% | 83.5% | −3.5 pp | −7.0 to −0.5 pp |
 | [CFPB complaint routing](https://huggingface.co/datasets/Johnade/consumer_complaints_cfpb) | 45.0% | 45.5% | — | +0.5 pp | −6.0 to +7.0 pp |
 | [ESG issue classification](https://huggingface.co/datasets/ChanceFocus/flare-mlesg) | 38.5% | 38.5% | — | 0.0 pp | −4.0 to +3.5 pp |
+| [Financial sentiment (human labels)](https://huggingface.co/datasets/neoyipeng/modernfinbert-training-v2) | 70.0% | 72.0% | — | +2.0 pp | −2.0 to +6.0 pp |
 | [FinCalc entailment](https://huggingface.co/datasets/anespo28/fincalc-nli) | 92.0% | No checkpoint | — | — | — |
 | [FOMC stance](https://huggingface.co/datasets/gtfintechlab/fomc_communication) | 53.0% | 67.0% | — | +14.0 pp | +7.0 to +21.5 pp |
 | [German credit risk](https://huggingface.co/datasets/ChanceFocus/flare-german) | 52.5% | 57.0% | — | +4.5 pp | −4.5 to +13.5 pp |
 | [Gold-price headlines](https://huggingface.co/datasets/ChanceFocus/flare-headlines) | 87.5% | 90.0% | — | +2.5 pp | −0.5 to +6.0 pp |
 | [MultiFin topics](https://huggingface.co/datasets/awinml/MultiFin) | 68.0% | 78.0% | — | +10.0 pp | +4.5 to +15.5 pp |
+| [NumClaim numerical claims](https://huggingface.co/datasets/gtfintechlab/Numclaim) | 94.5% | 93.0% | — | −1.5 pp | −3.5 to 0.0 pp |
+| [SENTiVENT event presence](https://huggingface.co/datasets/GillesJacobs/sentivent) | 71.5% | 73.0% | — | +1.5 pp | −4.3 to +6.7 pp¹ |
 | [Twitter financial-news topics](https://huggingface.co/datasets/zeroshot/twitter-financial-news-topic) | 76.5% | 79.0% | — | +2.5 pp | −1.5 to +6.5 pp |
 
 The intervals are paired bootstrap intervals over each task's fixed 200 held-out
+rows. ¹SENTiVENT resamples its 30 source articles because multiple sampled
+sentences come from the same article. The other intervals resample individual
 rows. FOMC corrected 43 previously wrong rows and regressed on 15; MultiFin
 corrected 28 and regressed on 8. German credit corrected 46 and regressed on
 37, yielding a useful +4.5-point gain with a wider interval. Gold corrected
@@ -27,6 +32,14 @@ corrected 28 and regressed on 8. German credit corrected 46 and regressed on
 regressed on 5; macro F1 rose from 0.751 to 0.783 across 20 labels. These are
 task-specific results from one alignment run per task, not a guarantee of
 uplift on every dataset.
+
+The new pilots show mixed outcomes. SENTiVENT corrected 12 rows and regressed
+on 9; macro F1 rose from 0.700 to 0.726. Sentiment corrected 10 and regressed
+on 6; macro F1 rose from 0.701 to 0.719. Its four source-specific accuracies
+changed as follows: Aiera transcripts 73.2% → 68.3% (41 rows), FinSent analyst
+text 88.7% → 92.5% (53), SubjECTive-QA earnings answers 41.5% → 41.5% (53),
+and financial tweets 77.4% → 84.9% (53). NumClaim corrected no rows and
+regressed on three; macro F1 fell from 0.945 to 0.930.
 
 ## Cohort integrity
 
@@ -62,6 +75,16 @@ uplift on every dataset.
   conflicting inputs and excluded training posts matching the full validation
   split. Source files are pinned by revision and SHA-256 checksums. The
   follow-up batch over captured examples completed before held-out scoring.
+- NumClaim uses its published test split with 100 examples per class in the
+  training cohort and 97/103 in the held-out cohort. Its source labels began
+  with weak supervision and were partly checked by people.
+- Financial sentiment includes only rows marked `human` or `human_aggregated`;
+  rows marked `llm_consensus` were excluded before sampling. Both cohorts
+  span four source datasets, and the report records accuracy by source.
+- SENTiVENT uses its sentence-level split and derives a binary label from
+  whether an expert annotated an economic event in the sentence. The 200
+  held-out sentences come from 30 test articles. This derived task does not
+  assess full event extraction.
 
 The source revisions, cohort selection, capture/annotation flow, and commands
 to reproduce the runs are in the [protocol](README.md). Row-level source text

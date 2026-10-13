@@ -2,7 +2,8 @@
 
 This pilot measures the change in held-out accuracy when a saved Modaic model
 using `modaic/mo` is aligned on labeled examples. The tasks cover financial
-news topics, ESG issues, German credit risk, FOMC stance, MultiFin topics,
+news topics, numerical claims, financial sentiment, sentence-level economic
+events, ESG issues, German credit risk, FOMC stance, MultiFin topics,
 gold-price headlines, FinCalc entailment, Banking77 intents, and CFPB complaint routing.
 Each task gets its own saved model.
 
@@ -34,6 +35,27 @@ the full validation split before sampling. The two 200-row cohorts contain
 checksums are pinned in `tasks.py`; near copies of selected training posts
 are excluded from evaluation at five-token Jaccard similarity of at least 0.8.
 
+The additional pilots use the published test splits of
+[NumClaim](https://huggingface.co/datasets/gtfintechlab/Numclaim),
+[ModernFinBERT Training Data v2](https://huggingface.co/datasets/neoyipeng/modernfinbert-training-v2),
+and [SENTiVENT](https://huggingface.co/datasets/GillesJacobs/sentivent).
+NumClaim asks whether a sentence makes a forward-looking numerical claim; its
+source labels were initially produced by weak supervision and partly checked
+by people. The sentiment pilot excludes rows marked `llm_consensus` and reports
+each source separately, because its remaining sources use different financial
+text and label conventions. SENTiVENT uses the sentence-level config and asks
+whether an expert annotated at least one economic event in the sentence. This
+is a derived binary task, not the source dataset's full extraction task.
+Preparation pins every file by revision and SHA-256 checksum, removes exact
+train/test overlaps and conflicts, and excludes near-copy test sentences.
+
+We inspected [Financial Statement Fraud Detection](https://huggingface.co/datasets/WaguyMZ/Financial_statements_fraud_dataset)
+but did not run it: the ready-to-use CSV contains AAER identifiers, enforcement
+descriptions, and fraud-specific fields that disclose the target. After removing
+them, it retains mainly counts of extracted features rather than the filing
+contents needed for a meaningful decision. Its roughly 5% fraud prevalence
+also makes accuracy on a small sampled cohort a poor operational measure.
+
 The saved model receives the same question schema and state as the original
 finance benchmark. Baseline and final evaluation calls use `capture=False`.
 Only the distinct training rows use `capture=True`. The response supplies the
@@ -50,7 +72,7 @@ this directory:
 
 ```bash
 uv sync --locked
-for task in twitter-financial-news-topic esg german-credit fomc multifin gold-headlines fincalc-nli banking77-routing; do
+for task in twitter-financial-news-topic numclaim modernfinbert-sentiment sentivent-event esg german-credit fomc multifin gold-headlines fincalc-nli banking77-routing; do
   uv run --locked python prepare.py --task "$task"
   uv run --locked python run.py --task "$task" --phase baseline
   uv run --locked python run.py --task "$task" --phase train

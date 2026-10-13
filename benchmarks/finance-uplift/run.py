@@ -20,12 +20,15 @@ import os
 import random
 import statistics
 import time
+from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
 
 from modaic import Modaic, ModaicAPIError, ModaicError, ModaicTimeoutError
+import pyarrow.parquet as pq
 
+from prepare import source_path
 from tasks import BASE_MODEL, TASKS, Task
 
 ROOT = Path(__file__).resolve().parent
@@ -247,7 +250,7 @@ def score(task: Task, baseline: dict[str, dict], final: dict[str, dict], rows: l
         100 * sum(deltas[rng.randrange(n)] for _ in range(n)) / n
         for _ in range(5000)
     )
-    return {
+    report = {
         "n": n, "base_model": BASE_MODEL,
         "baseline_accuracy": sum(before) / n,
         "aligned_accuracy": sum(after) / n,
@@ -259,6 +262,24 @@ def score(task: Task, baseline: dict[str, dict], final: dict[str, dict], rows: l
         "aligned_p50_ms": 1000 * statistics.median(final[i]["latency_s"] for i in ids),
         "task": task.slug,
     }
+    if task.slug == "sentivent-event":
+        source_ids = pq.read_table(source_path(task, task.eval_file), columns=["id"]).column("id").to_pylist()
+        by_document: dict[str, list[int]] = defaultdict(list)
+        for row, delta in zip(rows, deltas, strict=True):
+            document_id = source_ids[row["source_index"]].rsplit("_s", 1)[0]
+            by_document[document_id].append(delta)
+        clusters = list(by_document.values())
+        cluster_rng = random.Random(20261013)
+        cluster_bootstraps = []
+        for _ in range(5000):
+            drawn = [clusters[cluster_rng.randrange(len(clusters))] for _ in clusters]
+            cluster_bootstraps.append(100 * sum(map(sum, drawn)) / sum(map(len, drawn)))
+        cluster_bootstraps.sort()
+        report["uplift_95pct_row_bootstrap_ci_pp"] = report["uplift_95pct_bootstrap_ci_pp"]
+        report["uplift_95pct_bootstrap_ci_pp"] = [cluster_bootstraps[124], cluster_bootstraps[4874]]
+        report["interval_method"] = "paired bootstrap over source articles"
+        report["evaluation_documents"] = len(clusters)
+    return report
 
 
 def macro_f1(records: dict[str, dict], rows: list[dict], labels: tuple[str, ...]) -> float:
@@ -270,6 +291,19 @@ def macro_f1(records: dict[str, dict], rows: list[dict], labels: tuple[str, ...]
         denominator = 2 * true_positive + false_positive + false_negative
         scores.append(2 * true_positive / denominator if denominator else 0.0)
     return sum(scores) / len(scores)
+
+
+def grouped_accuracy(records: dict[str, dict], rows: list[dict], field: str) -> dict[str, dict]:
+    groups: dict[str, list[dict]] = {}
+    for row in rows:
+        groups.setdefault(row[field], []).append(row)
+    return {
+        group: {
+            "n": len(items),
+            "accuracy": sum(records[row["id"]]["prediction"] == row["truth"] for row in items) / len(items),
+        }
+        for group, items in sorted(groups.items())
+    }
 
 
 def main() -> None:
@@ -365,6 +399,25 @@ def main() -> None:
                         macro_f1(final, cohort["eval_rows"], tuple(task.criteria)) if final else None
                     ),
                 })
+            if task.slug in {"numclaim", "modernfinbert-sentiment", "sentivent-event"}:
+                report.update({
+                    "source_repo": cohort["repo"],
+                    "source_revision": cohort["revision"],
+                    "source_file_sha256": cohort["source_file_sha256"],
+                    "evaluation_split": task.eval_split,
+                    "sample_seed": cohort["seed"],
+                    "test_similarity_exclusion": cohort["test_similarity_exclusion"],
+                    "near_duplicate_test_rows_excluded": cohort["near_duplicate_test_rows_excluded"],
+                    "baseline_macro_f1": macro_f1(baseline, cohort["eval_rows"], tuple(task.criteria)),
+                    "aligned_macro_f1": macro_f1(final, cohort["eval_rows"], tuple(task.criteria)) if final else None,
+                })
+                if "label_filter" in cohort:
+                    report["label_filter"] = cohort["label_filter"]
+                if "label_derivation" in cohort:
+                    report["label_derivation"] = cohort["label_derivation"]
+                if task.slug == "modernfinbert-sentiment":
+                    report["baseline_by_source"] = grouped_accuracy(baseline, cohort["eval_rows"], "source")
+                    report["aligned_by_source"] = grouped_accuracy(final, cohort["eval_rows"], "source") if final else None
             save_json(OUTPUTS / f"{task.slug}.report.json", report)
             print(json.dumps(report, indent=2), flush=True)
         save_json(state_path, state)

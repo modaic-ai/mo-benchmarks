@@ -16,7 +16,7 @@ import pyarrow.parquet as pq
 from huggingface_hub import hf_hub_download
 
 from tasks import (
-    BANKING77_LABELS, ESG_TRAIN_REVISION, ESG_TRAIN_SHA256, SEED, TASKS,
+    BANKING77_LABELS, ESG_TRAIN_REVISION, ESG_TRAIN_SHA256, NEW_SOURCE_SHA256, SEED, TASKS,
     TWITTER_TOPIC_FILE_SHA256, TWITTER_TOPIC_LABELS, Task,
 )
 
@@ -25,6 +25,17 @@ DATA = ROOT / "data"
 
 
 def source_path(task: Task, filename: str) -> Path:
+    if task.slug in NEW_SOURCE_SHA256:
+        path = DATA / "source" / task.repo.rsplit("/", 1)[-1] / filename
+        if not path.exists():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path = Path(hf_hub_download(
+                repo_id=task.repo, filename=filename, repo_type="dataset",
+                revision=task.revision, local_dir=DATA / "source" / task.repo.rsplit("/", 1)[-1],
+            ))
+        if hashlib.sha256(path.read_bytes()).hexdigest() != NEW_SOURCE_SHA256[task.slug][filename]:
+            raise RuntimeError(f"pinned {task.slug} source checksum changed: {filename}")
+        return path
     if task.slug == "twitter-financial-news-topic":
         path = DATA / "source" / task.slug / filename
         if not path.exists():
@@ -67,12 +78,23 @@ def raw_rows(task: Task, filename: str, split: str) -> list[dict]:
              else csv.DictReader(path.open(newline="", encoding="utf-8")) if path.suffix == ".csv"
              else pq.read_table(path).to_pylist())
     for index, item in enumerate(items):
+        if task.slug == "modernfinbert-sentiment" and item["label_confidence"] not in {"human", "human_aggregated"}:
+            continue
         if task.slug == "gold-headlines" and (
             (split == "train" and "Price or Not" not in item["query"])
             or (split != "train" and item["label_type"] != "Price or Not")
         ):
             continue
-        if task.slug == "twitter-financial-news-topic":
+        if task.slug == "numclaim":
+            label = item["response"]
+            state = {"text": item["context"].strip()} if item["context"] else None
+        elif task.slug == "modernfinbert-sentiment":
+            label = item["label"]
+            state = {"text": item["text"].strip()} if item["text"] else None
+        elif task.slug == "sentivent-event":
+            label = "EVENT" if any(a["kind"] == "event" for a in item["annotations"] or []) else "NO_EVENT"
+            state = {"text": item["text"].strip()} if item["text"] else None
+        elif task.slug == "twitter-financial-news-topic":
             label = TWITTER_TOPIC_LABELS[int(item["label"])]
             text = html.unescape(item["text"])
             text = re.sub(r"https?://\S+", "", text)
@@ -117,6 +139,10 @@ def raw_rows(task: Task, filename: str, split: str) -> list[dict]:
             row = {"id": f"{split}-{index}", "source_index": index, "state": state, "truth": label}
             if task.slug == "fincalc-nli":
                 row["stratum"] = f"{label}|{item['metric']}"
+            if task.slug == "modernfinbert-sentiment":
+                row["source"] = item["source"]
+                row["source_domain"] = item["source_domain"]
+                row["stratum"] = f"{label}|{item['source']}"
             rows.append(row)
     return rows
 
@@ -156,7 +182,7 @@ def prepare(task: Task, max_labels: int = 200, eval_limit: int = 200) -> dict:
         raise ValueError("this pilot is capped at 200 labels per task")
     train_all = raw_rows(task, task.train_file, "train")
     eval_all = raw_rows(task, task.eval_file, task.eval_split)
-    if task.slug in {"german-credit", "gold-headlines", "fomc", "esg", "twitter-financial-news-topic"}:
+    if task.slug in {"german-credit", "gold-headlines", "fomc", "esg", "twitter-financial-news-topic", "numclaim", "modernfinbert-sentiment", "sentivent-event"}:
         # The headline release contains nine binary questions for each text.
         # After selecting one question, drop any input with conflicting gold
         # labels, then keep each test input only once.
@@ -177,7 +203,7 @@ def prepare(task: Task, max_labels: int = 200, eval_limit: int = 200) -> dict:
             seen.add(key)
             train_unique.append(row)
     training = sample(train_unique, max_labels, SEED)
-    if task.slug in {"cfpb-routing", "german-credit", "gold-headlines", "fomc", "esg", "twitter-financial-news-topic"}:
+    if task.slug in {"cfpb-routing", "german-credit", "gold-headlines", "fomc", "esg", "twitter-financial-news-topic", "numclaim", "modernfinbert-sentiment", "sentivent-event"}:
         # This source's published train and test CSVs contain many duplicate
         # narratives. Do not let duplicates inflate held-out accuracy.
         eval_seen = set()
@@ -190,7 +216,7 @@ def prepare(task: Task, max_labels: int = 200, eval_limit: int = 200) -> dict:
     else:
         eval_unique = eval_all
     near_duplicate_eval_excluded = 0
-    if task.slug in {"esg", "twitter-financial-news-topic"}:
+    if task.slug in {"esg", "twitter-financial-news-topic", "numclaim", "modernfinbert-sentiment", "sentivent-event"}:
         train_grams = [fivegrams(row["state"]["text"]) for row in training]
         filtered_eval = []
         for row in eval_unique:
@@ -224,6 +250,14 @@ def prepare(task: Task, max_labels: int = 200, eval_limit: int = 200) -> dict:
         cohort["source_file_sha256"] = TWITTER_TOPIC_FILE_SHA256
         cohort["near_duplicate_test_rows_excluded"] = near_duplicate_eval_excluded
         cohort["test_similarity_exclusion"] = "5-token Jaccard >= 0.8 against any selected training post"
+    if task.slug in NEW_SOURCE_SHA256:
+        cohort["source_file_sha256"] = NEW_SOURCE_SHA256[task.slug]
+        cohort["near_duplicate_test_rows_excluded"] = near_duplicate_eval_excluded
+        cohort["test_similarity_exclusion"] = "5-token Jaccard >= 0.8 against any selected training sentence"
+        if task.slug == "modernfinbert-sentiment":
+            cohort["label_filter"] = "human or human_aggregated only; no llm_consensus rows"
+        if task.slug == "sentivent-event":
+            cohort["label_derivation"] = "EVENT iff sentence contains at least one kind=event annotation"
     fingerprint = hashlib.sha256(json.dumps(cohort, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
     cohort["sha256"] = fingerprint
     DATA.mkdir(parents=True, exist_ok=True)
