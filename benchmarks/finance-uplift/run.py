@@ -309,9 +309,20 @@ def main() -> None:
         else:
             if state.get("alignment_status") != "completed" or state.get("batch_status") not in {"completed", "not_applicable"}:
                 raise RuntimeError("wait for alignment and follow-up batch first")
-            final = evaluate(model, task, cohort, "final", state["result_revision"], args.workers)
             baseline = read_jsonl(OUTPUTS / f"{task.slug}.baseline.jsonl")
-            report = score(task, baseline, final, cohort["eval_rows"])
+            if state["result_revision"] == state["baseline_revision"]:
+                report = score(task, baseline, baseline, cohort["eval_rows"])
+                report.update({
+                    "aligned_accuracy": None, "uplift_pp": None,
+                    "uplift_95pct_bootstrap_ci_pp": None,
+                    "fixed_to_correct": None, "regressed_to_wrong": None,
+                    "aligned_p50_ms": None,
+                    "alignment_outcome": "no_new_checkpoint",
+                })
+            else:
+                final = evaluate(model, task, cohort, "final", state["result_revision"], args.workers)
+                report = score(task, baseline, final, cohort["eval_rows"])
+                report["alignment_outcome"] = "new_checkpoint"
             report.update({
                 "model_path": state["model_path"], "cohort_sha256": cohort["sha256"],
                 "baseline_revision": state["baseline_revision"],
@@ -319,6 +330,13 @@ def main() -> None:
                 "alignment_id": state["alignment_id"], "batch_id": state.get("batch_id"),
                 "batch_status": state["batch_status"], "training_labels": len(cohort["train_rows"]),
             })
+            if task.slug == "esg":
+                report.update({
+                    "source_train_repo": cohort["train_repo"],
+                    "source_train_revision": cohort["train_revision"],
+                    "near_duplicate_test_rows_excluded": cohort["near_duplicate_test_rows_excluded"],
+                    "test_similarity_exclusion": cohort["test_similarity_exclusion"],
+                })
             save_json(OUTPUTS / f"{task.slug}.report.json", report)
             print(json.dumps(report, indent=2), flush=True)
         save_json(state_path, state)

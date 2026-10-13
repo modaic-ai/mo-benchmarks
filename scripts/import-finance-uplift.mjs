@@ -4,20 +4,58 @@ import { resolve } from "node:path";
 const root = resolve(import.meta.dirname, "..");
 const tasks = [
   {
+    slug: "esg",
+    label: "ESG issue classification",
+    chartLabel: "ESG issues",
+    dataset: "ChanceFocus/flare-mlesg",
+    evaluationSplit: "test",
+  },
+  {
+    slug: "german-credit",
+    label: "German credit risk",
+    chartLabel: "German credit",
+    dataset: "ChanceFocus/flare-german",
+    evaluationSplit: "test",
+  },
+  {
+    slug: "fomc",
+    label: "FOMC stance",
+    chartLabel: "FOMC stance",
+    dataset: "gtfintechlab/fomc_communication",
+    evaluationSplit: "test",
+  },
+  {
+    slug: "gold-headlines",
+    label: "Gold-price headlines",
+    chartLabel: "Gold headlines",
+    dataset: "ChanceFocus/flare-headlines",
+    evaluationSplit: "test",
+  },
+  {
+    slug: "fincalc-nli",
+    label: "FinCalc entailment",
+    chartLabel: "FinCalc",
+    dataset: "anespo28/fincalc-nli",
+    evaluationSplit: "test",
+  },
+  {
     slug: "multifin",
     label: "MultiFin topics",
+    chartLabel: "MultiFin",
     dataset: "awinml/MultiFin",
     evaluationSplit: "validation",
   },
   {
     slug: "banking77-routing",
     label: "Banking77 intents",
+    chartLabel: "Banking77",
     dataset: "DeepPavlov/banking77",
     evaluationSplit: "test",
   },
   {
     slug: "cfpb-routing",
     label: "CFPB complaints",
+    chartLabel: "CFPB",
     dataset: "Johnade/consumer_complaints_cfpb",
     evaluationSplit: "test",
   },
@@ -36,7 +74,12 @@ const imported = tasks.map((task) => {
   if (report.batch_status !== "completed" && report.batch_status !== "not_applicable") {
     throw new Error(`${task.slug}: alignment batch has not completed`);
   }
-  if (Math.abs(report.uplift_pp - (report.aligned_accuracy - report.baseline_accuracy) * 100) > 1e-9) {
+  if (report.alignment_outcome === "no_new_checkpoint") {
+    if (report.aligned_accuracy !== null || report.uplift_pp !== null ||
+        report.uplift_95pct_bootstrap_ci_pp !== null || report.batch_status !== "not_applicable") {
+      throw new Error(`${task.slug}: no-checkpoint alignment must not claim uplift`);
+    }
+  } else if (Math.abs(report.uplift_pp - (report.aligned_accuracy - report.baseline_accuracy) * 100) > 1e-9) {
     throw new Error(`${task.slug}: uplift does not match accuracies`);
   }
   if (task.slug === "banking77-routing" &&
@@ -47,6 +90,11 @@ const imported = tasks.map((task) => {
       (report.near_duplicate_test_rows_excluded !== 136 ||
        !report.source_train_cohort_sha256 || !report.test_similarity_exclusion)) {
     throw new Error("CFPB: clean held-out test comparison is required");
+  }
+  if (task.slug === "esg" &&
+      (report.near_duplicate_test_rows_excluded !== 1 || !report.test_similarity_exclusion ||
+       !report.source_train_revision)) {
+    throw new Error("ESG: disjoint FinNLP training and clean held-out test comparison is required");
   }
   const metrics = { ...report };
   delete metrics.task;

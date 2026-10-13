@@ -12,6 +12,26 @@ MULTIFIN_REVISION = "d44a842791acb83a104440a5662b787537ff980b"
 BANKING77_REVISION = "3c6d390c3675a24b84c38d827940e275e11183f7"
 FINCALC_REVISION = "498b53ab487ece83d38a2ab95ac601b959d319a0"
 CFPB_REVISION = "dc9cf40b2d057a58f9168ce00106eefbed309f75"
+GERMAN_CREDIT_REVISION = "65eb22f1b213492e8436012bd6c1f51955acddcb"
+GOLD_HEADLINES_REVISION = "d8a188f96866372227e1ef9f6fd6230040d3fe75"
+FOMC_REVISION = "6b0283f55f0005a6d38d49f271d795c21fccc1a3"
+ESG_TEST_REVISION = "6726cff84d342540a63cf5f09a438ff7cebe8c55"
+ESG_TRAIN_REVISION = "3009e332a34e639cdd78e2f98b5bd9cb6e99d0dc"
+ESG_TRAIN_SHA256 = "60b5307a61202e191117d5d93f38f47d14e4a0bb1da973b5e57e5fe44852bb08"
+
+ESG_LABELS = (
+    "Access to Communications", "Biodiversity & Land Use", "Packaging Material & Waste",
+    "Financing Environmental Impact", "Carbon Emissions", "Human Capital Development",
+    "Ownership & Control", "Community Relations", "Responsible Investment",
+    "Opportunities in Renewable Energy", "Consumer Financial Protection", "Accounting",
+    "Business Ethics", "Opportunities in Clean Tech", "Toxic Emissions & Waste",
+    "Product Carbon Footprint", "Opportunities in Green Building", "Climate Change Vulnerability",
+    "Pay", "Water Stress", "Supply Chain Labor Standards", "Chemical Safety", "Board",
+    "Opportunities in Nutrition & Health", "Access to Health Care", "Electronic Waste",
+    "Access to Finance", "Raw Material Sourcing", "Health & Demographic Risk",
+    "Labor Management", "Controversial Sourcing", "Privacy & Data Security",
+    "Product Safety & Quality",
+)
 
 CFPB_SUBISSUES = (
     "Information belongs to someone else",
@@ -72,6 +92,47 @@ class Task:
 
 
 TASKS = {
+    "esg": Task(
+        slug="esg", repo="ChanceFocus/flare-mlesg", revision=ESG_TEST_REVISION,
+        train_file="FinESG-2023_Train_EN.json",
+        eval_file="data/test-00000-of-00001-be37870ba5fdb8e5.parquet",
+        eval_split="test", question_id="esg_issue",
+        instructions="Identify the single most relevant MSCI-style ESG issue in this article.",
+        criteria={label: f"The article's most relevant ESG issue is {label}." for label in ESG_LABELS},
+    ),
+    "german-credit": Task(
+        slug="german-credit", repo="ChanceFocus/flare-german", revision=GERMAN_CREDIT_REVISION,
+        train_file="data/train-00000-of-00001-fd22df3d350f6dbb.parquet",
+        eval_file="data/test-00000-of-00001-3c24c3e9154bed6a.parquet",
+        eval_split="test", question_id="creditworthiness",
+        instructions="Assess the customer's credit risk from the supplied feature codebook and record.",
+        criteria={
+            "good": "The customer is classified as good credit risk.",
+            "bad": "The customer is classified as bad credit risk.",
+        },
+    ),
+    "gold-headlines": Task(
+        slug="gold-headlines", repo="ChanceFocus/flare-headlines", revision=GOLD_HEADLINES_REVISION,
+        train_file="data/train-00000-of-00001-b4185af3fde5de2a.parquet",
+        eval_file="data/test-00000-of-00001-2a1cddfd1b6bd5cb.parquet",
+        eval_split="test", question_id="gold_price",
+        instructions="Does this news headline indicate a price or price movement for gold?",
+        criteria={
+            "Yes": "It indicates a price or price movement for gold.",
+            "No": "It does not indicate a price or price movement for gold.",
+        },
+    ),
+    "fomc": Task(
+        slug="fomc", repo="gtfintechlab/fomc_communication", revision=FOMC_REVISION,
+        train_file="train.csv", eval_file="test.csv", eval_split="test",
+        question_id="stance",
+        instructions="Classify the monetary-policy stance expressed in this FOMC communication.",
+        criteria={
+            "dovish": "Supports easier or more accommodative monetary policy.",
+            "hawkish": "Supports tighter or more restrictive monetary policy.",
+            "neutral": "Expresses neither stance, both stances, or no policy stance.",
+        },
+    ),
     "multifin": Task(
         slug="multifin", repo="awinml/MultiFin", revision=MULTIFIN_REVISION,
         train_file="only_english_highlevel/train-00000-of-00001.parquet",

@@ -1,21 +1,30 @@
 # Finance alignment uplift pilot
 
 This pilot measures the change in held-out accuracy when a saved Modaic model
-using `modaic/mo` is aligned on labeled examples. The featured tasks are
-MultiFin topic routing, Banking77 intent routing, and CFPB complaint routing.
+using `modaic/mo` is aligned on labeled examples. The completed tasks cover
+ESG issues, German credit risk, FOMC stance, MultiFin topics, gold-price
+headlines, FinCalc entailment, Banking77 intents, and CFPB complaint routing.
 Each task gets its own saved model.
 
 ## Data boundary
 
 `prepare.py` pins the source repositories to exact revisions and selects
 fixed 200-row evaluation cohorts using seed `20261002`. MultiFin uses
-`only_english_highlevel/validation`; Banking77 and CFPB use official `test` splits.
+`only_english_highlevel/validation`; the other completed tasks use published
+`test` splits. ESG uses the [original FinNLP English training release](https://github.com/sagacemente/FinNLP_2023/blob/3009e332a34e639cdd78e2f98b5bd9cb6e99d0dc/FinESG-2023_Train_EN.json)
+with 33 labels that exactly match the [Flare ESG test set](https://huggingface.co/datasets/ChanceFocus/flare-mlesg).
 It selects at most 200 rows from each source's separate `train` split for
 alignment. It removes training rows whose normalized text appears anywhere
 in the full evaluation split, then removes duplicate training inputs. CFPB's
 published CSVs repeat many complaint narratives across and within splits, so
 its test cohort is deduplicated before sampling. The prepared
 cohorts and row-level decisions are ignored by Git.
+
+For the new tasks, preparation removes any same-text rows with contradictory
+labels and deduplicates test inputs. The ESG evaluation also excludes any
+test article with five-token Jaccard similarity of at least 0.6 to a selected
+training article; one such article was found. All cohort selection happens
+before baseline or aligned scoring.
 
 The saved model receives the same question schema and state as the original
 finance benchmark. Baseline and final evaluation calls use `capture=False`.
@@ -33,7 +42,7 @@ this directory:
 
 ```bash
 uv sync --locked
-for task in multifin banking77-routing; do
+for task in esg german-credit fomc multifin gold-headlines fincalc-nli banking77-routing; do
   uv run --locked python prepare.py --task "$task"
   uv run --locked python run.py --task "$task" --phase baseline
   uv run --locked python run.py --task "$task" --phase train
@@ -90,9 +99,10 @@ not add any labels or captured examples. Its report preserves the label-only
 accuracy as an intermediate checkpoint, so base Mo, label-only alignment, and
 reasoning alignment can all be compared on the identical held-out 200 rows.
 
-FinCalc-NLI is available as an optional task, but was not aligned after base
-Mo reached 92% on its fixed test cohort. The featured runs prioritize lower
-starting accuracy.
+Base Mo reached 87.5% on gold-price headlines and 92.0% on FinCalc-NLI. Their
+alignment runs followed the lower-accuracy tasks. The headline release
+contains nine yes/no questions for every text; `prepare.py` selects only
+its “Price or Not” question before scoring gold-price detection.
 
 The headline is `aligned accuracy - baseline accuracy` in percentage points,
 computed on identical held-out rows. The report also records the counts of
