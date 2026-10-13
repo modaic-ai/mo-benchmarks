@@ -10,7 +10,7 @@ A collection of reproducible evaluations for decision models, with aggregate res
 
 ## Reproduce the buying-signal benchmark
 
-The complete runner is in this repository. It downloads the **test split only** at a pinned [Gong Call Playbook](https://huggingface.co/datasets/gong-io-research/call-playbook/blob/main/LICENSE) revision, checks the prepared cohort against the published one, runs the seven configured models, scores their predictions, and regenerates `data/buying-signals.json`.
+The complete runner is in this repository. It downloads the **test split only** at a pinned [Gong Call Playbook](https://huggingface.co/datasets/gong-io-research/call-playbook) revision, checks the prepared cohort against the published one, runs the seven configured models, scores their predictions, and regenerates `data/buying-signals.json`.
 
 Install [uv](https://docs.astral.sh/uv/) and Node.js, set `MODAIC_API_KEY` and `OPENROUTER_API_KEY` in your environment or a root `.env`, then run:
 
