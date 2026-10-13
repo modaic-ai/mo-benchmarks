@@ -1,18 +1,18 @@
 # Modaic Benchmarks
 
-A collection of reproducible evaluations for decision models, with aggregate results at [mo-benchmarks.vercel.app](https://bench.modaic.dev/). Each benchmark has its own dataset version, protocol, runner, scoring code, and results.
+A collection of reproducible evaluations for decision models, with aggregate results at [bench.modaic.dev](https://bench.modaic.dev/). Each benchmark has its own dataset version, protocol, runner, scoring code, and results.
 
 ## Benchmarks
 
 | Benchmark | Question | Result | Reproduce |
 | --- | --- | --- | --- |
-| Buying-signal detection | Can a model identify a specified buying signal in a sales-call excerpt? | [Live comparison](https://mo-benchmarks.vercel.app/) · [results](benchmarks/buying-signals/RESULTS.md) | [Protocol and runner](benchmarks/buying-signals/README.md) |
+| Buying-signal detection | Can a model identify a specified buying signal in a sales-call excerpt? | [Live comparison](https://bench.modaic.dev) · [results](benchmarks/buying-signals/RESULTS.md) | [Protocol and runner](benchmarks/buying-signals/README.md) |
 
 ## Reproduce the buying-signal benchmark
 
-The complete runner is in this repository. It downloads the **test split only** at a pinned Gong Call Playbook revision, checks the prepared cohort against the published one, runs the seven configured models, scores their predictions, and regenerates `data/buying-signals.json`.
+The complete runner is in this repository. It downloads the **test split only** at a pinned [Gong Call Playbook](https://huggingface.co/datasets/gong-io-research/call-playbook/blob/main/LICENSE) revision, checks the prepared cohort against the published one, runs the seven configured models, scores their predictions, and regenerates `data/buying-signals.json`.
 
-Gong's [dataset license](https://huggingface.co/datasets/gong-io-research/call-playbook/blob/main/LICENSE) requires appropriate written consent for dataset use and transmission to model providers. Once you have that consent, install [uv](https://docs.astral.sh/uv/) and Node.js, set `MODAIC_API_KEY` and `OPENROUTER_API_KEY` in your environment or a root `.env`, then run:
+Install [uv](https://docs.astral.sh/uv/) and Node.js, set `MODAIC_API_KEY` and `OPENROUTER_API_KEY` in your environment or a root `.env`, then run:
 
 ```bash
 cd benchmarks/buying-signals
@@ -38,4 +38,4 @@ The importer rejects incomplete or mismatched test cohorts and publishes only ag
 
 ## Adding a benchmark
 
-Place its protocol, pinned dependencies, runner, and tests under `benchmarks/<slug>/`. Keep private inputs and row-level outputs in that benchmark's ignored `data/` and `outputs/` directories. Commit a separate aggregate artifact in the top-level `data/` directory, then add its page and a row to the index above. `app/globals.css` follows the `mo-hit-list` design system; charts use shadcn and Recharts.
+Place its protocol, pinned dependencies, runner, and tests under `benchmarks/<slug>/`. Keep private inputs and row-level outputs in that benchmark's ignored `data/` and `outputs/` directories. Commit a separate aggregate artifact in the top-level `data/` directory, then add its page and a row to the index above.
