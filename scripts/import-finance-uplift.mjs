@@ -99,7 +99,7 @@ const imported = tasks.map((task) => {
   const metrics = { ...report };
   delete metrics.task;
   return { ...task, ...metrics };
-}).sort((a, b) => a.baseline_accuracy - b.baseline_accuracy);
+}).sort((a, b) => a.label.localeCompare(b.label));
 
 const output = {
   benchmark: "Finance alignment uplift",
