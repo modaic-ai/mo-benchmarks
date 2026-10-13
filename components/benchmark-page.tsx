@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { Bar, BarChart, CartesianGrid, Cell, LabelList, XAxis, YAxis } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
@@ -84,14 +85,11 @@ export function BenchmarkPage() {
           />
           <span>Benchmarks</span>
         </a>
-        <a
-          href="https://github.com/modaic-ai/mo-benchmarks"
-          target="_blank"
-          rel="noreferrer"
-          className="text-[11px] text-[#2a6496] hover:underline"
-        >
-          GitHub ↗
-        </a>
+        <nav aria-label="Benchmarks" className="flex items-center gap-5 text-[11px]">
+          <span aria-current="page" className="font-medium text-[#2a6496]">Buying signals</span>
+          <Link href="/finance-uplift" className="text-[#777] hover:text-[#2a6496]">Finance uplift</Link>
+          <a href="https://github.com/modaic-ai/mo-benchmarks" target="_blank" rel="noreferrer" className="text-[#2a6496] hover:underline">GitHub ↗</a>
+        </nav>
       </header>
 
       <section

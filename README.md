@@ -7,6 +7,7 @@ A collection of reproducible evaluations for decision models, with aggregate res
 | Benchmark | Question | Result | Reproduce |
 | --- | --- | --- | --- |
 | Buying-signal detection | Can a model identify a specified buying signal in a sales-call excerpt? | [Live comparison](https://bench.modaic.dev) · [results](benchmarks/buying-signals/RESULTS.md) | [Protocol and runner](benchmarks/buying-signals/README.md) |
+| Finance alignment uplift | How much does alignment change Mo's held-out accuracy on financial classification tasks? | [Live comparison](https://bench.modaic.dev/finance-uplift) · [results](benchmarks/finance-uplift/RESULTS.md) | [Protocol and runner](benchmarks/finance-uplift/README.md) |
 
 ## Reproduce the buying-signal benchmark
 
@@ -35,6 +36,12 @@ node scripts/import-buying-signals.mjs
 ```
 
 The importer rejects incomplete or mismatched test cohorts and publishes only aggregate metrics.
+
+For the finance uplift benchmark, complete the phases in its [protocol](benchmarks/finance-uplift/README.md), then regenerate the public aggregate file with:
+
+```bash
+node scripts/import-finance-uplift.mjs
+```
 
 ## Adding a benchmark
 

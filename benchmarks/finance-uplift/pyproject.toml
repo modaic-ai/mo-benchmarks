@@ -1,0 +1,5 @@
+[project]
+name = "mo-finance-uplift-benchmark"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = ["huggingface-hub==1.30.0", "modaic==0.50.0", "pyarrow==25.0.1"]
