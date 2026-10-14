@@ -24,4 +24,4 @@ Test only: 200 examples per signal; 1,000 decisions per model. Primary display m
 | jev-latest | 0.804 | 0.754 | 0.673 | 0.647 | 0.763 |
 | clef | 0.782 | 0.550 | 0.675 | 0.313 | 0.804 |
 
-Latency excludes retries and backoff. Worker count is in each report's provenance; runs with multiple workers measure latency under concurrent load. GPT chat JSON and native Noul probabilities have distinct backends.
+Latency excludes retries and backoff. Worker count is in each report's provenance; runs with multiple workers measure latency under concurrent load. GPT-6.1 Sol ran with medium reasoning (`reasoning.effort: "medium"`). GPT chat JSON and native Noul probabilities have distinct backends.

@@ -14,7 +14,7 @@ Use Python 3.13+, [uv](https://docs.astral.sh/uv/), and Node.js. The `uv.lock` f
 ./reproduce.sh --external-data-authorized
 ```
 
-This runs `mo-fast` and `mo` on Modaic, then Jev, Luna, Perplexity, and Clef on OpenRouter's decisions endpoint, and finally GPT-6.1 Sol on OpenRouter's strict-JSON chat endpoint. It generates complete reports and refreshes the site's aggregate file. Calls run sequentially by model. GPT-6.1 Sol uses eight workers; all other models use one. This is the concurrency used for the published latency results.
+This runs `mo-fast` and `mo` on Modaic, then Jev, Luna, Perplexity, and Clef on OpenRouter's decisions endpoint, and finally GPT-6.1 Sol on OpenRouter's strict-JSON chat endpoint with `reasoning.effort: "medium"`. It generates complete reports and refreshes the site's aggregate file. Calls run sequentially by model. GPT-6.1 Sol uses eight workers; all other models use one. This is the concurrency used for the published latency results.
 
 For a small pilot or to inspect the cohort before the full run:
 

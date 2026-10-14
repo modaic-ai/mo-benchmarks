@@ -28,7 +28,7 @@ const metricLabels: Record<Metric, string> = {
 };
 const displayNames: Record<string, string> = {
   "luna-decisions": "Luna decisions",
-  "openai-latest": "GPT-6.1 Sol",
+  "openai-latest": "GPT-6.1 Sol (medium reasoning)",
   "jev-latest": "Jev latest",
   mo: "Mo",
   "mo-fast": "Mo Fast",
@@ -37,7 +37,7 @@ const displayNames: Record<string, string> = {
 };
 const chartNames: Record<string, string> = {
   "luna-decisions": "Luna",
-  "openai-latest": "GPT-6.1",
+  "openai-latest": "GPT-6.1 (medium)",
   "jev-latest": "Jev",
   mo: "Mo",
   "mo-fast": "Mo Fast",
@@ -298,7 +298,7 @@ export function BenchmarkPage() {
             </table>
           </div>
           <p className="mt-3 text-[10px] leading-[1.5] text-[#888]">
-            GPT-6.1 Sol ran with eight workers; other models ran with one.
+            GPT-6.1 Sol used medium reasoning and eight workers; other models ran with one.
             Latency reflects different concurrency loads and excludes retries.
           </p>
         </details>

@@ -20,7 +20,7 @@ cd benchmarks/buying-signals
 ./reproduce.sh --external-data-authorized
 ```
 
-This makes 7,000 model decisions and may incur API charges. The runner resumes partial outputs, so rerunning the command continues incomplete models. GPT-6.1 Sol uses eight workers; the other models use one. Predictions, labels, and call excerpts stay under ignored `benchmarks/buying-signals/data/` and `outputs/`. See the [benchmark protocol](benchmarks/buying-signals/README.md) for a dry run, a small pilot, model IDs, metrics, and limitations.
+This makes 7,000 model decisions and may incur API charges. The runner resumes partial outputs, so rerunning the command continues incomplete models. GPT-6.1 Sol uses medium reasoning and eight workers; the other models use one worker. Predictions, labels, and call excerpts stay under ignored `benchmarks/buying-signals/data/` and `outputs/`. See the [benchmark protocol](benchmarks/buying-signals/README.md) for a dry run, a small pilot, model IDs, metrics, and limitations.
 
 ## Run the website
 
