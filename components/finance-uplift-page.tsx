@@ -27,7 +27,7 @@ type TaskResult = {
 
 const data = rawData as { tasks: TaskResult[] };
 const chartConfig = {
-  baseline: { label: "Base Mo", color: "#9BAAB7" },
+  baseline: { label: "Mo 1.3.1", color: "#9BAAB7" },
   labelOnly: { label: "Labels only", color: "#6899BC" },
   aligned: { label: "With reasoning", color: "#2D6598" },
 } satisfies ChartConfig;
@@ -52,7 +52,7 @@ export function FinanceUpliftPage() {
           <span>Benchmarks</span>
         </Link>
         <nav aria-label="Benchmarks" className="flex items-center gap-5 text-[11px]">
-          <Link href="/" className="text-[#777] hover:text-[#2a6496]">Buying signals</Link>
+          <Link href="/" className="text-[#777] hover:text-[#2a6496]">All benchmarks</Link>
           <span aria-current="page" className="font-medium text-[#2a6496]">Finance uplift</span>
           <a href="https://github.com/modaic-ai/mo-benchmarks" target="_blank" rel="noreferrer" className="text-[#2a6496] hover:underline">GitHub ↗</a>
         </nav>
@@ -62,13 +62,13 @@ export function FinanceUpliftPage() {
         <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-[#777]">Finance · alignment pilot</p>
         <h1 className="mt-2 text-[20px] font-semibold tracking-[-0.03em] text-[#171717]">What does alignment change?</h1>
         <p className="mt-3 max-w-[680px] text-[13px] leading-[1.65] text-[#696969]">
-          We start with Mo, label up to 200 training decisions per task, and align a custom model. When alignment produces a new checkpoint, we test it on the same 200 held-out examples. For Banking77, we also add reviewed ground reasoning to the same training examples and measure a second alignment.
+          We start with Mo 1.3.1, label up to 200 training decisions per task, and align a custom model. When alignment produces a new checkpoint, we test it on the same 200 held-out examples. For Banking77, we also add reviewed ground reasoning to the same training examples and measure a second alignment.
         </p>
       </section>
 
       <section className="pt-9 sm:pt-11">
         <h2 className="text-[19px] font-semibold tracking-[-0.03em] text-[#171717]">Held-out accuracy</h2>
-        <p className="mt-1 text-[11px] text-[#888]">Base Mo and aligned custom models · same 200 held-out rows per task</p>
+        <p className="mt-1 text-[11px] text-[#888]">Mo 1.3.1 and aligned custom models · same 200 held-out rows per task</p>
         <div className="mt-6 rounded-lg border border-[#e8e8e6] bg-[#fcfcfb] px-3 pb-3 pt-6 sm:px-6">
           <div className="overflow-x-auto">
             <ChartContainer config={chartConfig} className="h-[350px] min-w-[900px] w-full aspect-auto">
@@ -84,7 +84,7 @@ export function FinanceUpliftPage() {
             </ChartContainer>
           </div>
           <div className="mt-2 flex flex-wrap justify-center gap-6 text-[11px] text-[#666]">
-            <span><i className="mr-2 inline-block size-2.5 rounded-[2px] bg-[#9BAAB7]" />Base Mo</span>
+            <span><i className="mr-2 inline-block size-2.5 rounded-[2px] bg-[#9BAAB7]" />Mo 1.3.1</span>
             <span><i className="mr-2 inline-block size-2.5 rounded-[2px] bg-[#6899BC]" />Labels only</span>
             <span><i className="mr-2 inline-block size-2.5 rounded-[2px] bg-[#2D6598]" />With reasoning (Banking77)</span>
           </div>
@@ -97,7 +97,7 @@ export function FinanceUpliftPage() {
           <table className="w-full min-w-[760px] border-collapse text-left text-[11px] tabular-nums">
             <thead className="text-[#888]"><tr className="border-b border-[#dededc]">
               <th scope="col" className="py-2 pr-4 font-medium">Task</th>
-              <th scope="col" className="px-2 py-2 text-right font-medium">Base Mo</th>
+              <th scope="col" className="px-2 py-2 text-right font-medium">Mo 1.3.1</th>
               <th scope="col" className="px-2 py-2 text-right font-medium">Labels only</th>
               <th scope="col" className="px-2 py-2 text-right font-medium">With reasoning</th>
               <th scope="col" className="px-2 py-2 text-right font-medium">Uplift</th>
@@ -128,7 +128,7 @@ export function FinanceUpliftPage() {
             <p>NumClaim labels began with weak supervision. The sentiment task uses only human or human-aggregated labels and reports accuracy by source in the results file. SENTiVENT is a derived binary task: a sentence is positive when it contains an expert-annotated economic event. It does not measure full event extraction.</p>
             <p>The held-out calls did not capture. We waited for each alignment and its automatic example batch to finish before scoring the corresponding checkpoint. If alignment produced no new checkpoint, the table marks that outcome without treating a rerun of the base model as uplift.</p>
             <p>Uplift is the aligned accuracy minus base accuracy on the same 200 rows. Intervals use paired bootstrap resampling; SENTiVENT resamples its 30 source articles because multiple sentences come from each article. These small public cohorts may overlap a foundation model&apos;s pretraining data; the results describe this pilot, not production performance.</p>
-            <p><a href="https://github.com/modaic-ai/mo-benchmarks/tree/main/benchmarks/finance-uplift" target="_blank" rel="noreferrer" className="text-[#2a6496] underline">Read the protocol and run it yourself ↗</a></p>
+            <p><a href="https://github.com/modaic-ai/mo-benchmarks/tree/main/benchmarks/finance/finance_uplift" target="_blank" rel="noreferrer" className="text-[#2a6496] underline">Read the protocol and run it yourself ↗</a></p>
           </div>
         </details>
       </section>

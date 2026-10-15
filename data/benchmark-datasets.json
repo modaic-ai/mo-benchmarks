@@ -1,0 +1,96 @@
+{
+  "format": "decision-benchmark-jsonl-v1",
+  "benchmarks": [
+    {
+      "id": "arc_challenge",
+      "name": "ARC Challenge",
+      "rows": 1172,
+      "file": "data/arc_challenge.jsonl.gz",
+      "sha256": "4c58b896e54442b2606691432de786990b42d76bd192802aa4e4a598388938cb"
+    },
+    {
+      "id": "argument_quality_ranking",
+      "name": "Argument Quality Ranking",
+      "rows": 2469,
+      "file": "data/argument_quality_ranking.jsonl.gz",
+      "sha256": "132a0dcddf29f952c89024580448b67e4a45aed9676ef7020e62c45c4982b368"
+    },
+    {
+      "id": "code_judge_bench",
+      "name": "CodeJudgeBench",
+      "rows": 344,
+      "file": "data/code_judge_bench.jsonl.gz",
+      "sha256": "2fd84840b5f2bebe7892114bbb2875f839d90f6689056c91c6f1a1da2ee44c72"
+    },
+    {
+      "id": "gpqa_diamond",
+      "name": "GPQA Diamond",
+      "rows": 198,
+      "file": "data/gpqa_diamond.jsonl.gz",
+      "sha256": "f85d143e45dd80cf4ab57184852463fc5197d4b43e566107393d4a3d8411dbcc"
+    },
+    {
+      "id": "halueval_summarization",
+      "name": "HaluEval Summarization",
+      "rows": 10000,
+      "file": "data/halueval_summarization.jsonl.gz",
+      "sha256": "3d707cc65d8f409852f6258a846cea25d6a957ee879bcfb39bdb823051daa0ff"
+    },
+    {
+      "id": "judge_bench",
+      "name": "JudgeBench",
+      "rows": 280,
+      "file": "data/judge_bench.jsonl.gz",
+      "sha256": "c4398948089ede4e3ecf94a1e5cb84f21cd9a7c7fd67e856cd1581b6332bc45c"
+    },
+    {
+      "id": "mmlu_pro",
+      "name": "MMLU-Pro",
+      "rows": 12032,
+      "file": "data/mmlu_pro.jsonl.gz",
+      "sha256": "c33b8169acf8bde499ba26a5b9f2fc8375271640f1ca617add16a3b82954a3a4"
+    },
+    {
+      "id": "mt_bench_human_judgments",
+      "name": "MT-Bench Human Judgments",
+      "rows": 1000,
+      "file": "data/mt_bench_human_judgments.jsonl.gz",
+      "sha256": "24adee940dd59b89f17f618608a8bd6150bebc8c5ebb308cb57bb2fb299d1f79"
+    },
+    {
+      "id": "musr_murder_mysteries",
+      "name": "MuSR Murder Mysteries",
+      "rows": 250,
+      "file": "data/musr_murder_mysteries.jsonl.gz",
+      "sha256": "d5dc02fd9d924cb73db05ca5400b0cc1e59ecac35d81700285b68ced44d80b17"
+    },
+    {
+      "id": "musr_object_placements",
+      "name": "MuSR Object Placements",
+      "rows": 256,
+      "file": "data/musr_object_placements.jsonl.gz",
+      "sha256": "69dd503d8be07f142a7a4efb24fe4114de71dd6f15ddfa6d2ac5eff6a0510e2b"
+    },
+    {
+      "id": "musr_team_allocation",
+      "name": "MuSR Team Allocation",
+      "rows": 250,
+      "file": "data/musr_team_allocation.jsonl.gz",
+      "sha256": "85b1dcaaaa9f5406598883a415947280f8412670556f099cc4c8306c67ab1508"
+    },
+    {
+      "id": "or_bench_toxic",
+      "name": "OR-Bench Toxic",
+      "rows": 524,
+      "file": "data/or_bench_toxic.jsonl.gz",
+      "sha256": "d3659f57a03db389ff4941b2920f2eb5b6b7f19bdf645d5a03e8f76e87a9e2a1"
+    },
+    {
+      "id": "rod101_essay_scoring",
+      "name": "ROD101 Essay Scoring",
+      "rows": 81,
+      "file": "data/rod101_essay_scoring.jsonl.gz",
+      "sha256": "1405e837c0df0ca211c40780fe337b0172a6c0a0f452407c8f56d7312aba606c"
+    }
+  ]
+}

@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
+const reportsDir = resolve(process.argv[2] ?? resolve(root, "benchmarks/finance/finance_uplift/outputs"));
 const tasks = [
   {
     slug: "esg",
@@ -59,11 +60,39 @@ const tasks = [
     dataset: "Johnade/consumer_complaints_cfpb",
     evaluationSplit: "test",
   },
+  {
+    slug: "modernfinbert-sentiment",
+    label: "Financial sentiment (human labels)",
+    chartLabel: "Sentiment",
+    dataset: "neoyipeng/modernfinbert-training-v2",
+    evaluationSplit: "test",
+  },
+  {
+    slug: "numclaim",
+    label: "NumClaim numerical claims",
+    chartLabel: "NumClaim",
+    dataset: "gtfintechlab/Numclaim",
+    evaluationSplit: "test",
+  },
+  {
+    slug: "sentivent-event",
+    label: "SENTiVENT event presence",
+    chartLabel: "SENTiVENT",
+    dataset: "GillesJacobs/sentivent",
+    evaluationSplit: "test",
+  },
+  {
+    slug: "twitter-financial-news-topic",
+    label: "Twitter financial-news topics",
+    chartLabel: "Twitter topics",
+    dataset: "zeroshot/twitter-financial-news-topic",
+    evaluationSplit: "validation",
+  },
 ];
 
 const imported = tasks.map((task) => {
   const reportName = task.slug === "banking77-routing" ? `${task.slug}.reasoning.report.json` : `${task.slug}.report.json`;
-  const path = resolve(root, "benchmarks/finance-uplift/outputs", reportName);
+  const path = resolve(reportsDir, reportName);
   const report = JSON.parse(readFileSync(path, "utf8"));
   if (report.task !== task.slug || report.base_model !== "modaic/mo") {
     throw new Error(`${task.slug}: unexpected task or base model`);
@@ -96,14 +125,26 @@ const imported = tasks.map((task) => {
        !report.source_train_revision)) {
     throw new Error("ESG: disjoint FinNLP training and clean held-out test comparison is required");
   }
-  const metrics = { ...report };
-  delete metrics.task;
-  return { ...task, ...metrics };
+  const alignmentOutcome = report.alignment_outcome ?? "new_checkpoint";
+  return {
+    ...task,
+    n: report.n,
+    training_labels: report.training_labels,
+    baseline_accuracy: report.baseline_accuracy,
+    aligned_accuracy: report.aligned_accuracy,
+    alignment_outcome: alignmentOutcome,
+    label_only_accuracy: report.label_only_accuracy,
+    ground_reasoning_count: report.ground_reasoning_count,
+    uplift_pp: report.uplift_pp,
+    uplift_95pct_bootstrap_ci_pp: report.uplift_95pct_bootstrap_ci_pp,
+    fixed_to_correct: report.fixed_to_correct,
+    regressed_to_wrong: report.regressed_to_wrong,
+  };
 }).sort((a, b) => a.label.localeCompare(b.label));
 
 const output = {
   benchmark: "Finance alignment uplift",
-  base_model: "modaic/mo",
+  base_model: "Mo 1.3.1",
   method: "One saved model per task; up to 200 captured training rows; fixed held-out evaluation. Banking77 also compares a second alignment after adding audited ground reasoning to the same examples.",
   tasks: imported,
 };

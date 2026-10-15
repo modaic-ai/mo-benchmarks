@@ -3,11 +3,11 @@ import "./fonts.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Modaic Benchmarks — Buying signal detection",
-  description: "A test-only comparison of seven decision models on Gong Call Playbook buying signals.",
+  title: "Modaic Benchmarks",
+  description: "Decision-model evaluations across knowledge, language, retrieval, tools, arts, finance, security, and GTM.",
   openGraph: {
-    title: "Modaic Benchmarks — Buying signal detection",
-    description: "Five buying signals. Seven models. 1,000 test decisions per model.",
+    title: "Modaic Benchmarks",
+    description: "Decision-model evaluations and benchmark-by-benchmark results.",
     type: "website",
   },
 };

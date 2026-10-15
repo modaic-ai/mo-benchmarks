@@ -1,357 +1,174 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
-import { Bar, BarChart, CartesianGrid, Cell, LabelList, XAxis, YAxis } from "recharts";
-import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
-import rawData from "@/data/buying-signals.json";
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import benchmarkData from "@/data/benchmark-results.json";
+import buyingSignals from "@/data/buying-signals.json";
 import { cn } from "@/lib/utils";
 
-type Metric = "accuracy" | "precision" | "f1" | "recall" | "auroc" | "ece";
-type Metrics = Record<Metric, number>;
-type Model = {
-  id: string;
-  model_id: string;
-  workers: number;
-  macro: Metrics;
-  latency_ms: { p50: number; p95: number; p99: number };
+type Domain = { id: string; name: string };
+type Result = { benchmark: string; name: string; domain: string; model: string; model_name: string; rows: number; accuracy: number };
+type IndexBenchmark = { id: number; name: string; short: string; domain: string; metric: string; raw: number; skill: number };
+type IndexDomain = { id: string; raw: number; skill: number };
+type Aggregate = {
+  domains: Domain[];
+  results: Result[];
+  decision_index: {
+    source: string;
+    models: Array<{
+      id: string;
+      name: string;
+      coverage: number;
+      scores: { balanced_raw: number; balanced_skill: number; breadth_skill: number; public_skill: number };
+      domains: IndexDomain[];
+      benchmarks: IndexBenchmark[];
+    }>;
+  };
 };
-type BenchmarkData = {
-  revision: string;
-  models: Model[];
-};
+type BuyingModel = { id: string; macro: { accuracy: number; auroc: number; ece: number } };
 
-const data = rawData as BenchmarkData;
-const metrics: Metric[] = ["accuracy", "precision", "f1", "recall", "auroc", "ece"];
-const metricLabels: Record<Metric, string> = {
-  accuracy: "Accuracy", precision: "Precision", f1: "F1", recall: "Recall", auroc: "AUROC", ece: "ECE",
-};
-const displayNames: Record<string, string> = {
+const catalog = benchmarkData as Aggregate;
+const indexModel = catalog.decision_index.models.find((model) => model.id === "mo-1.3.2") ?? catalog.decision_index.models[0];
+const roster = ["mo-1.3.1", "mo-1.3.2", "jev-1.13", "jev-1.14", "luna-decisions", "pplx", "gpt-6.1", "mo-fast", "clef"];
+const modelNames = new Map(catalog.results.map((row) => [row.model, row.model_name]));
+const gtmModels = (buyingSignals as { models: BuyingModel[] }).models;
+const gtmNames: Record<string, string> = {
   "luna-decisions": "Luna decisions",
-  "openai-latest": "GPT-6.1 Sol (medium reasoning)",
-  "jev-latest": "Jev latest",
-  mo: "Mo",
+  "gpt-6.1": "GPT-6.1",
+  "jev-1.13": "Jev 1.13",
+  "jev-1.14": "Jev 1.14",
+  "mo-1.3.1": "Mo 1.3.1",
+  "mo-1.3.2": "Mo 1.3.2",
   "mo-fast": "Mo Fast",
-  "perplexity-decider": "Perplexity decider",
+  pplx: "PPLX",
   clef: "Clef",
 };
-const chartNames: Record<string, string> = {
-  "luna-decisions": "Luna",
-  "openai-latest": "GPT-6.1 (medium)",
-  "jev-latest": "Jev",
-  mo: "Mo",
-  "mo-fast": "Mo Fast",
-  "perplexity-decider": "Perplexity",
-  clef: "Clef",
-};
-const chartColors: Record<string, string> = {
-  mo: "#2D6598",
-  "mo-fast": "#66A1B5",
-  "luna-decisions": "#648D79",
-  "openai-latest": "#8177AA",
-  "jev-latest": "#B38396",
-  "perplexity-decider": "#BD9163",
-  clef: "#89929B",
-};
-const chartConfig = { score: { label: "Score", color: "#2D6598" } } satisfies ChartConfig;
 
 function percent(value: number) { return `${(value * 100).toFixed(1)}%`; }
-function score(value: number) { return value.toFixed(3); }
+function indexScore(value: number) { return value.toFixed(2); }
 
 export function BenchmarkPage() {
-  const [metric, setMetric] = useState<Metric>("accuracy");
-  const accuracyWinner = [...data.models].sort((a, b) => b.macro.accuracy - a.macro.accuracy)[0];
-  const ranked = [...data.models].sort((a, b) => metric === "ece" ? a.macro.ece - b.macro.ece : b.macro[metric] - a.macro[metric]);
-  const chartData = ranked.map((model) => ({ id: model.id, name: chartNames[model.id], score: model.macro[metric] }));
-  const chartMin = Math.floor(Math.min(...chartData.map((item) => item.score)) * 20) / 20;
-  const chartMax = Math.ceil(Math.max(...chartData.map((item) => item.score)) * 20) / 20;
-  const chartTicks = Array.from({ length: Math.round((chartMax - chartMin) * 20) + 1 }, (_, index) => Number((chartMin + index * 0.05).toFixed(2)));
+  const [domain, setDomain] = useState("knowledge");
+  const indexByDomain = useMemo(() => indexModel.benchmarks.filter((row) => row.domain === domain), [domain]);
+  const evaluations = useMemo(() => {
+    const grouped = new Map<string, Result[]>();
+    for (const result of catalog.results.filter((row) => row.domain === domain)) {
+      grouped.set(result.name, [...(grouped.get(result.name) ?? []), result]);
+    }
+    return [...grouped.entries()];
+  }, [domain]);
 
   return (
-    <main className="mx-auto max-w-[1120px] px-5 pb-14 pt-6 font-sans text-[#454545] sm:px-10 sm:pt-8">
+    <main className="mx-auto max-w-[1160px] px-5 pb-14 pt-6 font-sans text-[#454545] sm:px-10 sm:pt-8">
       <header className="flex items-center justify-between gap-5 border-b border-[#e5e5e3] pb-5">
-        <a
-          href="#top"
-          className="flex items-center gap-2.5 text-[15px] font-semibold tracking-[-0.02em] text-[#171717]"
-        >
-          <Image
-            src="/mo-logo.png"
-            alt="Modaic"
-            width={697}
-            height={629}
-            className="h-auto w-7 shrink-0 [image-rendering:pixelated]"
-            priority
-          />
+        <a href="#top" className="flex items-center gap-2.5 text-[15px] font-semibold tracking-[-0.02em] text-[#171717]">
+          <Image src="/mo-logo.png" alt="Modaic" width={697} height={629} className="h-auto w-7 shrink-0 [image-rendering:pixelated]" priority />
           <span>Benchmarks</span>
         </a>
-        <nav aria-label="Benchmarks" className="flex items-center gap-5 text-[11px]">
-          <span aria-current="page" className="font-medium text-[#2a6496]">Buying signals</span>
-          <a href="https://github.com/modaic-ai/mo-benchmarks" target="_blank" rel="noreferrer" className="text-[#2a6496] hover:underline">GitHub ↗</a>
-        </nav>
+        <a href="https://github.com/modaic-ai/mo-benchmarks" target="_blank" rel="noreferrer" className="text-[11px] text-[#2a6496] hover:underline">GitHub ↗</a>
       </header>
 
-      <section
-        id="top"
-        className="grid gap-6 border-b border-[#e5e5e3] py-8 sm:py-10 md:grid-cols-[minmax(0,1fr)_190px] md:items-end md:gap-8"
-      >
+      <section id="top" className="grid gap-7 border-b border-[#e5e5e3] py-9 md:grid-cols-[minmax(0,1fr)_230px] md:items-end">
         <div>
-          <h1 className="text-[19px] font-semibold tracking-[-0.03em] text-[#171717]">
-            Who catches the signals?
-          </h1>
-          <p className="mt-3 max-w-[600px] text-[13px] leading-[1.65] text-[#696969]">
-            Each model estimates the probability that a specified buying signal
-            is present in a speaker-tagged sales-call excerpt. We score those
-            probabilities and decisions at a fixed 0.5 threshold against Gong’s
-            held-out labels across five tasks—1,000 decisions per model.
-          </p>
+          <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-[#2D6598]">Decision Index</p>
+          <h1 className="mt-2 text-[25px] font-semibold tracking-[-0.04em] text-[#171717]">Broad decision skill, benchmark by benchmark.</h1>
+          <p className="mt-3 max-w-[650px] text-[13px] leading-[1.65] text-[#696969]">Compare decision models across the Decision Index, JevBench, public transfer benchmarks, Finance, Security, and GTM.</p>
         </div>
         <div className="border-l-[3px] border-[#2D6598] pl-4">
-          <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-[#777]">
-            Best accuracy
-          </p>
-          <p className="text-[19px] font-semibold tracking-[-0.03em] text-[#171717]">
-            {percent(accuracyWinner.macro.accuracy)}
-          </p>
-          <p className="mt-2 text-[12px] font-medium text-[#2D6598]">
-            {displayNames[accuracyWinner.id]}
-          </p>
+          <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-[#777]">Mo 1.3.2 balanced skill</p>
+          <p className="mt-1 text-[32px] font-semibold tracking-[-0.04em] text-[#171717]">{indexScore(indexModel.scores.balanced_skill)}</p>
+          <p className="mt-1 text-[10px] text-[#888]">Balanced raw {indexScore(indexModel.scores.balanced_raw)}</p>
         </div>
       </section>
 
-      <section id="results" className="pt-9 sm:pt-11">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h2 className="text-[19px] font-semibold tracking-[-0.03em] text-[#171717]">
-              Model comparison
-            </h2>
-            <p className="mt-1 text-[11px] text-[#888]">
-              Macro average across five tasks · 0.5 decision threshold
-            </p>
-          </div>
+      <section className="py-8">
+        <div className="flex items-baseline justify-between gap-4">
+          <h2 className="text-[16px] font-semibold tracking-[-0.02em] text-[#171717]">Decision Index breakdown</h2>
+          <a href={catalog.decision_index.source} target="_blank" rel="noreferrer" className="text-[10px] text-[#2a6496] hover:underline">Source ↗</a>
         </div>
+        <div className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-[#e5e5e3] bg-[#e5e5e3] sm:grid-cols-5">
+          {indexModel.domains.map((item) => (
+            <div key={item.id} className="bg-[#fcfcfb] px-4 py-4">
+              <p className="text-[10px] capitalize text-[#777]">{item.id}</p>
+              <p className="mt-1 text-[20px] font-semibold text-[#222]">{percent(item.skill)}</p>
+              <p className="mt-1 text-[9px] text-[#999]">raw {percent(item.raw)}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-5 overflow-x-auto rounded-lg border border-[#e8e8e6]">
+          <table className="w-full min-w-[680px] text-left text-[11px] tabular-nums">
+            <thead className="bg-[#f7f7f5] text-[#888]"><tr><th className="px-4 py-2 font-medium">Model</th><th className="px-4 py-2 text-right font-medium">Balanced skill</th><th className="px-4 py-2 text-right font-medium">Balanced raw</th><th className="px-4 py-2 text-right font-medium">Breadth skill</th><th className="px-4 py-2 text-right font-medium">Coverage</th></tr></thead>
+            <tbody>{catalog.decision_index.models.map((model) => <tr key={model.id} className="border-t border-[#ededeb]"><th className="px-4 py-2.5 font-medium text-[#333]">{model.name}</th><td className="px-4 py-2.5 text-right font-medium text-[#2D6598]">{indexScore(model.scores.balanced_skill)}</td><td className="px-4 py-2.5 text-right">{indexScore(model.scores.balanced_raw)}</td><td className="px-4 py-2.5 text-right">{indexScore(model.scores.breadth_skill)}</td><td className="px-4 py-2.5 text-right">{percent(model.coverage)}</td></tr>)}</tbody>
+          </table>
+        </div>
+      </section>
 
-        <div
-          className="mt-6 flex flex-wrap gap-2"
-          role="group"
-          aria-label="Choose metric"
-        >
-          {metrics.map((item) => (
-            <button
-              key={item}
-              type="button"
-              aria-pressed={metric === item}
-              onClick={() => setMetric(item)}
-              className={cn(
-                "rounded-full border px-3 py-1.5 text-[11px] font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2D6598]",
-                metric === item
-                  ? "border-[#2D6598] bg-[#2D6598] text-white"
-                  : "border-[#e1e1df] bg-white text-[#666] hover:border-[#8faaba] hover:text-[#2D6598]",
-              )}
-              aria-label={
-                item === "ece" ? "ECE, lower is better" : metricLabels[item]
-              }
-            >
-              {metricLabels[item]}
-              {item === "ece" ? " ↓" : ""}
-            </button>
+      <section className="border-t border-[#e5e5e3] pt-8">
+        <h2 className="text-[19px] font-semibold tracking-[-0.03em] text-[#171717]">Benchmarks by domain</h2>
+        <div role="tablist" aria-label="Benchmark domains" className="mt-5 flex gap-2 overflow-x-auto pb-2">
+          {catalog.domains.map((item) => (
+            <button key={item.id} role="tab" type="button" aria-selected={domain === item.id} onClick={() => setDomain(item.id)} className={cn("shrink-0 rounded-full border px-3 py-1.5 text-[11px] font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2D6598]", domain === item.id ? "border-[#2D6598] bg-[#2D6598] text-white" : "border-[#e1e1df] bg-white text-[#666] hover:border-[#8faaba] hover:text-[#2D6598]")}>{item.name}</button>
           ))}
         </div>
 
-        <div className="mt-5 overflow-x-auto rounded-lg border border-[#e8e8e6] bg-[#fcfcfb] px-3 pb-3 pt-6 sm:px-6">
-          <div className="min-w-[590px]">
-            <p className="px-2 text-[12px] font-medium text-[#333]">
-              {metricLabels[metric]} by model
-              {metric === "ece" && (
-                <span className="ml-2 text-[#8a5b43]">↓ Lower is better</span>
+        <div role="tabpanel" className="mt-6 space-y-7">
+          {domain === "gtm" ? (
+            <section>
+              <div className="mb-3 flex items-baseline justify-between"><h3 className="text-[14px] font-semibold text-[#222]">Buying Signals</h3><a href="https://github.com/modaic-ai/mo-benchmarks/tree/main/benchmarks/gtm/buying_signals" className="text-[10px] text-[#2a6496] hover:underline">Results ↗</a></div>
+              <div className="overflow-x-auto rounded-lg border border-[#e8e8e6]">
+                <table className="w-full min-w-[520px] text-left text-[11px] tabular-nums">
+                  <thead className="bg-[#f7f7f5] text-[#888]"><tr><th className="px-4 py-2 font-medium">Model</th><th className="px-4 py-2 text-right font-medium">Accuracy</th><th className="px-4 py-2 text-right font-medium">AUROC</th><th className="px-4 py-2 text-right font-medium">ECE ↓</th></tr></thead>
+                  <tbody>{[...gtmModels].sort((a, b) => b.macro.accuracy - a.macro.accuracy).map((model) => <tr key={model.id} className="border-t border-[#ededeb]"><th className="px-4 py-2.5 font-medium text-[#333]">{gtmNames[model.id] ?? model.id}</th><td className="px-4 py-2.5 text-right">{percent(model.macro.accuracy)}</td><td className="px-4 py-2.5 text-right">{model.macro.auroc.toFixed(3)}</td><td className="px-4 py-2.5 text-right">{model.macro.ece.toFixed(3)}</td></tr>)}</tbody>
+                </table>
+              </div>
+            </section>
+          ) : (
+            <>
+              {domain === "finance" && (
+                <section className="rounded-lg border border-[#e8e8e6] bg-[#fcfcfb] px-5 py-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <h3 className="text-[14px] font-semibold text-[#222]">Finance alignment uplift</h3>
+                      <p className="mt-1 text-[11px] text-[#777]">Held-out results before and after task-specific alignment across 12 finance benchmarks.</p>
+                    </div>
+                    <Link href="/finance-uplift" className="text-[11px] font-medium text-[#2a6496] hover:underline">View uplift results →</Link>
+                  </div>
+                </section>
               )}
-            </p>
-            <ChartContainer
-              config={chartConfig}
-              className="mt-3 h-[350px] w-full aspect-auto"
-            >
-              <BarChart
-                accessibilityLayer
-                data={chartData}
-                margin={{ top: 24, right: 16, bottom: 5, left: -10 }}
-              >
-                <CartesianGrid vertical={false} stroke="#e7e9e9" />
-                <XAxis
-                  dataKey="name"
-                  tickLine={false}
-                  axisLine={false}
-                  interval={0}
-                  tick={{ fill: "#666", fontSize: 11 }}
-                  tickMargin={12}
-                />
-                <YAxis
-                  type="number"
-                  domain={[chartMin, chartMax]}
-                  ticks={chartTicks}
-                  allowDataOverflow
-                  tickFormatter={(value: number) =>
-                    `${Math.round(value * 100)}%`
-                  }
-                  tickLine={false}
-                  axisLine={false}
-                  tick={{ fill: "#999", fontSize: 10 }}
-                />
-                <ChartTooltip
-                  cursor={{ fill: "#edf1f2" }}
-                  content={
-                    <ChartTooltipContent
-                      hideLabel
-                      formatter={(value) => (
-                        <span className="font-mono font-medium text-[#222]">
-                          {percent(Number(value))}
-                        </span>
-                      )}
-                    />
-                  }
-                />
-                <Bar dataKey="score" radius={[3, 3, 0, 0]} maxBarSize={62}>
-                  {chartData.map((item) => (
-                    <Cell key={item.id} fill={chartColors[item.id]} />
-                  ))}
-                  <LabelList
-                    dataKey="score"
-                    position="top"
-                    formatter={(value) => percent(Number(value))}
-                    className="fill-[#555] text-[10px] font-medium"
-                  />
-                </Bar>
-              </BarChart>
-            </ChartContainer>
-          </div>
+              {indexByDomain.length > 0 && (
+                <section>
+                  <h3 className="mb-3 text-[14px] font-semibold text-[#222]">Decision Index</h3>
+                  <div className="overflow-x-auto rounded-lg border border-[#e8e8e6]">
+                    <table className="w-full min-w-[1180px] text-left text-[11px] tabular-nums">
+                      <thead className="bg-[#f7f7f5] text-[#888]"><tr><th className="px-4 py-2 font-medium">Benchmark</th><th className="px-4 py-2 font-medium">Metric</th>{catalog.decision_index.models.map((model) => <th key={model.id} className="px-3 py-2 text-right font-medium">{model.name}</th>)}</tr></thead>
+                      <tbody>{indexByDomain.map((row) => <tr key={row.id} className="border-t border-[#ededeb]"><th className="px-4 py-2.5 font-medium text-[#333]">{row.short}</th><td className="px-4 py-2.5 text-[#777]">{row.metric}</td>{catalog.decision_index.models.map((model) => { const score = model.benchmarks.find((item) => item.id === row.id); return <td key={model.id} className="px-3 py-2.5 text-right">{score ? percent(score.raw) : "—"}</td>; })}</tr>)}</tbody>
+                    </table>
+                  </div>
+                </section>
+              )}
+              {evaluations.length > 0 && (
+                <section>
+                  <h3 className="mb-3 text-[14px] font-semibold text-[#222]">Additional evaluations</h3>
+                  <div className="overflow-x-auto rounded-lg border border-[#e8e8e6]">
+                    <table className="w-full min-w-[1180px] text-left text-[11px] tabular-nums">
+                      <thead className="bg-[#f7f7f5] text-[#888]"><tr><th className="px-4 py-2 font-medium">Benchmark</th><th className="px-4 py-2 text-right font-medium">Rows</th>{roster.map((model) => <th key={model} className="px-3 py-2 text-right font-medium">{modelNames.get(model) ?? model}</th>)}</tr></thead>
+                      <tbody>{evaluations.map(([name, rows]) => {
+                        return <tr key={name} className="border-t border-[#ededeb]"><th className="px-4 py-2.5 font-medium text-[#333]">{name}</th><td className="px-4 py-2.5 text-right text-[#777]">{(rows[0]?.rows ?? 0).toLocaleString()}</td>{roster.map((model) => { const result = rows.find((row) => row.model === model); return <td key={model} className="px-3 py-2.5 text-right">{result ? percent(result.accuracy) : "—"}</td>; })}</tr>;
+                      })}</tbody>
+                    </table>
+                  </div>
+                </section>
+              )}
+              {indexByDomain.length === 0 && evaluations.length === 0 && <p className="rounded-lg border border-[#e8e8e6] bg-[#fcfcfb] p-5 text-[12px] text-[#777]">No published results in this domain yet.</p>}
+            </>
+          )}
         </div>
-        <p className="mt-3 text-[10px] leading-[1.5] text-[#888]">
-          Each bar is the unweighted average of five test-set{" "}
-          {metricLabels[metric].toLowerCase()} scores. The y-axis is truncated
-          to make close scores easier to compare.
-        </p>
-      </section>
-
-      <section className="mt-9 border-t border-[#e5e5e3] pt-4">
-        <details open className="group">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[12px] font-medium text-[#333] marker:hidden">
-            Full results{" "}
-            <span className="text-[17px] font-normal text-[#999] group-open:rotate-45">
-              +
-            </span>
-          </summary>
-          <div className="mt-4 overflow-x-auto">
-            <table className="w-full min-w-[740px] border-collapse text-left text-[11px] tabular-nums">
-              <caption className="sr-only">
-                All model metrics and median latency, sorted by the selected
-                chart metric
-              </caption>
-              <thead className="text-[#888]">
-                <tr className="border-b border-[#dededc]">
-                  <th scope="col" className="py-2 pr-4 font-medium">
-                    Model
-                  </th>
-                  {metrics.map((item) => (
-                    <th
-                      key={item}
-                      scope="col"
-                      className={cn(
-                        "px-2 py-2 text-right font-medium",
-                        item === metric && "text-[#2D6598]",
-                      )}
-                    >
-                      {metricLabels[item]}
-                      {item === "ece" ? " ↓" : ""}
-                    </th>
-                  ))}
-                  <th scope="col" className="py-2 pl-2 text-right font-medium">
-                    p50 ms
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {ranked.map((model) => (
-                  <tr key={model.id} className="border-b border-[#ededeb]">
-                    <th
-                      scope="row"
-                      className="py-2.5 pr-4 font-medium text-[#333]"
-                    >
-                      {displayNames[model.id]}
-                    </th>
-                    {metrics.map((item) => (
-                      <td
-                        key={item}
-                        className={cn(
-                          "px-2 py-2.5 text-right",
-                          item === metric
-                            ? "font-semibold text-[#2D6598]"
-                            : "text-[#666]",
-                        )}
-                      >
-                        {score(model.macro[item])}
-                      </td>
-                    ))}
-                    <td className="py-2.5 pl-2 text-right text-[#666]">
-                      {Math.round(model.latency_ms.p50).toLocaleString()}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p className="mt-3 text-[10px] leading-[1.5] text-[#888]">
-            GPT-6.1 Sol used medium reasoning and eight workers; other models ran with one.
-            Latency reflects different concurrency loads and excludes retries.
-          </p>
-        </details>
-      </section>
-
-      <section id="method" className="mt-5 border-t border-[#e5e5e3] pt-4">
-        <details className="group">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[12px] font-medium text-[#333] marker:hidden">
-            Methodology{" "}
-            <span className="text-[17px] font-normal text-[#999] group-open:rotate-45">
-              +
-            </span>
-          </summary>
-          <div className="mt-4 max-w-[780px] space-y-3 text-[11px] leading-[1.65] text-[#666]">
-            <p>
-              Five binary tasks from{" "}
-              <a
-                href="https://huggingface.co/datasets/gong-io-research/call-playbook"
-                target="_blank"
-                rel="noreferrer"
-                className="text-[#2a6496] underline"
-              >
-                Gong Call Playbook
-              </a>{" "}
-              contribute 200 test rows each. No training rows, call excerpts, or
-              individual predictions are published here. Dataset revision{" "}
-              <code className="font-mono">{data.revision.slice(0, 12)}</code>.
-            </p>
-            <p>
-              Models return p(signal present). A fixed 0.5 threshold determines
-              the positive class. Reported classification metrics are unweighted
-              means of five task scores. ECE uses ten probability bins; lower
-              ECE is better. No threshold was tuned on test data.
-            </p>
-            <p>
-              Latency percentiles include each successful HTTP attempt only,
-              excluding retries and backoff. This measures signal detection in
-              excerpts, not full-call coverage.
-            </p>
-          </div>
-        </details>
       </section>
 
       <footer className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t-2 border-[#222] pt-4 text-[10px] text-[#888]">
         <p>Modaic Benchmarks · October 2026</p>
-        <a
-          href="https://github.com/modaic-ai/mo-benchmarks"
-          target="_blank"
-          rel="noreferrer"
-          className="text-[#2a6496] hover:underline"
-        >
-          Source &amp; methods ↗
-        </a>
+        <a href="https://github.com/modaic-ai/mo-benchmarks" target="_blank" rel="noreferrer" className="text-[#2a6496] hover:underline">Source &amp; methods ↗</a>
       </footer>
     </main>
   );
