@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import rawData from "@/data/finance-uplift.json";
@@ -33,41 +31,34 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 const percent = (value: number) => `${(value * 100).toFixed(1)}%`;
+const bestAccuracy = (task: TaskResult) => Math.max(task.baseline_accuracy, task.alignment_outcome === "no_new_checkpoint" ? -Infinity : (task.label_only_accuracy ?? task.aligned_accuracy ?? -Infinity), task.label_only_accuracy == null ? -Infinity : (task.aligned_accuracy ?? -Infinity));
 const points = (value: number) => `${value > 0 ? "+" : ""}${value.toFixed(1)} pp`;
 
-export function FinanceUpliftPage() {
+export function FinanceUpliftSection() {
   const chartData = data.tasks.map((task) => ({
     name: task.chartLabel ?? task.label,
     baseline: task.baseline_accuracy,
     labelOnly: task.alignment_outcome === "no_new_checkpoint" ? null : (task.label_only_accuracy ?? task.aligned_accuracy),
     aligned: task.label_only_accuracy == null ? null : task.aligned_accuracy,
   }));
-  const minimum = Math.floor(Math.min(...data.tasks.flatMap((task) => [task.baseline_accuracy, task.label_only_accuracy, task.aligned_accuracy].filter((value): value is number => value != null))) * 10) / 10;
+  const minimum = Math.min(...chartData.flatMap((task) => [task.baseline, task.labelOnly, task.aligned].filter((value): value is number => value != null && Number.isFinite(value)))) > 0.4 ? 0.4 : 0;
+
+  const completed = data.tasks.filter((task) => task.alignment_outcome !== "no_new_checkpoint" && task.aligned_accuracy != null);
+  const macroBaseline = completed.reduce((sum, task) => sum + task.baseline_accuracy, 0) / completed.length;
+  const macroAligned = completed.reduce((sum, task) => sum + (task.label_only_accuracy ?? task.aligned_accuracy)!, 0) / completed.length;
 
   return (
-    <main className="mx-auto max-w-[1120px] px-5 pb-14 pt-6 font-sans text-[#454545] sm:px-10 sm:pt-8">
-      <header className="flex flex-wrap items-center justify-between gap-4 border-b border-[#e5e5e3] pb-5">
-        <Link href="/" className="flex items-center gap-2.5 text-[15px] font-semibold tracking-[-0.02em] text-[#171717]">
-          <Image src="/mo-logo.png" alt="Modaic" width={697} height={629} className="h-auto w-7 shrink-0 [image-rendering:pixelated]" priority />
-          <span>Benchmarks</span>
-        </Link>
-        <nav aria-label="Benchmarks" className="flex items-center gap-5 text-[11px]">
-          <Link href="/" className="text-[#777] hover:text-[#2a6496]">All benchmarks</Link>
-          <span aria-current="page" className="font-medium text-[#2a6496]">Finance uplift</span>
-          <a href="https://github.com/modaic-ai/mo-benchmarks" target="_blank" rel="noreferrer" className="text-[#2a6496] hover:underline">GitHub ↗</a>
-        </nav>
-      </header>
-
+    <div>
       <section className="border-b border-[#e5e5e3] py-8 sm:py-10">
         <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-[#777]">Finance · alignment pilot</p>
-        <h1 className="mt-2 text-[20px] font-semibold tracking-[-0.03em] text-[#171717]">What does alignment change?</h1>
+        <h3 className="mt-2 text-[20px] font-semibold tracking-[-0.03em] text-[#171717]">What does alignment change?</h3>
         <p className="mt-3 max-w-[680px] text-[13px] leading-[1.65] text-[#696969]">
           We start with Mo 1.3.1, label up to 200 training decisions per task, and align a custom model. When alignment produces a new checkpoint, we test it on the same 200 held-out examples. For Banking77, we also add reviewed ground reasoning to the same training examples and measure a second alignment.
         </p>
       </section>
 
       <section className="pt-9 sm:pt-11">
-        <h2 className="text-[19px] font-semibold tracking-[-0.03em] text-[#171717]">Held-out accuracy</h2>
+        <h3 className="text-[19px] font-semibold tracking-[-0.03em] text-[#171717]">Held-out accuracy</h3>
         <p className="mt-1 text-[11px] text-[#888]">Mo 1.3.1 and aligned custom models · same 200 held-out rows per task</p>
         <div className="mt-6 rounded-lg border border-[#e8e8e6] bg-[#fcfcfb] px-3 pb-3 pt-6 sm:px-6">
           <div className="overflow-x-auto">
@@ -75,7 +66,7 @@ export function FinanceUpliftPage() {
               <BarChart accessibilityLayer data={chartData} margin={{ top: 20, right: 12, bottom: 5, left: -8 }}>
                 <CartesianGrid vertical={false} stroke="#e7e9e9" />
                 <XAxis dataKey="name" tickLine={false} axisLine={false} tick={{ fill: "#666", fontSize: 11 }} tickMargin={12} />
-                <YAxis type="number" domain={[minimum, 1]} ticks={Array.from({ length: Math.round((1 - minimum) * 10) + 1 }, (_, i) => Number((minimum + i * 0.1).toFixed(1)))} tickFormatter={(value: number) => `${Math.round(value * 100)}%`} tickLine={false} axisLine={false} tick={{ fill: "#999", fontSize: 10 }} />
+                <YAxis type="number" allowDataOverflow domain={[minimum, 1]} ticks={Array.from({ length: Math.round((1 - minimum) * 10) + 1 }, (_, i) => Number((minimum + i * 0.1).toFixed(1)))} tickFormatter={(value: number) => `${Math.round(value * 100)}%`} tickLine={false} axisLine={false} tick={{ fill: "#999", fontSize: 10 }} />
                 <ChartTooltip cursor={{ fill: "#edf1f2" }} content={<ChartTooltipContent formatter={(value) => <span className="font-mono text-[#222]">{percent(Number(value))}</span>} />} />
                 <Bar dataKey="baseline" fill="var(--color-baseline)" radius={[3, 3, 0, 0]} maxBarSize={62} />
                 <Bar dataKey="labelOnly" fill="var(--color-labelOnly)" radius={[3, 3, 0, 0]} maxBarSize={62} />
@@ -92,7 +83,7 @@ export function FinanceUpliftPage() {
       </section>
 
       <section className="mt-9 border-t border-[#e5e5e3] pt-4">
-        <h2 className="text-[12px] font-medium text-[#333]">Full results</h2>
+        <h3 className="text-[12px] font-medium text-[#333]">Full results</h3>
         <div className="mt-4 overflow-x-auto">
           <table className="w-full min-w-[760px] border-collapse text-left text-[11px] tabular-nums">
             <thead className="text-[#888]"><tr className="border-b border-[#dededc]">
@@ -107,14 +98,22 @@ export function FinanceUpliftPage() {
             <tbody>{data.tasks.map((task) => (
               <tr key={task.slug} className="border-b border-[#ededeb]">
                 <th scope="row" className="py-3 pr-4 font-medium text-[#333]"><a href={`https://huggingface.co/datasets/${task.dataset}`} target="_blank" rel="noreferrer" className="hover:text-[#2a6496] hover:underline">{task.label} ↗</a></th>
-                <td className="px-2 py-3 text-right text-[#666]">{percent(task.baseline_accuracy)}</td>
-                <td className="px-2 py-3 text-right text-[#666]">{task.alignment_outcome === "no_new_checkpoint" ? "No checkpoint" : percent((task.label_only_accuracy ?? task.aligned_accuracy)!)}</td>
-                <td className="px-2 py-3 text-right text-[#666]">{task.label_only_accuracy == null ? "—" : percent(task.aligned_accuracy!)}</td>
+                <td className={`px-2 py-3 text-right text-[#666] ${(task.baseline_accuracy) === bestAccuracy(task) ? "font-bold" : ""}`}>{percent(task.baseline_accuracy)}</td>
+                <td className={`px-2 py-3 text-right text-[#666] ${(task.label_only_accuracy ?? task.aligned_accuracy) === bestAccuracy(task) ? "font-bold" : ""}`}>{task.alignment_outcome === "no_new_checkpoint" ? "No checkpoint" : percent((task.label_only_accuracy ?? task.aligned_accuracy)!)}</td>
+                <td className={`px-2 py-3 text-right text-[#666] ${(task.aligned_accuracy) === bestAccuracy(task) ? "font-bold" : ""}`}>{task.label_only_accuracy == null ? "—" : percent(task.aligned_accuracy!)}</td>
                 <td className={`px-2 py-3 text-right font-semibold ${(task.uplift_pp ?? 0) > 0 ? "text-[#2D6598]" : "text-[#666]"}`}>{task.uplift_pp == null ? "—" : points(task.uplift_pp)}</td>
                 <td className="px-2 py-3 text-right text-[#666]">{task.uplift_95pct_bootstrap_ci_pp?.map((x) => points(x)).join(" to ") ?? "—"}</td>
                 <td className="pl-2 py-3 text-right text-[#666]">{task.training_labels}</td>
               </tr>
             ))}</tbody>
+            <tfoot className="border-t-2 border-[#bdcbd5] bg-[#f2f5f7]"><tr>
+              <th scope="row" className="py-3 pr-4 font-semibold">Macro average<span className="mt-1 block text-[9px] font-normal text-[#777]">{completed.length} tasks with checkpoints · equal weight</span></th>
+              <td className={`px-2 py-3 text-right ${macroBaseline >= macroAligned ? "font-bold text-[#2D6598]" : ""}`}>{percent(macroBaseline)}</td>
+              <td className={`px-2 py-3 text-right ${macroAligned >= macroBaseline ? "font-bold text-[#2D6598]" : ""}`}>{percent(macroAligned)}</td>
+              <td className="px-2 py-3 text-right text-[#777]">—<span className="block text-[9px]">Banking77 only</span></td>
+              <td className="px-2 py-3 text-right">{points((macroAligned - macroBaseline) * 100)}</td>
+              <td className="px-2 py-3 text-right">—</td><td className="pl-2 py-3 text-right">—</td>
+            </tr></tfoot>
           </table>
         </div>
       </section>
@@ -133,10 +132,6 @@ export function FinanceUpliftPage() {
         </details>
       </section>
 
-      <footer className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t-2 border-[#222] pt-4 text-[10px] text-[#888]">
-        <p>Modaic Benchmarks · October 2026</p>
-        <a href="https://github.com/modaic-ai/mo-benchmarks" target="_blank" rel="noreferrer" className="text-[#2a6496] hover:underline">Source &amp; methods ↗</a>
-      </footer>
-    </main>
+    </div>
   );
 }

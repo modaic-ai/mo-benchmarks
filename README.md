@@ -11,7 +11,7 @@ Decision-model evaluations and aggregate results at [bench.modaic.dev](https://b
 | Security | Can a model make access recommendation and continuation decisions? | [results](benchmarks/security/RESULTS.md) | [Protocol](benchmarks/security/README.md) |
 | Open benchmark suite | How well does a model transfer across 13 named public benchmarks? | [live comparison](https://bench.modaic.dev) | [Datasets](data/README.md) |
 | Finance | How do nine models compare across 12 finance tasks? | [live comparison](https://bench.modaic.dev) | [Tasks and results](benchmarks/finance/README.md) |
-| Finance alignment uplift | What changes after task-specific alignment on up to 200 labeled examples? | [live results](https://bench.modaic.dev/finance-uplift) · [results](benchmarks/finance/finance_uplift/RESULTS.md) | [Protocol and runner](benchmarks/finance/finance_uplift/README.md) |
+| Finance alignment uplift | What changes after task-specific alignment on up to 200 labeled examples? | [live results](https://bench.modaic.dev/#training-platform-benchmarks) · [results](benchmarks/finance/finance_uplift/RESULTS.md) | [Protocol and runner](benchmarks/finance/finance_uplift/README.md) |
 | Buying-signal detection | Can a model identify a specified buying signal in a sales-call excerpt? | [Live comparison](https://bench.modaic.dev) · [results](benchmarks/gtm/buying_signals/RESULTS.md) | [Protocol and runner](benchmarks/gtm/buying_signals/README.md) |
 
 ## Reproduce the buying-signal benchmark

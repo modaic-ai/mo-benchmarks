@@ -1,9 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { useMemo, useState } from "react";
+import { BenchmarkBarView, ViewSwitch } from "@/components/benchmark-bar-view";
+import { useEffect, useId, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import benchmarkData from "@/data/benchmark-results.json";
+import { FinanceUpliftSection } from "@/components/finance-uplift-section";
+import benchmarkLinks from "@/data/benchmark-links.json";
 import buyingSignals from "@/data/buying-signals.json";
 import { cn } from "@/lib/utils";
 
@@ -30,11 +33,35 @@ type BuyingModel = { id: string; macro: { accuracy: number; auroc: number; ece: 
 
 const catalog = benchmarkData as Aggregate;
 const indexModel = catalog.decision_index.models.find((model) => model.id === "mo-1.3.2") ?? catalog.decision_index.models[0];
-const roster = ["mo-1.3.1", "mo-1.3.2", "jev-1.13", "jev-1.14", "luna-decisions", "pplx", "gpt-6.1", "mo-fast", "clef"];
+const roster = ["mo-1.3.2", "mo-1.3.1", "jev-1.14", "luna-decisions", "pplx", "mo-fast", "jev-1.13", "clef", "gpt-6.1"];
+const modelOrder = (a: { id: string }, b: { id: string }) => roster.indexOf(a.id) - roster.indexOf(b.id);
+const isReference = (id: string) => id === "gpt-6.1";
+const indexModels = [...catalog.decision_index.models].sort(modelOrder);
+const decisionModels = indexModels.filter((model) => !isReference(model.id));
+const domainOrder = ["gtm", "tools", "security", "arts", "finance", "language", "retrieval", "knowledge", "safety"];
+const domains = [...catalog.domains].sort((a, b) => domainOrder.indexOf(a.id) - domainOrder.indexOf(b.id));
+const isModaic = (id: string) => id.startsWith("mo-");
+function modaicWins(scores: Array<{ id: string; score: number }>) {
+  const decisions = scores.filter((model) => !isReference(model.id));
+  const best = Math.max(...decisions.map((model) => model.score));
+  return decisions.some((model) => isModaic(model.id) && model.score === best);
+}
+function indexModaicWins(row: IndexBenchmark) {
+  return modaicWins(decisionModels.flatMap((model) => {
+    const result = model.benchmarks.find((item) => item.id === row.id);
+    return result ? [{ id: model.id, score: result.raw }] : [];
+  }));
+}
+function evaluationModaicWins(rows: Result[]) {
+  return modaicWins(rows.map((row) => ({ id: row.model, score: row.accuracy })));
+}
+const referenceName = "GPT-6.1";
+const referenceColumn = "sticky right-0 z-10 w-[84px] min-w-[84px] max-w-[84px] whitespace-nowrap border-l-2 border-[#bdcbd5] bg-[#edf2f6] font-normal shadow-[-5px_0_8px_-6px_#8095a5]";
+const referenceRow = "border-t-2 border-[#bdcbd5] bg-[#edf2f6]";
 const modelNames = new Map(catalog.results.map((row) => [row.model, row.model_name]));
 const gtmModels = (buyingSignals as { models: BuyingModel[] }).models;
 const gtmNames: Record<string, string> = {
-  "luna-decisions": "Luna decisions",
+  "luna-decisions": "Luna Decisions",
   "gpt-6.1": "GPT-6.1",
   "jev-1.13": "Jev 1.13",
   "jev-1.14": "Jev 1.14",
@@ -45,18 +72,59 @@ const gtmNames: Record<string, string> = {
   clef: "Clef",
 };
 
+const links: Record<string, string> = benchmarkLinks;
+const normalize = (name: string) => name.toLowerCase().replace(/[^a-z0-9]/g, "");
 function percent(value: number) { return `${(value * 100).toFixed(1)}%`; }
 function indexScore(value: number) { return value.toFixed(2); }
 
+function MacroRow({ models, scores }: { models: string[]; scores: Array<Array<number | undefined>> }) {
+  // Compare on the same benchmark cohort for every model in this table.
+  const shared = scores.filter((row) => row.every((value) => value != null && Number.isFinite(value)));
+  const averages = models.map((_, column) => shared.length ? shared.reduce((sum, row) => sum + row[column]!, 0) / shared.length : null);
+  const best = Math.max(...averages.flatMap((value, i) => !isReference(models[i]) && value != null ? [value] : []));
+  return <tfoot className="border-t-2 border-[#bdcbd5] bg-[#f2f5f7]"><tr><th scope="row" className="px-4 py-3 font-semibold text-[#333]">Macro average</th>{models.map((id, i) => <td key={id} className={cn("px-3 py-3 text-right", isReference(id) && referenceColumn, !isReference(id) && averages[i] != null && averages[i] === best && "font-bold text-[#2D6598]")}>{averages[i] == null ? "—" : percent(averages[i])}</td>)}</tr></tfoot>;
+}
+
+function BenchmarkLink({ href, name, metric, labels }: { href: string; name: string; metric: string; labels?: number }) {
+  const tooltipId = useId();
+  const [position, setPosition] = useState<{ left: number; top: number; above: boolean } | null>(null);
+  useEffect(() => {
+    if (!position) return;
+    const close = () => setPosition(null);
+    window.addEventListener("scroll", close, true);
+    window.addEventListener("resize", close);
+    return () => {
+      window.removeEventListener("scroll", close, true);
+      window.removeEventListener("resize", close);
+    };
+  }, [position]);
+  function show(target: HTMLAnchorElement) {
+    const rect = target.getBoundingClientRect();
+    const above = window.innerHeight - rect.bottom < 130;
+    setPosition({ left: Math.max(12, Math.min(rect.left, window.innerWidth - 272)), top: above ? rect.top - 10 : rect.bottom + 10, above });
+  }
+  return <>
+    <a href={href} aria-describedby={position ? tooltipId : undefined} onMouseEnter={(event) => show(event.currentTarget)} onMouseLeave={() => setPosition(null)} onFocus={(event) => show(event.currentTarget)} onBlur={() => setPosition(null)} onKeyDown={(event) => { if (event.key === "Escape") setPosition(null); }} className="rounded-sm hover:text-[#2a6496] hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2D6598]">{name} ↗</a>
+    {position && createPortal(
+      <div id={tooltipId} role="tooltip" style={{ left: position.left, top: position.top, transform: position.above ? "translateY(-100%)" : undefined }} className="pointer-events-none fixed z-50 w-[260px] rounded-xl border border-[#d8e1e8] bg-white p-4 text-left font-sans text-[12px] font-normal text-[#454545] shadow-[0_6px_24px_rgba(24,49,67,0.16)]">
+        <p className="mb-3 font-semibold text-[#222]">{name}</p>
+        <dl className="space-y-2"><div className="flex items-baseline justify-between gap-4"><dt className="text-[#777]">Metric</dt><dd className="text-right capitalize text-[#2D6598]">{metric}</dd></div><div className="flex items-baseline justify-between gap-4 border-t border-[#edf0f2] pt-2"><dt className="shrink-0 text-[#777]">Evaluation labels</dt><dd className="text-right tabular-nums">{labels == null ? "Not recorded" : labels.toLocaleString()}</dd></div></dl>
+      </div>, document.body)}
+  </>;
+}
+
 export function BenchmarkPage() {
-  const [domain, setDomain] = useState("knowledge");
-  const indexByDomain = useMemo(() => indexModel.benchmarks.filter((row) => row.domain === domain), [domain]);
+  const [indexChart, setIndexChart] = useState(true);
+  const [domainChart, setDomainChart] = useState(true);
+  const [domain, setDomain] = useState("gtm");
+  const indexByDomain = useMemo(() => indexModel.benchmarks.filter((row) => row.domain === domain).sort((a, b) => Number(indexModaicWins(b)) - Number(indexModaicWins(a))), [domain]);
   const evaluations = useMemo(() => {
     const grouped = new Map<string, Result[]>();
-    for (const result of catalog.results.filter((row) => row.domain === domain)) {
+    const indexed = new Set(indexModel.benchmarks.flatMap((row) => [normalize(row.name), normalize(row.short)]));
+    for (const result of catalog.results.filter((row) => row.domain === domain && !indexed.has(normalize(row.name)) && !(row.benchmark.startsWith("musr_") && indexed.has("musr")))) {
       grouped.set(result.name, [...(grouped.get(result.name) ?? []), result]);
     }
-    return [...grouped.entries()];
+    return [...grouped.entries()].sort((a, b) => Number(evaluationModaicWins(b[1])) - Number(evaluationModaicWins(a[1])));
   }, [domain]);
 
   return (
@@ -84,8 +152,7 @@ export function BenchmarkPage() {
 
       <section className="py-8">
         <div className="flex items-baseline justify-between gap-4">
-          <h2 className="text-[16px] font-semibold tracking-[-0.02em] text-[#171717]">Decision Index breakdown</h2>
-          <a href={catalog.decision_index.source} target="_blank" rel="noreferrer" className="text-[10px] text-[#2a6496] hover:underline">Source ↗</a>
+          <div className="flex flex-wrap items-center gap-4"><h2 className="text-[16px] font-semibold tracking-[-0.02em] text-[#171717]"><a href={catalog.decision_index.source} target="_blank" rel="noreferrer" className="hover:text-[#2a6496] hover:underline">Decision Index ↗</a></h2><ViewSwitch label="Decision Index" chart={indexChart} onChange={setIndexChart} /></div>
         </div>
         <div className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-[#e5e5e3] bg-[#e5e5e3] sm:grid-cols-5">
           {indexModel.domains.map((item) => (
@@ -96,74 +163,80 @@ export function BenchmarkPage() {
             </div>
           ))}
         </div>
+        {indexChart ? <div className="mt-5"><BenchmarkBarView showBreakdown={false} models={indexModels} overview={indexModels.map((model) => model.scores.balanced_skill / 100)} overviewLabel="Balanced skill" breakdownLabel="Domain raw score" rows={indexModel.domains.map((item) => ({ name: item.id === "knowledge" ? "Academic" : item.id.charAt(0).toUpperCase() + item.id.slice(1), scores: indexModels.map((model) => model.domains.find((d) => d.id === item.id)?.raw) }))} /></div> : <>
         <div className="mt-5 overflow-x-auto rounded-lg border border-[#e8e8e6]">
           <table className="w-full min-w-[680px] text-left text-[11px] tabular-nums">
             <thead className="bg-[#f7f7f5] text-[#888]"><tr><th className="px-4 py-2 font-medium">Model</th><th className="px-4 py-2 text-right font-medium">Balanced skill</th><th className="px-4 py-2 text-right font-medium">Balanced raw</th><th className="px-4 py-2 text-right font-medium">Breadth skill</th><th className="px-4 py-2 text-right font-medium">Coverage</th></tr></thead>
-            <tbody>{catalog.decision_index.models.map((model) => <tr key={model.id} className="border-t border-[#ededeb]"><th className="px-4 py-2.5 font-medium text-[#333]">{model.name}</th><td className="px-4 py-2.5 text-right font-medium text-[#2D6598]">{indexScore(model.scores.balanced_skill)}</td><td className="px-4 py-2.5 text-right">{indexScore(model.scores.balanced_raw)}</td><td className="px-4 py-2.5 text-right">{indexScore(model.scores.breadth_skill)}</td><td className="px-4 py-2.5 text-right">{percent(model.coverage)}</td></tr>)}</tbody>
+            <tbody>{indexModels.map((model) => <tr key={model.id} className={cn("border-t border-[#ededeb]", isReference(model.id) && referenceRow)}><th className={cn("px-4 py-2.5 text-[#333]", isReference(model.id) ? "font-normal" : "font-medium")}>{isReference(model.id) ? referenceName : model.name}</th><td className={cn("px-4 py-2.5 text-right", !isReference(model.id) && model.scores.balanced_skill === Math.max(...decisionModels.map((m) => m.scores.balanced_skill)) && "font-bold")}>{indexScore(model.scores.balanced_skill)}</td><td className={cn("px-4 py-2.5 text-right", !isReference(model.id) && model.scores.balanced_raw === Math.max(...decisionModels.map((m) => m.scores.balanced_raw)) && "font-bold")}>{indexScore(model.scores.balanced_raw)}</td><td className={cn("px-4 py-2.5 text-right", !isReference(model.id) && model.scores.breadth_skill === Math.max(...decisionModels.map((m) => m.scores.breadth_skill)) && "font-bold")}>{indexScore(model.scores.breadth_skill)}</td><td className="px-4 py-2.5 text-right">{percent(model.coverage)}</td></tr>)}</tbody>
+            <tfoot className="border-t-2 border-[#bdcbd5] bg-[#f2f5f7]"><tr><th className="px-4 py-3 font-semibold">Best balanced skill</th><td colSpan={4} className="px-4 py-3 text-right font-bold text-[#2D6598]">{decisionModels.filter((model) => model.scores.balanced_skill === Math.max(...decisionModels.map((m) => m.scores.balanced_skill))).map((model) => `${model.name} · ${indexScore(model.scores.balanced_skill)}`).join(" / ")}</td></tr></tfoot>
           </table>
         </div>
+        </>}
       </section>
 
       <section className="border-t border-[#e5e5e3] pt-8">
-        <h2 className="text-[19px] font-semibold tracking-[-0.03em] text-[#171717]">Benchmarks by domain</h2>
+        <div className="flex flex-wrap items-center gap-4"><h2 className="text-[19px] font-semibold tracking-[-0.03em] text-[#171717]">Benchmarks by domain</h2><ViewSwitch label="Benchmarks by domain" chart={domainChart} onChange={setDomainChart} /></div>
         <div role="tablist" aria-label="Benchmark domains" className="mt-5 flex gap-2 overflow-x-auto pb-2">
-          {catalog.domains.map((item) => (
-            <button key={item.id} role="tab" type="button" aria-selected={domain === item.id} onClick={() => setDomain(item.id)} className={cn("shrink-0 rounded-full border px-3 py-1.5 text-[11px] font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2D6598]", domain === item.id ? "border-[#2D6598] bg-[#2D6598] text-white" : "border-[#e1e1df] bg-white text-[#666] hover:border-[#8faaba] hover:text-[#2D6598]")}>{item.name}</button>
+          {domains.map((item) => (
+            <button key={item.id} role="tab" type="button" aria-selected={domain === item.id} onClick={() => setDomain(item.id)} className={cn("shrink-0 rounded-full border px-3 py-1.5 text-[11px] font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2D6598]", domain === item.id ? "border-[#2D6598] bg-[#2D6598] text-white" : "border-[#e1e1df] bg-white text-[#666] hover:border-[#8faaba] hover:text-[#2D6598]")}>{item.id === "knowledge" ? "Academic" : item.name}</button>
           ))}
         </div>
 
         <div role="tabpanel" className="mt-6 space-y-7">
           {domain === "gtm" ? (
             <section>
-              <div className="mb-3 flex items-baseline justify-between"><h3 className="text-[14px] font-semibold text-[#222]">Buying Signals</h3><a href="https://github.com/modaic-ai/mo-benchmarks/tree/main/benchmarks/gtm/buying_signals" className="text-[10px] text-[#2a6496] hover:underline">Results ↗</a></div>
+              <div className="mb-3 flex items-baseline justify-between"><h3 className="text-[14px] font-semibold text-[#222]"><a href={links.buying_signals} className="hover:underline">Buying Signals ↗</a></h3><a href="https://github.com/modaic-ai/mo-benchmarks/tree/main/benchmarks/gtm/buying_signals" className="text-[10px] text-[#2a6496] hover:underline">Results ↗</a></div>
+              {domainChart ? <BenchmarkBarView models={[...gtmModels].sort(modelOrder).map((model) => ({ id: model.id, name: gtmNames[model.id] ?? model.id }))} rows={[{ name: "Buying Signals", scores: [...gtmModels].sort(modelOrder).map((model) => model.macro.accuracy) }]} /> : <>
               <div className="overflow-x-auto rounded-lg border border-[#e8e8e6]">
                 <table className="w-full min-w-[520px] text-left text-[11px] tabular-nums">
                   <thead className="bg-[#f7f7f5] text-[#888]"><tr><th className="px-4 py-2 font-medium">Model</th><th className="px-4 py-2 text-right font-medium">Accuracy</th><th className="px-4 py-2 text-right font-medium">AUROC</th><th className="px-4 py-2 text-right font-medium">ECE ↓</th></tr></thead>
-                  <tbody>{[...gtmModels].sort((a, b) => b.macro.accuracy - a.macro.accuracy).map((model) => <tr key={model.id} className="border-t border-[#ededeb]"><th className="px-4 py-2.5 font-medium text-[#333]">{gtmNames[model.id] ?? model.id}</th><td className="px-4 py-2.5 text-right">{percent(model.macro.accuracy)}</td><td className="px-4 py-2.5 text-right">{model.macro.auroc.toFixed(3)}</td><td className="px-4 py-2.5 text-right">{model.macro.ece.toFixed(3)}</td></tr>)}</tbody>
+                  <tbody>{[...gtmModels].sort(modelOrder).map((model) => <tr key={model.id} className={cn("border-t border-[#ededeb]", isReference(model.id) && referenceRow)}><th className={cn("px-4 py-2.5 text-[#333]", isReference(model.id) ? "font-normal" : "font-medium")}>{gtmNames[model.id] ?? model.id}</th><td className={cn("px-4 py-2.5 text-right", !isReference(model.id) && model.macro.accuracy === Math.max(...gtmModels.filter((m) => !isReference(m.id)).map((m) => m.macro.accuracy)) && "font-bold")}>{percent(model.macro.accuracy)}</td><td className={cn("px-4 py-2.5 text-right", !isReference(model.id) && model.macro.auroc === Math.max(...gtmModels.filter((m) => !isReference(m.id)).map((m) => m.macro.auroc)) && "font-bold")}>{model.macro.auroc.toFixed(3)}</td><td className={cn("px-4 py-2.5 text-right", !isReference(model.id) && model.macro.ece === Math.min(...gtmModels.filter((m) => !isReference(m.id)).map((m) => m.macro.ece)) && "font-bold")}>{model.macro.ece.toFixed(3)}</td></tr>)}</tbody>
+                  <tfoot className="border-t-2 border-[#bdcbd5] bg-[#f2f5f7]"><tr><th className="px-4 py-3 font-semibold">Best macro accuracy</th><td colSpan={3} className="px-4 py-3 text-right font-bold text-[#2D6598]">{gtmModels.filter((model) => !isReference(model.id) && model.macro.accuracy === Math.max(...gtmModels.filter((m) => !isReference(m.id)).map((m) => m.macro.accuracy))).map((model) => `${gtmNames[model.id]} · ${percent(model.macro.accuracy)}`).join(" / ")}</td></tr></tfoot>
                 </table>
               </div>
+              </>}
             </section>
           ) : (
             <>
-              {domain === "finance" && (
-                <section className="rounded-lg border border-[#e8e8e6] bg-[#fcfcfb] px-5 py-4">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                      <h3 className="text-[14px] font-semibold text-[#222]">Finance alignment uplift</h3>
-                      <p className="mt-1 text-[11px] text-[#777]">Held-out results before and after task-specific alignment across 12 finance benchmarks.</p>
-                    </div>
-                    <Link href="/finance-uplift" className="text-[11px] font-medium text-[#2a6496] hover:underline">View uplift results →</Link>
-                  </div>
-                </section>
-              )}
               {indexByDomain.length > 0 && (
                 <section>
-                  <h3 className="mb-3 text-[14px] font-semibold text-[#222]">Decision Index</h3>
+                  <h3 className="mb-3 text-[14px] font-semibold text-[#222]"><a href={catalog.decision_index.source} className="hover:underline">Decision Index ↗</a></h3>
+                  {domainChart ? <BenchmarkBarView key={`index-${domain}`} models={indexModels} overviewLabel="Macro raw score" rows={indexByDomain.map((row) => ({ name: row.short, scores: indexModels.map((model) => model.benchmarks.find((item) => item.id === row.id)?.raw) }))} /> : <>
                   <div className="overflow-x-auto rounded-lg border border-[#e8e8e6]">
                     <table className="w-full min-w-[1180px] text-left text-[11px] tabular-nums">
-                      <thead className="bg-[#f7f7f5] text-[#888]"><tr><th className="px-4 py-2 font-medium">Benchmark</th><th className="px-4 py-2 font-medium">Metric</th>{catalog.decision_index.models.map((model) => <th key={model.id} className="px-3 py-2 text-right font-medium">{model.name}</th>)}</tr></thead>
-                      <tbody>{indexByDomain.map((row) => <tr key={row.id} className="border-t border-[#ededeb]"><th className="px-4 py-2.5 font-medium text-[#333]">{row.short}</th><td className="px-4 py-2.5 text-[#777]">{row.metric}</td>{catalog.decision_index.models.map((model) => { const score = model.benchmarks.find((item) => item.id === row.id); return <td key={model.id} className="px-3 py-2.5 text-right">{score ? percent(score.raw) : "—"}</td>; })}</tr>)}</tbody>
+                      <thead className="bg-[#f7f7f5] text-[#888]"><tr><th className="px-4 py-2 font-medium">Benchmark</th>{indexModels.map((model) => <th key={model.id} className={cn("px-3 py-2 text-right font-medium", isReference(model.id) && referenceColumn)}>{isReference(model.id) ? referenceName : model.name}</th>)}</tr></thead>
+                      <tbody>{indexByDomain.map((row) => <tr key={row.id} className="border-t border-[#ededeb]"><th className="px-4 py-2.5 font-medium text-[#333]"><BenchmarkLink href={links[row.name]} name={row.short} metric={row.metric} /></th>{indexModels.map((model) => { const score = model.benchmarks.find((item) => item.id === row.id); return <td key={model.id} className={cn("px-3 py-2.5 text-right", isReference(model.id) && referenceColumn, !isReference(model.id) && score && score.raw === Math.max(...decisionModels.flatMap((m) => m.benchmarks.filter((b) => b.id === row.id).map((b) => b.raw))) && "font-bold")}>{score ? percent(score.raw) : "—"}</td>; })}</tr>)}</tbody>
+                      <MacroRow models={indexModels.map((model) => model.id)} scores={indexByDomain.map((row) => indexModels.map((model) => model.benchmarks.find((item) => item.id === row.id)?.raw))} />
                     </table>
                   </div>
+                  </>}
                 </section>
               )}
               {evaluations.length > 0 && (
                 <section>
-                  <h3 className="mb-3 text-[14px] font-semibold text-[#222]">Additional evaluations</h3>
+                  {indexByDomain.length > 0 && <h3 className="mb-3 text-[14px] font-semibold text-[#222]">Additional evaluations</h3>}
+                  {domainChart ? <BenchmarkBarView key={`evaluations-${domain}`} models={roster.map((id) => ({ id, name: modelNames.get(id) ?? id }))} rows={evaluations.map(([name, rows]) => ({ name, scores: roster.map((model) => rows.find((row) => row.model === model)?.accuracy) }))} /> : <>
                   <div className="overflow-x-auto rounded-lg border border-[#e8e8e6]">
                     <table className="w-full min-w-[1180px] text-left text-[11px] tabular-nums">
-                      <thead className="bg-[#f7f7f5] text-[#888]"><tr><th className="px-4 py-2 font-medium">Benchmark</th><th className="px-4 py-2 text-right font-medium">Rows</th>{roster.map((model) => <th key={model} className="px-3 py-2 text-right font-medium">{modelNames.get(model) ?? model}</th>)}</tr></thead>
+                      <thead className="bg-[#f7f7f5] text-[#888]"><tr><th className="px-4 py-2 font-medium">Benchmark</th>{roster.map((model) => <th key={model} className={cn("px-3 py-2 text-right font-medium", isReference(model) && referenceColumn)}>{isReference(model) ? referenceName : (modelNames.get(model) ?? model)}</th>)}</tr></thead>
                       <tbody>{evaluations.map(([name, rows]) => {
-                        return <tr key={name} className="border-t border-[#ededeb]"><th className="px-4 py-2.5 font-medium text-[#333]">{name}</th><td className="px-4 py-2.5 text-right text-[#777]">{(rows[0]?.rows ?? 0).toLocaleString()}</td>{roster.map((model) => { const result = rows.find((row) => row.model === model); return <td key={model} className="px-3 py-2.5 text-right">{result ? percent(result.accuracy) : "—"}</td>; })}</tr>;
+                        return <tr key={name} className="border-t border-[#ededeb]"><th className="px-4 py-2.5 font-medium text-[#333]"><BenchmarkLink href={links[rows[0].benchmark]} name={name} metric="Exact-answer accuracy" labels={rows[0].rows} /></th>{roster.map((model) => { const result = rows.find((row) => row.model === model); return <td key={model} className={cn("px-3 py-2.5 text-right", isReference(model) && referenceColumn, !isReference(model) && result && result.accuracy === Math.max(...rows.filter((r) => !isReference(r.model)).map((r) => r.accuracy)) && "font-bold")}>{result ? percent(result.accuracy) : "—"}</td>; })}</tr>;
                       })}</tbody>
+                      <MacroRow models={roster} scores={evaluations.map(([, rows]) => roster.map((model) => rows.find((row) => row.model === model)?.accuracy))} />
                     </table>
                   </div>
+                  </>}
                 </section>
               )}
               {indexByDomain.length === 0 && evaluations.length === 0 && <p className="rounded-lg border border-[#e8e8e6] bg-[#fcfcfb] p-5 text-[12px] text-[#777]">No published results in this domain yet.</p>}
             </>
           )}
         </div>
+      </section>
+
+      <section id="training-platform-benchmarks" className="mt-10 border-t border-[#e5e5e3] pt-8">
+        <h2 className="text-[19px] font-semibold tracking-[-0.03em] text-[#171717]">Mo Training Platform Benchmarks</h2>
+        <FinanceUpliftSection />
       </section>
 
       <footer className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t-2 border-[#222] pt-4 text-[10px] text-[#888]">
