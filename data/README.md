@@ -20,4 +20,6 @@ This directory contains complete decision rows for 13 public benchmarks:
 JSONL row contains one complete state, exactly one typed question, and its
 controller-side target.
 
-Aggregate model results are in `benchmark-results.json`.
+Aggregate model results are in `benchmark-results.json`. The Noul-only
+precision, recall, and F1 backfill is also available separately in
+[`noul-metrics.json`](noul-metrics.json).

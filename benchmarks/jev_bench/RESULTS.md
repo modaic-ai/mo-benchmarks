@@ -15,3 +15,23 @@
 Accuracy is exact-answer accuracy. AUROC scores whether the model's argmax is
 correct using maximum conditional option probability. ECE uses 15 equal-width
 bins. Brier and NLL are multiclass decision metrics.
+
+<!-- NOUL_METRICS_START -->
+## Noul subset
+
+The subset contains 74 of 231 rows. Positive answer: `yes`.
+
+| Model | Precision | Recall | F1 | Answered |
+| --- | ---: | ---: | ---: | ---: |
+| Mo 1.3.1 | 86.84% | 94.29% | 90.41% | 74/74 |
+| Mo 1.3.2 | 83.78% | 88.57% | 86.11% | 74/74 |
+| Jev 1.13 | 83.33% | 85.71% | 84.51% | 74/74 |
+| Jev 1.14 | 88.57% | 88.57% | 88.57% | 74/74 |
+| Luna Decisions | 89.19% | 94.29% | 91.67% | 74/74 |
+| PPLX | 82.50% | 94.29% | 88.00% | 74/74 |
+| GPT-6.1 | 100.00% | 97.14% | 98.55% | 74/74 |
+| Mo Fast | 88.24% | 85.71% | 86.96% | 74/74 |
+| Clef | 93.94% | 88.57% | 91.18% | 74/74 |
+
+Precision, recall, and F1 are computed on answered Noul rows. Unanswered requests are not mapped to either answer and remain incorrect in full-denominator accuracy. Structured values are in [`data/noul-metrics.json`](../../data/noul-metrics.json).
+<!-- NOUL_METRICS_END -->

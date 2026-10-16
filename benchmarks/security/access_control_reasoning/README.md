@@ -51,3 +51,23 @@ Three representative Security rows are visible in [`../examples.jsonl`](../examp
 | Compositional risk | 90.00% | 100.00% | 65.00% | 75.00% | 75.00% | 95.00% | 100.00% | 35.00% | 65.00% |
 
 Scores are exact-answer accuracy on hard-target rows.
+
+<!-- NOUL_METRICS_START -->
+## Noul metrics
+
+Positive answer: `yes`. Cells are `precision / recall / F1`; Choice and Score views are excluded.
+
+| Model | Alternate paths | Time boundaries | Unknown sufficiency | Remediation vs access |
+| --- | ---: | ---: | ---: | ---: |
+| Mo 1.3.1 | 100.00% / 100.00% / 100.00% | 75.00% / 60.00% / 66.67% | 100.00% / 100.00% / 100.00% | 100.00% / 100.00% / 100.00% |
+| Mo 1.3.2 | 100.00% / 100.00% / 100.00% | 100.00% / 50.00% / 66.67% | 100.00% / 100.00% / 100.00% | 100.00% / 100.00% / 100.00% |
+| Jev 1.13 | 0.00% / 0.00% / 0.00% | 100.00% / 50.00% / 66.67% | 100.00% / 100.00% / 100.00% | 0.00% / 0.00% / 0.00% |
+| Jev 1.14 | 0.00% / 0.00% / 0.00% | 71.43% / 50.00% / 58.82% | 100.00% / 100.00% / 100.00% | 0.00% / 0.00% / 0.00% |
+| Luna Decisions | 100.00% / 20.00% / 33.33% | 0.00% / 0.00% / 0.00% | 90.00% / 90.00% / 90.00% | 0.00% / 0.00% / 0.00% |
+| PPLX | 100.00% / 100.00% / 100.00% | 100.00% / 50.00% / 66.67% | 100.00% / 100.00% / 100.00% | 100.00% / 100.00% / 100.00% |
+| GPT-6.1 | 100.00% / 100.00% / 100.00% | 100.00% / 100.00% / 100.00% | 100.00% / 100.00% / 100.00% | 100.00% / 100.00% / 100.00% |
+| Mo Fast | 100.00% / 60.00% / 75.00% | 100.00% / 50.00% / 66.67% | 0.00% / 0.00% / 0.00% | 100.00% / 100.00% / 100.00% |
+| Clef | 100.00% / 100.00% / 100.00% | 100.00% / 40.00% / 57.14% | 100.00% / 20.00% / 33.33% | 100.00% / 40.00% / 57.14% |
+
+Precision, recall, and F1 are computed on answered Noul rows. Unanswered requests are not mapped to either answer and remain incorrect in full-denominator accuracy. Structured values are in [`data/noul-metrics.json`](../../../data/noul-metrics.json).
+<!-- NOUL_METRICS_END -->
