@@ -1,8 +1,10 @@
 # Security benchmarks
 
-- [Modaic Access Recommendation](access_recommendation_test/README.md)
-- [Modaic Access Continuation](access_continuation_test/README.md)
+- [Policy-Conditioned Access Review](policy_conditioned_access_review/README.md)
+- [Compositional Access Continuation](compositional_access_continuation/README.md)
+- [Access-Control Reasoning](access_control_reasoning/README.md)
+- [User Intent Alignment](user_intent_alignment/README.md)
 
-The complete dataset is private: [`modaic/security-decision-benchmarks`](https://huggingface.co/datasets/modaic/security-decision-benchmarks/tree/f1617a20780cef96be15eb6e345e003e976cf292). This repository contains exactly three representative rows in [`examples.jsonl`](examples.jsonl).
+The complete datasets are private: [`modaic/security-decision-benchmarks`](https://huggingface.co/datasets/modaic/security-decision-benchmarks/tree/33e882d646f5a98f21eb53ec8c02299f6df21333). This repository contains exactly three representative rows in [`examples.jsonl`](examples.jsonl).
 
-Example task shapes include a review snapshot mapped to `approve` or `revoke`, and a time-bounded access record mapped to `retain` or `revoke`. The linked representative file shows three complete payloads.
+Each benchmark page describes its decision task, input shape, evaluation views, and nine-model result status. Balanced and prevalence views of the same User Intent Alignment source overlap and are reported separately.
