@@ -26,8 +26,6 @@
   "rod101_essay_scoring": "https://github.com/modaic-ai/mo-benchmarks/tree/main/benchmarks/language/rod101_essay_scoring",
   "halueval_summarization": "https://github.com/modaic-ai/mo-benchmarks/tree/main/benchmarks/safety/halueval_summarization",
   "or_bench_toxic": "https://github.com/modaic-ai/mo-benchmarks/tree/main/benchmarks/safety/or_bench_toxic",
-  "access_continuation_test": "/benchmarks/access-continuation",
-  "access_recommendation_test": "/benchmarks/access-recommendation",
   "code_judge_bench": "https://github.com/modaic-ai/mo-benchmarks/tree/main/benchmarks/tools/code_judge_bench",
   "GPQA Diamond": "https://github.com/modaic-ai/mo-benchmarks/tree/main/benchmarks/knowledge/decision_index/gpqa_diamond",
   "GSM8K": "https://github.com/modaic-ai/mo-benchmarks/tree/main/benchmarks/knowledge/decision_index/gsm8k",
@@ -66,5 +64,18 @@
   "cfcolor": "https://github.com/modaic-ai/mo-benchmarks/tree/main/benchmarks/arts/decision_index/cfcolor",
   "Habermas Machine": "https://github.com/modaic-ai/mo-benchmarks/tree/main/benchmarks/arts/decision_index/habermas_machine",
   "New Yorker": "https://github.com/modaic-ai/mo-benchmarks/tree/main/benchmarks/arts/decision_index/new_yorker",
-  "buying_signals": "https://github.com/modaic-ai/mo-benchmarks/tree/main/benchmarks/gtm/buying_signals"
+  "buying_signals": "https://github.com/modaic-ai/mo-benchmarks/tree/main/benchmarks/gtm/buying_signals",
+  "policy_conditioned_access_review": "/benchmarks/policy-conditioned-access-review",
+  "compositional_access_continuation": "/benchmarks/compositional-access-continuation",
+  "access_control_reasoning:alternate_authorization_paths": "/benchmarks/access-control-reasoning",
+  "access_control_reasoning:temporal_and_timezone_boundaries": "/benchmarks/access-control-reasoning",
+  "access_control_reasoning:sufficiency_under_unknown_completions": "/benchmarks/access-control-reasoning",
+  "access_control_reasoning:remediation_status_versus_effective_access": "/benchmarks/access-control-reasoning",
+  "access_control_reasoning:four_way_policy_disposition": "/benchmarks/access-control-reasoning",
+  "access_control_reasoning:compositional_risk": "/benchmarks/access-control-reasoning",
+  "jev_bench_noul": "https://github.com/MindWareAI/jev-bench",
+  "user_intent_guardrails:openhands_balanced": "/benchmarks/user-intent-guardrails",
+  "user_intent_guardrails:openhands_prevalence": "/benchmarks/user-intent-guardrails",
+  "user_intent_guardrails:pi_balanced": "/benchmarks/user-intent-guardrails",
+  "user_intent_guardrails:pi_prevalence": "/benchmarks/user-intent-guardrails"
 }

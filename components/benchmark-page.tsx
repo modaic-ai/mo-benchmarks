@@ -5,13 +5,12 @@ import { BenchmarkBarView, ViewSwitch } from "@/components/benchmark-bar-view";
 import { useEffect, useId, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import benchmarkData from "@/data/benchmark-results.json";
-import { FinanceUpliftSection } from "@/components/finance-uplift-section";
 import benchmarkLinks from "@/data/benchmark-links.json";
 import buyingSignals from "@/data/buying-signals.json";
 import { cn } from "@/lib/utils";
 
 type Domain = { id: string; name: string };
-type Result = { benchmark: string; name: string; domain: string; model: string; model_name: string; rows: number; accuracy: number };
+type Result = { macro_exclude?: boolean; primary_score?: number; primary_metric?: string; f1?: number; family?: string; group?: string; benchmark: string; name: string; domain: string; model: string; model_name: string; rows: number; accuracy: number };
 type IndexBenchmark = { id: number; name: string; short: string; domain: string; metric: string; raw: number; skill: number };
 type IndexDomain = { id: string; raw: number; skill: number };
 type Aggregate = {
@@ -29,7 +28,7 @@ type Aggregate = {
     }>;
   };
 };
-type BuyingModel = { id: string; macro: { accuracy: number; auroc: number; ece: number } };
+type BuyingModel = { id: string; macro: { f1: number; accuracy: number; auroc: number; ece: number } };
 
 const catalog = benchmarkData as Aggregate;
 const indexModel = catalog.decision_index.models.find((model) => model.id === "mo-1.3.2") ?? catalog.decision_index.models[0];
@@ -52,8 +51,9 @@ function indexModaicWins(row: IndexBenchmark) {
     return result ? [{ id: model.id, score: result.raw }] : [];
   }));
 }
+const primaryScore = (row: Result) => row.primary_score ?? row.accuracy;
 function evaluationModaicWins(rows: Result[]) {
-  return modaicWins(rows.map((row) => ({ id: row.model, score: row.accuracy })));
+  return modaicWins(rows.map((row) => ({ id: row.model, score: primaryScore(row) })));
 }
 const referenceName = "GPT-6.1";
 const referenceColumn = "sticky right-0 z-10 w-[84px] min-w-[84px] max-w-[84px] whitespace-nowrap border-l-2 border-[#bdcbd5] bg-[#edf2f6] font-normal shadow-[-5px_0_8px_-6px_#8095a5]";
@@ -127,6 +127,18 @@ export function BenchmarkPage() {
     return [...grouped.entries()].sort((a, b) => Number(evaluationModaicWins(b[1])) - Number(evaluationModaicWins(a[1])));
   }, [domain]);
 
+  const securityCategories = [
+    { id: "access_reviews", name: "Access review and continuation" },
+    { id: "access_control_reasoning", name: "Access-Control Reasoning" },
+    { id: "user_intent_guardrails", name: "User Intent Guardrails" },
+  ];
+  const securityRows: Array<[string, Result[]]> = securityCategories.map((category) => [category.name, roster.flatMap((model) => {
+    const source = catalog.results.filter((row) => row.domain === "security" && row.group === category.id && row.model === model);
+    if (!source.length) return [];
+    return [{ benchmark: category.id, name: category.name, domain: "security", model, model_name: modelNames.get(model) ?? model, rows: 0, accuracy: source.reduce((sum, row) => sum + (row.accuracy ?? 0), 0) / source.length, primary_score: source.reduce((sum, row) => sum + primaryScore(row), 0) / source.length, primary_metric: category.id === "user_intent_guardrails" ? "F1 on answered rows (positive: no)" : category.id === "access_reviews" ? "accuracy" : "mean primary score" }];
+  })]);
+  const evaluationSections = domain === "security" ? [{ id: "security", title: undefined, href: undefined, note: undefined, macroLabel: "Overall security score", rows: securityRows }] : [{ id: domain, title: indexByDomain.length > 0 ? "Additional evaluations" : undefined, href: undefined, note: undefined, macroLabel: evaluations.some(([, rows]) => rows[0].primary_metric === "F1") ? "Macro score" : "Macro accuracy", rows: evaluations }].filter((section) => section.rows.length > 0);
+
   return (
     <main className="mx-auto max-w-[1160px] px-5 pb-14 pt-6 font-sans text-[#454545] sm:px-10 sm:pt-8">
       <header className="flex items-center justify-between gap-5 border-b border-[#e5e5e3] pb-5">
@@ -186,7 +198,7 @@ export function BenchmarkPage() {
           {domain === "gtm" ? (
             <section>
               <div className="mb-3 flex items-baseline justify-between"><h3 className="text-[14px] font-semibold text-[#222]"><a href={links.buying_signals} className="hover:underline">Buying Signals ↗</a></h3><a href="https://github.com/modaic-ai/mo-benchmarks/tree/main/benchmarks/gtm/buying_signals" className="text-[10px] text-[#2a6496] hover:underline">Results ↗</a></div>
-              {domainChart ? <BenchmarkBarView models={[...gtmModels].sort(modelOrder).map((model) => ({ id: model.id, name: gtmNames[model.id] ?? model.id }))} rows={[{ name: "Buying Signals", scores: [...gtmModels].sort(modelOrder).map((model) => model.macro.accuracy) }]} /> : <>
+              {domainChart ? <BenchmarkBarView overviewLabel="Macro accuracy" models={[...gtmModels].sort(modelOrder).map((model) => ({ id: model.id, name: gtmNames[model.id] ?? model.id }))} rows={[{ name: "Buying Signals", metric: "accuracy", scores: [...gtmModels].sort(modelOrder).map((model) => model.macro.accuracy) }]} /> : <>
               <div className="overflow-x-auto rounded-lg border border-[#e8e8e6]">
                 <table className="w-full min-w-[520px] text-left text-[11px] tabular-nums">
                   <thead className="bg-[#f7f7f5] text-[#888]"><tr><th className="px-4 py-2 font-medium">Model</th><th className="px-4 py-2 text-right font-medium">Accuracy</th><th className="px-4 py-2 text-right font-medium">AUROC</th><th className="px-4 py-2 text-right font-medium">ECE ↓</th></tr></thead>
@@ -201,7 +213,7 @@ export function BenchmarkPage() {
               {indexByDomain.length > 0 && (
                 <section>
                   <h3 className="mb-3 text-[14px] font-semibold text-[#222]"><a href={catalog.decision_index.source} className="hover:underline">Decision Index ↗</a></h3>
-                  {domainChart ? <BenchmarkBarView key={`index-${domain}`} models={indexModels} overviewLabel="Macro raw score" rows={indexByDomain.map((row) => ({ name: row.short, scores: indexModels.map((model) => model.benchmarks.find((item) => item.id === row.id)?.raw) }))} /> : <>
+                  {domainChart ? <BenchmarkBarView key={`index-${domain}`} models={indexModels} overviewLabel="Macro raw score" rows={indexByDomain.map((row) => ({ name: row.short, metric: row.metric, scores: indexModels.map((model) => model.benchmarks.find((item) => item.id === row.id)?.raw) }))} /> : <>
                   <div className="overflow-x-auto rounded-lg border border-[#e8e8e6]">
                     <table className="w-full min-w-[1180px] text-left text-[11px] tabular-nums">
                       <thead className="bg-[#f7f7f5] text-[#888]"><tr><th className="px-4 py-2 font-medium">Benchmark</th>{indexModels.map((model) => <th key={model.id} className={cn("px-3 py-2 text-right font-medium", isReference(model.id) && referenceColumn)}>{isReference(model.id) ? referenceName : model.name}</th>)}</tr></thead>
@@ -212,31 +224,26 @@ export function BenchmarkPage() {
                   </>}
                 </section>
               )}
-              {evaluations.length > 0 && (
-                <section>
-                  {indexByDomain.length > 0 && <h3 className="mb-3 text-[14px] font-semibold text-[#222]">Additional evaluations</h3>}
-                  {domainChart ? <BenchmarkBarView key={`evaluations-${domain}`} models={roster.map((id) => ({ id, name: modelNames.get(id) ?? id }))} rows={evaluations.map(([name, rows]) => ({ name, scores: roster.map((model) => rows.find((row) => row.model === model)?.accuracy) }))} /> : <>
+              {evaluationSections.map((section) => (
+                <section key={section.id}>
+                  {section.title && <h3 className="mb-3 text-[14px] font-semibold text-[#222]">{section.href ? <a href={section.href} className="hover:underline">{section.title} ↗</a> : section.title}</h3>}{section.note && <p className="mb-4 text-[11px] leading-5 text-[#777]">{section.note}</p>}
+                  {domainChart ? <BenchmarkBarView key={`evaluations-${domain}-${section.id}`} breakdownLabel={domain === "security" ? "Security category" : "Benchmark breakdown"} overviewLabel={section.macroLabel} models={roster.map((id) => ({ id, name: modelNames.get(id) ?? id }))} rows={section.rows.map(([name, rows]) => ({ name, includeInMacro: !rows[0].macro_exclude, metric: rows[0].primary_metric ?? "accuracy", scores: roster.map((model) => { const result = rows.find((row) => row.model === model); return result ? primaryScore(result) : undefined; }) }))} /> : <>
                   <div className="overflow-x-auto rounded-lg border border-[#e8e8e6]">
                     <table className="w-full min-w-[1180px] text-left text-[11px] tabular-nums">
                       <thead className="bg-[#f7f7f5] text-[#888]"><tr><th className="px-4 py-2 font-medium">Benchmark</th>{roster.map((model) => <th key={model} className={cn("px-3 py-2 text-right font-medium", isReference(model) && referenceColumn)}>{isReference(model) ? referenceName : (modelNames.get(model) ?? model)}</th>)}</tr></thead>
-                      <tbody>{evaluations.map(([name, rows]) => {
-                        return <tr key={name} className="border-t border-[#ededeb]"><th className="px-4 py-2.5 font-medium text-[#333]"><BenchmarkLink href={links[rows[0].benchmark]} name={name} metric="Exact-answer accuracy" labels={rows[0].rows} /></th>{roster.map((model) => { const result = rows.find((row) => row.model === model); return <td key={model} className={cn("px-3 py-2.5 text-right", isReference(model) && referenceColumn, !isReference(model) && result && result.accuracy === Math.max(...rows.filter((r) => !isReference(r.model)).map((r) => r.accuracy)) && "font-bold")}>{result ? percent(result.accuracy) : "—"}</td>; })}</tr>;
+                      <tbody>{section.rows.map(([name, rows]) => {
+                        return <tr key={name} className="border-t border-[#ededeb]"><th className="px-4 py-2.5 font-medium text-[#333]"><BenchmarkLink href={rows[0].benchmark === "access_reviews" ? "/benchmarks/policy-conditioned-access-review" : rows[0].benchmark === "access_control_reasoning" ? "/benchmarks/access-control-reasoning" : rows[0].benchmark === "user_intent_guardrails" ? "/benchmarks/user-intent-guardrails" : links[rows[0].benchmark]} name={name} metric={rows[0].macro_exclude ? "F1 on the Noul subset; excluded from the macro to avoid counting overlapping examples twice" : rows[0].primary_metric ?? "accuracy"} labels={rows[0].rows || undefined} /></th>{roster.map((model) => { const result = rows.find((row) => row.model === model); return <td key={model} className={cn("px-3 py-2.5 text-right", isReference(model) && referenceColumn, !isReference(model) && result && primaryScore(result) === Math.max(...rows.filter((r) => !isReference(r.model)).map(primaryScore)) && "font-bold")}>{result ? percent(primaryScore(result)) : "—"}</td>; })}</tr>;
                       })}</tbody>
-                      <MacroRow models={roster} scores={evaluations.map(([, rows]) => roster.map((model) => rows.find((row) => row.model === model)?.accuracy))} />
+                      <MacroRow models={roster} scores={section.rows.filter(([, rows]) => !rows[0].macro_exclude).map(([, rows]) => roster.map((model) => { const result = rows.find((row) => row.model === model); return result ? primaryScore(result) : undefined; }))} />
                     </table>
                   </div>
                   </>}
                 </section>
-              )}
+              ))}
               {indexByDomain.length === 0 && evaluations.length === 0 && <p className="rounded-lg border border-[#e8e8e6] bg-[#fcfcfb] p-5 text-[12px] text-[#777]">No published results in this domain yet.</p>}
             </>
           )}
         </div>
-      </section>
-
-      <section id="training-platform-benchmarks" className="mt-10 border-t border-[#e5e5e3] pt-8">
-        <h2 className="text-[19px] font-semibold tracking-[-0.03em] text-[#171717]">Mo Training Platform Benchmarks</h2>
-        <FinanceUpliftSection />
       </section>
 
       <footer className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t-2 border-[#222] pt-4 text-[10px] text-[#888]">

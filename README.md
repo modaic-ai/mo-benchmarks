@@ -48,6 +48,16 @@ For the finance uplift benchmark, complete the phases in its [protocol](benchmar
 node scripts/import-finance-uplift.mjs
 ```
 
+## Refresh Security results
+
+After updating the checked-in Security protocols, regenerate the website aggregate and description links:
+
+```bash
+node scripts/import-security.mjs
+```
+
+The importer preserves the exact existing test scores for access review and continuation and reads the newly published view scores from the Security README tables. Those new scores retain their published two-decimal percentage precision. The site reports Access-Control Reasoning separately as a calibration/development set. User Intent Guardrails views overlap within each source; its macro is an equal-weight mean of view accuracies, not pooled-example accuracy. F1 is the primary display metric for Noul slices, using the exact values in `data/noul-metrics.json`; Choice and Score slices retain accuracy. The JevBench Noul subset is shown separately and excluded from the macro because it overlaps the difficulty tiers. F1 is computed on answered rows, with coverage retained. Unanswered Jev 1.13 requests count as incorrect only in full-denominator accuracy.
+
 ## Adding a benchmark
 
 Place its protocol, pinned dependencies, runner, and tests under `benchmarks/<slug>/`. Keep private inputs and row-level outputs in that benchmark's ignored `data/` and `outputs/` directories. Commit a separate aggregate artifact in the top-level `data/` directory, then add its page and a row to the index above.
