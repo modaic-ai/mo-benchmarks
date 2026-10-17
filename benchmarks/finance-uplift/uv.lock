@@ -172,6 +172,7 @@ name = "mo-finance-uplift-benchmark"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "httpx" },
     { name = "huggingface-hub" },
     { name = "modaic" },
     { name = "pyarrow" },
@@ -179,6 +180,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "httpx", specifier = "==0.28.1" },
     { name = "huggingface-hub", specifier = "==1.30.0" },
     { name = "modaic", specifier = "==0.50.0" },
     { name = "pyarrow", specifier = "==25.0.1" },

@@ -1,0 +1,112 @@
+{
+  "method": "Exact fixed 200-row held-out cohorts from the finance uplift pilot; same question instructions and label criteria; zero-shot external models; no evaluation labels in requests.",
+  "cohort_sha256": {
+    "modernfinbert-sentiment": "d509b87b626e47d355c5cc7f6cbdaef3f1bf76b6511e0bd4b205d6a6ceed602a",
+    "fomc": "ba91d0e40f78844a10d454fc1c85b72d3225d76ffdae40a4812134160a89accb",
+    "german-credit": "eb8a1d08c98acc6db4f77047edb0fc542142510c8628a70a855253db650c7489",
+    "gold-headlines": "ced4e09195e7cdb5857c04a27f1d934dd5537b502aea21c288881a4c543682f9",
+    "multifin": "8d36f767332f0cea2bfe680f67a18ced4c0ca2146478ce9211567c4d1b992f01",
+    "sentivent-event": "03b64070ede4b379a722f33218530187696fa6f279f4d4bce59a84121f2a985d",
+    "twitter-financial-news-topic": "bffea7db22c0d07abf5e67047b944aefc851c81f4eff2d75a71a6939e25a47b8"
+  },
+  "models": {
+    "jev": {
+      "model_id": "~typesafe/jev-latest",
+      "backend": "openrouter_decisions",
+      "reasoning_effort": null,
+      "workers": 8,
+      "served_models": [
+        "typesafe/jev-1.13-20260917"
+      ],
+      "providers": [
+        "TypeSafe"
+      ],
+      "tasks": {
+        "modernfinbert-sentiment": {
+          "n": 200,
+          "correct": 145,
+          "accuracy": 0.725
+        },
+        "fomc": {
+          "n": 200,
+          "correct": 125,
+          "accuracy": 0.625
+        },
+        "german-credit": {
+          "n": 200,
+          "correct": 82,
+          "accuracy": 0.41
+        },
+        "gold-headlines": {
+          "n": 200,
+          "correct": 169,
+          "accuracy": 0.845
+        },
+        "multifin": {
+          "n": 200,
+          "correct": 148,
+          "accuracy": 0.74
+        },
+        "sentivent-event": {
+          "n": 200,
+          "correct": 148,
+          "accuracy": 0.74
+        },
+        "twitter-financial-news-topic": {
+          "n": 200,
+          "correct": 142,
+          "accuracy": 0.71
+        }
+      }
+    },
+    "gpt": {
+      "model_id": "openai/gpt-6.1-sol",
+      "backend": "openrouter_chat",
+      "reasoning_effort": "medium",
+      "workers": 8,
+      "served_models": [
+        "openai/gpt-6.1-sol"
+      ],
+      "providers": [
+        "OpenAI"
+      ],
+      "tasks": {
+        "modernfinbert-sentiment": {
+          "n": 200,
+          "correct": 150,
+          "accuracy": 0.75
+        },
+        "fomc": {
+          "n": 200,
+          "correct": 111,
+          "accuracy": 0.555
+        },
+        "german-credit": {
+          "n": 200,
+          "correct": 159,
+          "accuracy": 0.795
+        },
+        "gold-headlines": {
+          "n": 200,
+          "correct": 175,
+          "accuracy": 0.875
+        },
+        "multifin": {
+          "n": 200,
+          "correct": 158,
+          "accuracy": 0.79
+        },
+        "sentivent-event": {
+          "n": 200,
+          "correct": 146,
+          "accuracy": 0.73
+        },
+        "twitter-financial-news-topic": {
+          "n": 200,
+          "correct": 152,
+          "accuracy": 0.76
+        }
+      }
+    }
+  }
+}

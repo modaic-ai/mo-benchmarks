@@ -140,3 +140,35 @@ individual rows corrected and regressed. These public datasets may have been
 seen during foundation-model training, and the 200-row cohorts give limited
 precision; the result measures this specific alignment run, not all finance
 tasks or production performance.
+
+## Jev and GPT-6.1 Sol comparison
+
+`compare_external.py` scores Jev and GPT-6.1 Sol on the exact 200-row evaluation
+cohorts used by the seven tasks in the standalone finance chart: financial
+sentiment, FOMC stance, German credit, gold headlines, MultiFin, SENTiVENT,
+and Twitter topics. It verifies every saved cohort fingerprint before any
+model call. The model requests contain the row state and the same task
+instructions and label criteria as Mo, but never the gold label or training
+rows. These are direct, zero-shot model calls; neither external model is
+aligned on the finance training examples.
+
+Jev uses OpenRouter Decisions with a native `choice` question and model ID
+`~typesafe/jev-latest`. GPT-6.1 Sol uses OpenRouter Chat Completions with a
+strict JSON-schema choice, model ID `openai/gpt-6.1-sol`, and medium reasoning.
+The runner defaults to eight concurrent workers for each model and retries
+transient failures. It saves predictions after each completed request under
+ignored `outputs/external-comparison/`, so interrupted runs resume.
+
+From this directory, with `OPENROUTER_API_KEY` in the environment:
+
+```bash
+uv sync --locked
+uv run --locked python compare_external.py --plan
+uv run --locked python compare_external.py --models jev,gpt
+```
+
+Pass `--env-file /path/to/private/.env` if the key is stored in a local file.
+When both models complete all 1,400 rows, the runner writes only aggregate
+accuracy and provenance to `../../data/finance-external-comparison.json`.
+Use `--report-only` to regenerate that aggregate without sending requests.
+The completed scores are in [EXTERNAL_RESULTS.md](EXTERNAL_RESULTS.md).
