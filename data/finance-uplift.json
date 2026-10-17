@@ -1,6 +1,6 @@
 {
   "benchmark": "Finance alignment uplift",
-  "base_model": "modaic/mo",
+  "base_model": "Mo 1.3.1",
   "method": "One saved model per task; up to 200 captured training rows; fixed held-out evaluation. Banking77 also compares a second alignment after adding audited ground reasoning to the same examples.",
   "tasks": [
     {
@@ -10,32 +10,19 @@
       "dataset": "DeepPavlov/banking77",
       "evaluationSplit": "test",
       "n": 200,
-      "base_model": "modaic/mo",
+      "training_labels": 200,
       "baseline_accuracy": 0.87,
       "aligned_accuracy": 0.835,
+      "alignment_outcome": "new_checkpoint",
+      "label_only_accuracy": 0.85,
+      "ground_reasoning_count": 167,
       "uplift_pp": -3.5,
       "uplift_95pct_bootstrap_ci_pp": [
         -7,
         -0.5
       ],
       "fixed_to_correct": 2,
-      "regressed_to_wrong": 9,
-      "baseline_p50_ms": 250.5,
-      "aligned_p50_ms": 654.4499999999999,
-      "model_path": "modaic_labs/finance-banking77-routing-mo-8c84c93e",
-      "cohort_sha256": "8c84c93e98d2c93abf503098badfde45e7924387d6007d23d3161476615392a1",
-      "baseline_revision": "ee9287b479064aee8e9af4d2bdfc3ea9bd118a5f",
-      "label_only_revision": "b4a6f7e475a07e281fb145dee23cbe339a8a38be",
-      "aligned_revision": "e78c5daff0d4f1cde433b296f0d4f2fd1540ed04",
-      "label_only_accuracy": 0.85,
-      "label_only_uplift_pp": -2,
-      "reasoning_vs_label_only_pp": -1.5000000000000013,
-      "alignment_id": "5d849464-bd97-4294-96db-94c92fb3ec87",
-      "batch_id": "27d63572-7976-4b4e-b4b5-227a7a37c44f",
-      "batch_status": "completed",
-      "training_labels": 200,
-      "ground_reasoning_count": 167,
-      "reasoning_provenance": "curated from training utterances and Banking77 taxonomy; not source-provided"
+      "regressed_to_wrong": 9
     },
     {
       "slug": "cfpb-routing",
@@ -44,29 +31,17 @@
       "dataset": "Johnade/consumer_complaints_cfpb",
       "evaluationSplit": "test",
       "n": 200,
-      "base_model": "modaic/mo",
+      "training_labels": 200,
       "baseline_accuracy": 0.45,
       "aligned_accuracy": 0.455,
+      "alignment_outcome": "new_checkpoint",
       "uplift_pp": 0.5,
       "uplift_95pct_bootstrap_ci_pp": [
         -6,
         7
       ],
       "fixed_to_correct": 23,
-      "regressed_to_wrong": 22,
-      "baseline_p50_ms": 165.1,
-      "aligned_p50_ms": 261.90000000000003,
-      "model_path": "modaic_labs/finance-cfpb-routing-mo-48f7daf1",
-      "cohort_sha256": "4107026b0a6d6bbc55bb4fd9fc70d846359ec736d9e116a082448c9a12851cbf",
-      "source_train_cohort_sha256": "48f7daf18e2603fa3f06aa465ba4fd2f37ffb3bf06ffc65b5f3df50a24a95512",
-      "baseline_revision": "d235bda462d6ba6144ce2ef2288284992d832631",
-      "aligned_revision": "87e62beef7a3ddbb41c7a4efb8ef4d4f365e9ffd",
-      "alignment_id": "529a60dc-d23f-4941-9e59-1b9854959664",
-      "batch_id": "0a7d5c88-d14f-4636-823d-5f88aca78d7b",
-      "batch_status": "completed",
-      "training_labels": 200,
-      "near_duplicate_test_rows_excluded": 136,
-      "test_similarity_exclusion": "5-token Jaccard >= 0.8 against any selected training complaint"
+      "regressed_to_wrong": 22
     },
     {
       "slug": "esg",
@@ -75,109 +50,36 @@
       "dataset": "ChanceFocus/flare-mlesg",
       "evaluationSplit": "test",
       "n": 200,
-      "base_model": "modaic/mo",
+      "training_labels": 200,
       "baseline_accuracy": 0.385,
       "aligned_accuracy": 0.385,
+      "alignment_outcome": "new_checkpoint",
       "uplift_pp": 0,
       "uplift_95pct_bootstrap_ci_pp": [
         -4,
         3.5
       ],
       "fixed_to_correct": 7,
-      "regressed_to_wrong": 7,
-      "baseline_p50_ms": 133.1,
-      "aligned_p50_ms": 162.6,
-      "model_path": "modaic_labs/finance-esg-mo-ac74c6bc",
-      "cohort_sha256": "ac74c6bc8fdf060e31c0ac5b3c6ea2a79e41e998b054c42672eb7572da15c4a8",
-      "baseline_revision": "0772190cdada66def76a8ed631cdc877a8b9add5",
-      "aligned_revision": "3e795f4ccadc23d97ee73c6d4cfd148952c865d2",
-      "alignment_id": "fb85f5d9-3b13-4be3-b960-34b290ed5480",
-      "batch_id": "b09fa57e-fbfc-444b-af5a-21c08e93a804",
-      "batch_status": "completed",
-      "training_labels": 200,
-      "source_train_repo": "sagacemente/FinNLP_2023",
-      "source_train_revision": "3009e332a34e639cdd78e2f98b5bd9cb6e99d0dc",
-      "near_duplicate_test_rows_excluded": 1,
-      "test_similarity_exclusion": "5-token Jaccard >= 0.6 against any selected training article"
+      "regressed_to_wrong": 7
     },
     {
       "slug": "modernfinbert-sentiment",
       "label": "Financial sentiment (human labels)",
-      "chartLabel": "Financial sentiment",
+      "chartLabel": "Sentiment",
       "dataset": "neoyipeng/modernfinbert-training-v2",
       "evaluationSplit": "test",
       "n": 200,
-      "base_model": "modaic/mo",
+      "training_labels": 200,
       "baseline_accuracy": 0.7,
       "aligned_accuracy": 0.72,
-      "uplift_pp": 2.0,
+      "alignment_outcome": "new_checkpoint",
+      "uplift_pp": 2,
       "uplift_95pct_bootstrap_ci_pp": [
-        -2.0,
-        6.0
+        -2,
+        6
       ],
       "fixed_to_correct": 10,
-      "regressed_to_wrong": 6,
-      "baseline_p50_ms": 173.04999999999998,
-      "aligned_p50_ms": 145.50000000000003,
-      "task": "modernfinbert-sentiment",
-      "alignment_outcome": "new_checkpoint",
-      "model_path": "modaic_labs/finance-modernfinbert-sentiment-mo-d509b87b",
-      "cohort_sha256": "d509b87b626e47d355c5cc7f6cbdaef3f1bf76b6511e0bd4b205d6a6ceed602a",
-      "baseline_revision": "3f727902f372668120a72b60ffe41a927e6f2a6c",
-      "aligned_revision": "c99a4a586cf08a65ae1b07a1115dd1b5ec143c2e",
-      "alignment_id": "1406e796-ca08-4f77-8116-4e31dc4c2002",
-      "batch_id": "2c5d7708-b9e4-49bb-a403-2e4fa5b7f17f",
-      "batch_status": "completed",
-      "training_labels": 200,
-      "source_repo": "neoyipeng/modernfinbert-training-v2",
-      "source_revision": "ce29c90c1899bd7570b106546e5ebf584ad273c7",
-      "source_file_sha256": {
-        "data/train-00000-of-00001-141cb71fa4de7db1.parquet": "8f247fa4f95f595e3a81a98c78254db78773bf0cc433dbac9b339054eca17be5",
-        "data/test-00000-of-00001-0bfa6ce341dc4053.parquet": "94afe70a7ceab558231328459996dba522d32ed5ea4d2887990cc0663584a0c9"
-      },
-      "evaluation_split": "test",
-      "sample_seed": 20261002,
-      "test_similarity_exclusion": "5-token Jaccard >= 0.8 against any selected training sentence",
-      "near_duplicate_test_rows_excluded": 0,
-      "baseline_macro_f1": 0.7009450741251314,
-      "aligned_macro_f1": 0.7186092713305468,
-      "label_filter": "human or human_aggregated only; no llm_consensus rows",
-      "baseline_by_source": {
-        "aiera_transcripts": {
-          "n": 41,
-          "accuracy": 0.7317073170731707
-        },
-        "financemteb_finsent": {
-          "n": 53,
-          "accuracy": 0.8867924528301887
-        },
-        "subjectiveqa": {
-          "n": 53,
-          "accuracy": 0.41509433962264153
-        },
-        "timkoornstra_tweets": {
-          "n": 53,
-          "accuracy": 0.7735849056603774
-        }
-      },
-      "aligned_by_source": {
-        "aiera_transcripts": {
-          "n": 41,
-          "accuracy": 0.6829268292682927
-        },
-        "financemteb_finsent": {
-          "n": 53,
-          "accuracy": 0.9245283018867925
-        },
-        "subjectiveqa": {
-          "n": 53,
-          "accuracy": 0.41509433962264153
-        },
-        "timkoornstra_tweets": {
-          "n": 53,
-          "accuracy": 0.8490566037735849
-        }
-      }
+      "regressed_to_wrong": 6
     },
     {
       "slug": "fincalc-nli",
@@ -186,24 +88,14 @@
       "dataset": "anespo28/fincalc-nli",
       "evaluationSplit": "test",
       "n": 200,
-      "base_model": "modaic/mo",
+      "training_labels": 200,
       "baseline_accuracy": 0.92,
       "aligned_accuracy": null,
+      "alignment_outcome": "no_new_checkpoint",
       "uplift_pp": null,
       "uplift_95pct_bootstrap_ci_pp": null,
       "fixed_to_correct": null,
-      "regressed_to_wrong": null,
-      "baseline_p50_ms": 146.95,
-      "aligned_p50_ms": null,
-      "alignment_outcome": "no_new_checkpoint",
-      "model_path": "modaic_labs/finance-fincalc-nli-mo-056a9561",
-      "cohort_sha256": "056a9561a790e88b656250e22cb0bcbf44645a238af652f54f946650c9ad3ad6",
-      "baseline_revision": "63938f947eb2d061fea5e196680a0dda41198e49",
-      "aligned_revision": "63938f947eb2d061fea5e196680a0dda41198e49",
-      "alignment_id": "bffd984d-36f6-4a22-8972-b424f3f55b7f",
-      "batch_id": null,
-      "batch_status": "not_applicable",
-      "training_labels": 200
+      "regressed_to_wrong": null
     },
     {
       "slug": "fomc",
@@ -212,26 +104,17 @@
       "dataset": "gtfintechlab/fomc_communication",
       "evaluationSplit": "test",
       "n": 200,
-      "base_model": "modaic/mo",
+      "training_labels": 200,
       "baseline_accuracy": 0.53,
       "aligned_accuracy": 0.67,
+      "alignment_outcome": "new_checkpoint",
       "uplift_pp": 14,
       "uplift_95pct_bootstrap_ci_pp": [
         7,
         21.5
       ],
       "fixed_to_correct": 43,
-      "regressed_to_wrong": 15,
-      "baseline_p50_ms": 141.79999999999998,
-      "aligned_p50_ms": 138.65,
-      "model_path": "modaic_labs/finance-fomc-mo-ba91d0e4",
-      "cohort_sha256": "ba91d0e40f78844a10d454fc1c85b72d3225d76ffdae40a4812134160a89accb",
-      "baseline_revision": "f737943796679c34dcb3dec74d56ecde83f692f0",
-      "aligned_revision": "bcb65a05658bd9399d17bd63776c710de3847056",
-      "alignment_id": "972582d2-956f-4f3a-8739-f4b1727d0c0e",
-      "batch_id": "78224f74-fc99-4943-94f0-4a47626524f7",
-      "batch_status": "completed",
-      "training_labels": 200
+      "regressed_to_wrong": 15
     },
     {
       "slug": "german-credit",
@@ -240,26 +123,17 @@
       "dataset": "ChanceFocus/flare-german",
       "evaluationSplit": "test",
       "n": 200,
-      "base_model": "modaic/mo",
+      "training_labels": 200,
       "baseline_accuracy": 0.525,
       "aligned_accuracy": 0.57,
+      "alignment_outcome": "new_checkpoint",
       "uplift_pp": 4.5,
       "uplift_95pct_bootstrap_ci_pp": [
         -4.5,
         13.5
       ],
       "fixed_to_correct": 46,
-      "regressed_to_wrong": 37,
-      "baseline_p50_ms": 217,
-      "aligned_p50_ms": 281.34999999999997,
-      "model_path": "modaic_labs/finance-german-credit-mo-eb8a1d08",
-      "cohort_sha256": "eb8a1d08c98acc6db4f77047edb0fc542142510c8628a70a855253db650c7489",
-      "baseline_revision": "738e044a5141ea45812b16b26db5ecbd79dd26de",
-      "aligned_revision": "a723a54487ed0180da637b6c7f21e854ce3c89ea",
-      "alignment_id": "2aebf550-15ac-43c6-b51b-45bdfeea7024",
-      "batch_id": "733288c8-853d-4fcc-9202-747de95cb4b4",
-      "batch_status": "completed",
-      "training_labels": 200
+      "regressed_to_wrong": 37
     },
     {
       "slug": "gold-headlines",
@@ -268,27 +142,17 @@
       "dataset": "ChanceFocus/flare-headlines",
       "evaluationSplit": "test",
       "n": 200,
-      "base_model": "modaic/mo",
+      "training_labels": 200,
       "baseline_accuracy": 0.875,
       "aligned_accuracy": 0.9,
+      "alignment_outcome": "new_checkpoint",
       "uplift_pp": 2.5,
       "uplift_95pct_bootstrap_ci_pp": [
         -0.5,
         6
       ],
       "fixed_to_correct": 8,
-      "regressed_to_wrong": 3,
-      "baseline_p50_ms": 131.3,
-      "aligned_p50_ms": 129.85000000000002,
-      "alignment_outcome": "new_checkpoint",
-      "model_path": "modaic_labs/finance-gold-headlines-mo-ced4e091",
-      "cohort_sha256": "ced4e09195e7cdb5857c04a27f1d934dd5537b502aea21c288881a4c543682f9",
-      "baseline_revision": "f48a840161b7add737876a9f7d8a38aa84957aa5",
-      "aligned_revision": "3dfde779285b2f8c90e92df72ca25a30171ba53b",
-      "alignment_id": "4100129d-a2e0-4c27-b0fc-fa9b5226c751",
-      "batch_id": "7ffaf91d-e344-4b3f-a1ed-8c396f0d9304",
-      "batch_status": "completed",
-      "training_labels": 200
+      "regressed_to_wrong": 3
     },
     {
       "slug": "multifin",
@@ -297,26 +161,17 @@
       "dataset": "awinml/MultiFin",
       "evaluationSplit": "validation",
       "n": 200,
-      "base_model": "modaic/mo",
+      "training_labels": 200,
       "baseline_accuracy": 0.68,
       "aligned_accuracy": 0.78,
+      "alignment_outcome": "new_checkpoint",
       "uplift_pp": 10,
       "uplift_95pct_bootstrap_ci_pp": [
         4.5,
         15.5
       ],
       "fixed_to_correct": 28,
-      "regressed_to_wrong": 8,
-      "baseline_p50_ms": 135.24999999999997,
-      "aligned_p50_ms": 217.60000000000002,
-      "model_path": "modaic_labs/finance-multifin-mo-8d36f767",
-      "cohort_sha256": "8d36f767332f0cea2bfe680f67a18ced4c0ca2146478ce9211567c4d1b992f01",
-      "baseline_revision": "2dbcc0692217073d88d1bcb4265fa9fcd393c0cc",
-      "aligned_revision": "fc3c86fcbcbd81a5f7a547a27576e3c949cbe609",
-      "alignment_id": "ccc2612a-979a-4be6-b687-d1df48b205cc",
-      "batch_id": "132fa931-a16a-4bb6-96f4-16bebc530e66",
-      "batch_status": "completed",
-      "training_labels": 200
+      "regressed_to_wrong": 8
     },
     {
       "slug": "numclaim",
@@ -325,89 +180,36 @@
       "dataset": "gtfintechlab/Numclaim",
       "evaluationSplit": "test",
       "n": 200,
-      "base_model": "modaic/mo",
+      "training_labels": 200,
       "baseline_accuracy": 0.945,
       "aligned_accuracy": 0.93,
+      "alignment_outcome": "new_checkpoint",
       "uplift_pp": -1.5,
       "uplift_95pct_bootstrap_ci_pp": [
         -3.5,
-        0.0
+        0
       ],
       "fixed_to_correct": 0,
-      "regressed_to_wrong": 3,
-      "baseline_p50_ms": 175.85,
-      "aligned_p50_ms": 134.24999999999997,
-      "task": "numclaim",
-      "alignment_outcome": "new_checkpoint",
-      "model_path": "modaic_labs/finance-numclaim-mo-fbfe6cfe",
-      "cohort_sha256": "fbfe6cfef545b71580cde664b0fe949db34994bb811a4598b5f03d84c912f802",
-      "baseline_revision": "f14530923b6cba11e638d95943c8d982b01419c3",
-      "aligned_revision": "07c51657165c6eb495af6b26162edb6c41299608",
-      "alignment_id": "eb011166-19db-411a-94de-5ca65e8bce59",
-      "batch_id": "13e30d42-902a-40c1-bc4e-cd7bfcde97e1",
-      "batch_status": "completed",
-      "training_labels": 200,
-      "source_repo": "gtfintechlab/Numclaim",
-      "source_revision": "4bc5a1c18de091c6a22e255fd840816fffdbbd23",
-      "source_file_sha256": {
-        "main/train-00000-of-00001-fd823fc4483525b2.parquet": "d784c8995135a0d9c2db4faedf5775637083b1a3a19a73bf24d6e440fde78983",
-        "main/test-00000-of-00001-3975a72d0d39dec1.parquet": "abc45aa04ab56d6d98661d728ba338d95758e3643c6be20c0cc7470ca6705b7a"
-      },
-      "evaluation_split": "test",
-      "sample_seed": 20261002,
-      "test_similarity_exclusion": "5-token Jaccard >= 0.8 against any selected training sentence",
-      "near_duplicate_test_rows_excluded": 2,
-      "baseline_macro_f1": 0.9449325423643964,
-      "aligned_macro_f1": 0.9299369432489241
+      "regressed_to_wrong": 3
     },
     {
       "slug": "sentivent-event",
       "label": "SENTiVENT event presence",
-      "chartLabel": "SENTiVENT event",
+      "chartLabel": "SENTiVENT",
       "dataset": "GillesJacobs/sentivent",
       "evaluationSplit": "test",
       "n": 200,
-      "base_model": "modaic/mo",
+      "training_labels": 200,
       "baseline_accuracy": 0.715,
       "aligned_accuracy": 0.73,
+      "alignment_outcome": "new_checkpoint",
       "uplift_pp": 1.5,
       "uplift_95pct_bootstrap_ci_pp": [
         -4.2682926829268295,
         6.7357512953367875
       ],
       "fixed_to_correct": 12,
-      "regressed_to_wrong": 9,
-      "baseline_p50_ms": 174.15,
-      "aligned_p50_ms": 132.0,
-      "task": "sentivent-event",
-      "uplift_95pct_row_bootstrap_ci_pp": [
-        -3.0,
-        6.0
-      ],
-      "interval_method": "paired bootstrap over source articles",
-      "evaluation_documents": 30,
-      "alignment_outcome": "new_checkpoint",
-      "model_path": "modaic_labs/finance-sentivent-event-mo-03b64070",
-      "cohort_sha256": "03b64070ede4b379a722f33218530187696fa6f279f4d4bce59a84121f2a985d",
-      "baseline_revision": "365cc6daf680f8e760e6a3083c783e820553a6a3",
-      "aligned_revision": "490b3682fcec95ef0d9308f64416739932960bf3",
-      "alignment_id": "76c7ed96-5e5e-43fd-aafd-27957c5ceabf",
-      "batch_id": "4bb6edd8-4fc2-4810-840e-5fe7b09cfa9f",
-      "batch_status": "completed",
-      "training_labels": 200,
-      "source_repo": "GillesJacobs/sentivent",
-      "source_revision": "6a9e8f9fc11ba7db3d8dffe3e5df9e7b062e6441",
-      "source_file_sha256": {
-        "data/sentivent_unified_sentence/train.parquet": "175d98fa3d50a09646d1aec222b3f3a7644c2e70f32108034cd1cca1d9f04fcb",
-        "data/sentivent_unified_sentence/test.parquet": "4f930e80e7f690a9aa32c6b49fc5b4cb274e8bb59e9b5436f7b0904e02a2f676"
-      },
-      "evaluation_split": "test",
-      "sample_seed": 20261002,
-      "test_similarity_exclusion": "5-token Jaccard >= 0.8 against any selected training sentence",
-      "near_duplicate_test_rows_excluded": 0,
-      "baseline_macro_f1": 0.6998025016458196,
-      "aligned_macro_f1": 0.7260551948051948,
-      "label_derivation": "EVENT iff sentence contains at least one kind=event annotation"
+      "regressed_to_wrong": 9
     },
     {
       "slug": "twitter-financial-news-topic",
@@ -416,42 +218,17 @@
       "dataset": "zeroshot/twitter-financial-news-topic",
       "evaluationSplit": "validation",
       "n": 200,
-      "base_model": "modaic/mo",
+      "training_labels": 200,
       "baseline_accuracy": 0.765,
       "aligned_accuracy": 0.79,
+      "alignment_outcome": "new_checkpoint",
       "uplift_pp": 2.5,
       "uplift_95pct_bootstrap_ci_pp": [
         -1.5,
         6.5
       ],
       "fixed_to_correct": 10,
-      "regressed_to_wrong": 5,
-      "baseline_p50_ms": 154.0,
-      "aligned_p50_ms": 276.90000000000003,
-      "task": "twitter-financial-news-topic",
-      "alignment_outcome": "new_checkpoint",
-      "model_path": "modaic_labs/finance-twitter-financial-news-topic-mo-bffea7db",
-      "cohort_sha256": "bffea7db22c0d07abf5e67047b944aefc851c81f4eff2d75a71a6939e25a47b8",
-      "baseline_revision": "a9dfb2d876c38aee66e3d418ad5f6893eb2e3e1b",
-      "aligned_revision": "32938303ecea00f43814e9da5dd1c673f0b9073f",
-      "alignment_id": "06a11fb2-e972-4527-81b4-23e637024f6e",
-      "batch_id": "152b89f1-8871-4709-8734-c4f2e21b55d7",
-      "batch_status": "completed",
-      "training_labels": 200,
-      "source_repo": "zeroshot/twitter-financial-news-topic",
-      "source_revision": "acbc8af2a35ccf0916124efcbe9e6cf25f191012",
-      "source_file_sha256": {
-        "topic_train.csv": "63b9ea8183728dd5ddc6a57289341556509ddc0a8d037616519319a316b54490",
-        "topic_valid.csv": "67396d6cd4a21c3755de783f20fb5842f12ae8edb9367eed5d2644dd85ca9243"
-      },
-      "evaluation_split": "validation",
-      "sample_seed": 20261002,
-      "sampling": "10 rows per topic in both 200-row cohorts",
-      "preprocessing": "HTML entities decoded and tracking URLs removed",
-      "test_similarity_exclusion": "5-token Jaccard >= 0.8 against any selected training post",
-      "near_duplicate_test_rows_excluded": 0,
-      "baseline_macro_f1": 0.7511867541532228,
-      "aligned_macro_f1": 0.7832047981258508
+      "regressed_to_wrong": 5
     }
   ]
 }

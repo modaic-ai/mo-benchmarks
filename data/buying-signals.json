@@ -101,7 +101,7 @@
       }
     },
     {
-      "id": "openai-latest",
+      "id": "gpt-6.1",
       "model_id": "openai/gpt-6.1-sol",
       "backend": "openrouter_chat",
       "workers": 8,
@@ -173,7 +173,79 @@
       }
     },
     {
-      "id": "jev-latest",
+      "id": "jev-1.14",
+      "model_id": "jev-1.14.0",
+      "backend": "typesafe-native-system-one",
+      "workers": 5,
+      "macro": {
+        "f1": 0.7380344852527208,
+        "precision": 0.6952985166711476,
+        "recall": 0.8600575719649562,
+        "accuracy": 0.775,
+        "auroc": 0.8979992187694391,
+        "ece": 0.15011
+      },
+      "min_task_f1": 0.6796116504854368,
+      "by_signal": {
+        "business_goals": {
+          "f1": 0.8019323671497584,
+          "precision": 0.7757009345794392,
+          "recall": 0.83,
+          "accuracy": 0.795,
+          "auroc": 0.9091,
+          "ece": 0.07965000000000003,
+          "n": 200,
+          "positive": 100
+        },
+        "decision_criteria": {
+          "f1": 0.7619047619047619,
+          "precision": 0.6423357664233577,
+          "recall": 0.9361702127659575,
+          "accuracy": 0.725,
+          "auroc": 0.8321457246085909,
+          "ece": 0.13554999999999998,
+          "n": 200,
+          "positive": 94
+        },
+        "decision_makers": {
+          "f1": 0.6796116504854368,
+          "precision": 0.5147058823529411,
+          "recall": 1,
+          "accuracy": 0.835,
+          "auroc": 0.9592207792207792,
+          "ece": 0.21480000000000002,
+          "n": 200,
+          "positive": 35
+        },
+        "decision_making_process": {
+          "f1": 0.6851851851851851,
+          "precision": 0.925,
+          "recall": 0.5441176470588235,
+          "accuracy": 0.83,
+          "auroc": 0.9006795900178253,
+          "ece": 0.08765,
+          "n": 200,
+          "positive": 68
+        },
+        "pain_points": {
+          "f1": 0.7615384615384615,
+          "precision": 0.61875,
+          "recall": 0.99,
+          "accuracy": 0.69,
+          "auroc": 0.88885,
+          "ece": 0.23289999999999994,
+          "n": 200,
+          "positive": 100
+        }
+      },
+      "latency_ms": {
+        "p50": 113.61923208460212,
+        "p95": 211.64116906002158,
+        "p99": 273.78775333054364
+      }
+    },
+    {
+      "id": "jev-1.13",
       "model_id": "~typesafe/jev-latest",
       "backend": "openrouter_decisions",
       "workers": 1,
@@ -245,7 +317,7 @@
       }
     },
     {
-      "id": "mo",
+      "id": "mo-1.3.1",
       "model_id": "modaic/mo",
       "backend": "modaic",
       "workers": 1,
@@ -389,7 +461,79 @@
       }
     },
     {
-      "id": "perplexity-decider",
+      "id": "mo-1.3.2",
+      "model_id": "Mo 1.3.2",
+      "backend": "production-fp8-modal",
+      "workers": 1,
+      "macro": {
+        "f1": 0.7151735746990763,
+        "precision": 0.8601673360107096,
+        "recall": 0.6793831575183265,
+        "accuracy": 0.8220000000000001,
+        "auroc": 0.9229187773535019,
+        "ece": 0.10567990995253917
+      },
+      "min_task_f1": 0.34146341463414637,
+      "by_signal": {
+        "business_goals": {
+          "f1": 0.8196721311475409,
+          "precision": 0.9036144578313253,
+          "recall": 0.75,
+          "accuracy": 0.835,
+          "auroc": 0.9283,
+          "ece": 0.10040838097861755,
+          "n": 200,
+          "positive": 100
+        },
+        "decision_criteria": {
+          "f1": 0.7717391304347826,
+          "precision": 0.7888888888888889,
+          "recall": 0.7553191489361702,
+          "accuracy": 0.79,
+          "auroc": 0.8704335608189482,
+          "ece": 0.050475921683689536,
+          "n": 200,
+          "positive": 94
+        },
+        "decision_makers": {
+          "f1": 0.8266666666666667,
+          "precision": 0.775,
+          "recall": 0.8857142857142857,
+          "accuracy": 0.935,
+          "auroc": 0.975930735930736,
+          "ece": 0.11144736232763616,
+          "n": 200,
+          "positive": 35
+        },
+        "decision_making_process": {
+          "f1": 0.34146341463414637,
+          "precision": 1,
+          "recall": 0.20588235294117646,
+          "accuracy": 0.73,
+          "auroc": 0.9319295900178253,
+          "ece": 0.2098357128521545,
+          "n": 200,
+          "positive": 68
+        },
+        "pain_points": {
+          "f1": 0.816326530612245,
+          "precision": 0.8333333333333334,
+          "recall": 0.8,
+          "accuracy": 0.82,
+          "auroc": 0.908,
+          "ece": 0.05623217192059808,
+          "n": 200,
+          "positive": 100
+        }
+      },
+      "latency_ms": {
+        "p50": 105.32497500000204,
+        "p95": 163.15985730001182,
+        "p99": 180.81304883998286
+      }
+    },
+    {
+      "id": "pplx",
       "model_id": "perplexity/pplx-decider-v1.1-27b",
       "backend": "openrouter_decisions",
       "workers": 1,
