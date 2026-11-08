@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 type Model = { id: string; name: string };
 export type ChartRow = { name: string; metric?: string; includeInMacro?: boolean; scores: Array<number | undefined> };
 const modelColors: Record<string, string> = {
-  "mo-2.0": "#2D6598",
+  "mo-2.0": "#cc5d66",
   "mo-1.3.1": "#cc5d66",
   "jev-1.14": "#e04db5",
   "jev-1.13": "#e04db5",
