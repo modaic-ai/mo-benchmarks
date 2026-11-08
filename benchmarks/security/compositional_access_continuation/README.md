@@ -20,14 +20,13 @@ Three representative Security rows are visible in [`../examples.jsonl`](../examp
 
 | Model | Test · 382 | Validation · 964 |
 | --- | ---: | ---: |
+| Mo 2.0 | 85.08% | 85.79% |
 | Mo 1.3.1 | 88.74% | 93.46% |
-| Mo 1.3.2 | 84.03% | 86.72% |
 | Jev 1.13 | 49.74% | 49.17% |
 | Jev 1.14 | 53.14% | 54.25% |
 | Luna Decisions | 49.48% | 49.27% |
 | PPLX | 83.77% | 86.62% |
 | GPT-6.1 | 100.00% | 100.00% |
-| Mo Fast | 65.45% | 68.36% |
 | Clef | 49.48% | 50.83% |
 
 Scores are exact-answer accuracy on hard-target rows.

@@ -15,13 +15,11 @@ copied into this repository.
 | Model | nDCG@10 | Rows |
 | --- | ---: | ---: |
 | Mo 1.3.1 | 67.89% | — |
-| Mo 1.3.2 | 69.09% | — |
 | Jev 1.13 | 65.28% | — |
 | Jev 1.14 | 64.79% | — |
 | Luna Decisions | 58.90% | — |
 | PPLX | 67.58% | — |
 | GPT-6.1 | 67.24% | — |
-| Mo Fast | 0.00% | — |
 | Clef | 69.06% | — |
 
 These are raw task scores. `Rows` is omitted because this result export records

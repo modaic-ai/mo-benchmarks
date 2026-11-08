@@ -3,7 +3,7 @@ import { basename, join, resolve } from "node:path";
 
 const source = resolve(process.argv[2] ?? "benchmarks/gtm/buying_signals/outputs");
 const target = resolve("data/buying-signals.json");
-const expectedIds = ["mo-1.3.1", "mo-1.3.2", "jev-1.13", "jev-1.14", "luna-decisions", "pplx", "gpt-6.1", "mo-fast", "clef"];
+const expectedIds = ["mo-2.0", "mo-1.3.1", "jev-1.13", "jev-1.14", "luna-decisions", "pplx", "gpt-6.1", "clef"];
 const aliases = new Map([
   ["mo", "mo-1.3.1"],
   ["jev-latest", "jev-1.13"],
@@ -48,11 +48,11 @@ const imported = reports.map((report) => ({
     p99: report.latency.p99_ms,
   },
 }));
-const merged = new Map((existing?.models ?? []).map((model) => [aliases.get(model.id) ?? model.id, { ...model, id: aliases.get(model.id) ?? model.id }]));
+const merged = new Map((existing?.models ?? []).filter((model) => expectedIds.includes(aliases.get(model.id) ?? model.id)).map((model) => [aliases.get(model.id) ?? model.id, { ...model, id: aliases.get(model.id) ?? model.id }]));
 for (const model of imported) merged.set(model.id, model);
 if (new Set(imported.map((model) => model.id)).size !== imported.length) throw new Error("Duplicate imported model names");
 if (expectedIds.some((id) => !merged.has(id)) || merged.size !== expectedIds.length) {
-  throw new Error(`Expected exactly these nine models: ${expectedIds.join(", ")}`);
+  throw new Error(`Expected exactly these models: ${expectedIds.join(", ")}`);
 }
 const data = {
   benchmark: "Buying signal detection",

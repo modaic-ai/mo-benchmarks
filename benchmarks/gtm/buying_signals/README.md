@@ -14,7 +14,7 @@ Use Python 3.13+, [uv](https://docs.astral.sh/uv/), and Node.js. The `uv.lock` f
 ./reproduce.sh --external-data-authorized
 ```
 
-This runs `mo-fast` and `mo` on Modaic, then Jev, Luna, Perplexity, and Clef on OpenRouter's decisions endpoint, and finally GPT-6.1 Sol on OpenRouter's strict-JSON chat endpoint with `reasoning.effort: "medium"`. It generates complete reports and refreshes the site's aggregate file. Calls run sequentially by model. GPT-6.1 Sol uses eight workers; all other models use one. This is the concurrency used for the published latency results.
+This runs `mo-2.0` and the fine-tuning-compatible `mo` route (Mo 1.3.1) on Modaic, then Jev, Luna, Perplexity, and Clef on OpenRouter's decisions endpoint, and finally GPT-6.1 Sol on OpenRouter's strict-JSON chat endpoint with `reasoning.effort: "medium"`. It generates complete reports and refreshes the site's aggregate file. Calls run sequentially by model. GPT-6.1 Sol uses eight workers; all other models use one. This is the concurrency used for the published latency results.
 
 For a small pilot or to inspect the cohort before the full run:
 
@@ -22,7 +22,7 @@ For a small pilot or to inspect the cohort before the full run:
 uv sync --locked
 uv run --locked python prepare.py
 uv run --locked python run_models.py --plan
-uv run --locked python run_models.py --models mo-fast --limit 5 --external-data-authorized
+uv run --locked python run_models.py --models mo-2.0 --limit 5 --external-data-authorized
 uv run --locked python -m unittest test_benchmark.py
 ```
 
@@ -32,7 +32,7 @@ uv run --locked python -m unittest test_benchmark.py
 
 The website's headline is **macro accuracy**: the unweighted mean of five per-task accuracy scores. The fixed positive threshold is `p_signal >= 0.5`, with no test-set tuning. Reports also include macro F1, precision, recall, AUROC, and ten-bin expected calibration error (ECE; lower is better), plus per-task and pooled scores. `report.py` scores only a complete, matching test cohort. Latency p50/p95/p99 measures each successful HTTP attempt and excludes retries and backoff; the eight-worker GPT latency was measured under concurrent load.
 
-`outputs/` contains private row-level probabilities and run provenance. The reports and predictions do not contain excerpts. `scripts/import-buying-signals.mjs` validates complete reports, merges them into the nine-model aggregate, and writes `data/buying-signals.json` at the repository root. Only that aggregate JSON and [RESULTS.md](RESULTS.md) are committed. To score existing predictions or regenerate just the aggregates:
+`outputs/` contains private row-level probabilities and run provenance. The reports and predictions do not contain excerpts. `scripts/import-buying-signals.mjs` validates complete reports, merges them into the supported-model aggregate, and writes `data/buying-signals.json` at the repository root. Only that aggregate JSON and [RESULTS.md](RESULTS.md) are committed. To score existing predictions or regenerate just the aggregates:
 
 ```bash
 uv run --locked python report.py --predictions outputs/mo-test.jsonl --output outputs/mo-test-report.json

@@ -14,5 +14,5 @@ reuses this official 0.3 public suite; its separate Full administration is not
 publicly self-serve.
 
 Each of the 37 task READMEs is filed under its domain folder in `benchmarks/`.
-Those pages describe the task, task shape, official metric, and nine-model
+Those pages describe the task, task shape, official metric, and model
 result matrix.

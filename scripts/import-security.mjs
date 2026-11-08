@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const read = (file) => readFileSync(path.join(root, file), "utf8");
-const names = { "Mo 1.3.1": "mo-1.3.1", "Mo 1.3.2": "mo-1.3.2", "Jev 1.13": "jev-1.13", "Jev 1.14": "jev-1.14", "Luna Decisions": "luna-decisions", PPLX: "pplx", "GPT-6.1": "gpt-6.1", "Mo Fast": "mo-fast", Clef: "clef" };
+const names = { "Mo 2.0": "mo-2.0", "Mo 1.3.1": "mo-1.3.1", "Jev 1.13": "jev-1.13", "Jev 1.14": "jev-1.14", "Luna Decisions": "luna-decisions", PPLX: "pplx", "GPT-6.1": "gpt-6.1", Clef: "clef" };
 function tables(slug) {
   return read(`benchmarks/security/${slug}/README.md`).split(/\n\s*\n/).filter((block) => block.trim().startsWith("|")).map((block) => block.trim().split("\n").map((line) => line.split("|").slice(1, -1).map((cell) => cell.trim())));
 }
@@ -55,7 +55,7 @@ for (const row of security) {
     Object.assign(row, { precision: metric.precision, recall: metric.recall, f1: metric.f1, positive_answer: metric.positive_answer, answered_rows: metric.answered_rows, coverage: metric.coverage, primary_score: metric.f1, primary_metric: "F1" });
   } else Object.assign(row, { primary_score: row.accuracy, primary_metric: "accuracy" });
 }
-if (security.length !== 108 || read("benchmarks/security/examples.jsonl").trim().split("\n").length !== 3) throw new Error("Unexpected Security result or public example count");
+if (security.length !== 96 || read("benchmarks/security/examples.jsonl").trim().split("\n").length !== 3) throw new Error("Unexpected Security result or public example count");
 const other = original.filter((row) => row.domain !== "security" && row.benchmark !== "jev_bench_noul").map((row) => {
   const metric = noul.find((item) => item.benchmark === row.benchmark && item.slice === "overall" && item.model === row.model);
   return { ...row, ...(metric ? { precision: metric.precision, recall: metric.recall, f1: metric.f1, positive_answer: metric.positive_answer, primary_score: metric.f1, primary_metric: "F1" } : { primary_score: row.accuracy, primary_metric: "accuracy" }) };

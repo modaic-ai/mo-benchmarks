@@ -37,7 +37,7 @@ class ModelSpec:
 
 
 MODELS = {
-    "mo-fast": ModelSpec("mo-fast", "modaic/mo-fast", "modaic"),
+    "mo-2.0": ModelSpec("mo-2.0", "mo-2.0", "modaic"),
     "mo": ModelSpec("mo", "modaic/mo", "modaic"),
     "jev-latest": ModelSpec("jev-latest", "~typesafe/jev-latest", "openrouter_decisions"),
     "luna-decisions": ModelSpec("luna-decisions", "openai/gpt-6-luna-decisions", "openrouter_decisions"),

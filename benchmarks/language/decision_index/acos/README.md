@@ -15,13 +15,11 @@ copied into this repository.
 | Model | per-review F1 | Rows |
 | --- | ---: | ---: |
 | Mo 1.3.1 | 29.29% | — |
-| Mo 1.3.2 | 30.05% | — |
 | Jev 1.13 | 29.52% | — |
 | Jev 1.14 | 32.89% | — |
 | Luna Decisions | 14.43% | — |
 | PPLX | 28.24% | — |
 | GPT-6.1 | 49.52% | — |
-| Mo Fast | 33.29% | — |
 | Clef | 33.17% | — |
 
 These are raw task scores. `Rows` is omitted because this result export records

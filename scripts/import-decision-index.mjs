@@ -25,7 +25,7 @@ if (canonical.models.some((model) => model.id === "mo-2.0")) {
   throw new Error("Refusing to overwrite an existing Mo 2.0 result");
 }
 
-const template = canonical.models.find((model) => model.id === "mo-1.3.2");
+const template = canonical.models.find((model) => model.id === "mo-1.3.1");
 if (!template) throw new Error("Missing benchmark metadata template");
 const indexedIds = scored.areas.flatMap((area) => area.benchmarks);
 if (indexedIds.length !== 37 || new Set(indexedIds).size !== 37) {

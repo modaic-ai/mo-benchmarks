@@ -32,7 +32,7 @@ if manifest_hash(manifest) != published["cohort_sha256"]:
 print("Prepared test cohort matches the published benchmark")
 PY
 
-uv run --locked python run_models.py --models mo-fast,mo --all --external-data-authorized
+uv run --locked python run_models.py --models mo-2.0,mo --all --external-data-authorized
 uv run --locked python run_models.py --models jev-latest,luna-decisions,perplexity-decider,clef --all --external-data-authorized
 uv run --locked python run_models.py --models openai-latest --workers 8 --output-dir outputs/load-8 --all --external-data-authorized
 uv run --locked python compare.py --output-dir outputs --output outputs/leaderboard.md

@@ -15,13 +15,11 @@ copied into this repository.
 | Model | case exact accuracy | Rows |
 | --- | ---: | ---: |
 | Mo 1.3.1 | 22.61% | — |
-| Mo 1.3.2 | 38.42% | — |
 | Jev 1.13 | 26.42% | — |
 | Jev 1.14 | 27.64% | — |
 | Luna Decisions | 28.36% | — |
 | PPLX | 28.18% | — |
 | GPT-6.1 | 44.12% | — |
-| Mo Fast | 32.79% | — |
 | Clef | 33.45% | — |
 
 These are raw task scores. `Rows` is omitted because this result export records

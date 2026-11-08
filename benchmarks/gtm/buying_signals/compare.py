@@ -10,11 +10,10 @@ from questions import TASKS
 
 
 DISPLAY_NAMES = {
+    "mo-2.0": "Mo 2.0",
     "mo": "Mo 1.3.1",
-    "mo-1.3.2": "Mo 1.3.2",
     "jev-latest": "Jev 1.13",
     "jev-1.14": "Jev 1.14",
-    "mo-fast": "Mo Fast",
 }
 
 

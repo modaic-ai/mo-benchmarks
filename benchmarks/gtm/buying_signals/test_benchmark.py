@@ -66,21 +66,21 @@ class BenchmarkTests(unittest.TestCase):
             first = json.loads((root / "data/inputs.jsonl").read_text().splitlines()[0])
             self.assertEqual(set(request_state(first)), {"conversation_excerpt"})
             fake = FakeModaic()
-            result = score_row(MODELS["mo-fast"], first, "synthetic", fake, None)
+            result = score_row(MODELS["mo-2.0"], first, "synthetic", fake, None)
             self.assertEqual(result["p_signal"], 0.7)
             self.assertEqual(set(fake.requests[0]["state"]), {"conversation_excerpt"})
             self.assertFalse(fake.requests[0]["capture"])
-            new, total = run_model(MODELS["mo-fast"], root / "data", root / "outputs", manifest, 5, fake, None)
+            new, total = run_model(MODELS["mo-2.0"], root / "data", root / "outputs", manifest, 5, fake, None)
             self.assertEqual((new, total), (5, 5))
-            predictions = [json.loads(line) for line in (root / "outputs/mo-fast-test.jsonl").read_text().splitlines()]
+            predictions = [json.loads(line) for line in (root / "outputs/mo-2.0-test.jsonl").read_text().splitlines()]
             self.assertEqual({row["id"].split(":")[1] for row in predictions}, set(TASKS))
             self.assertTrue(all("text" not in row and "label" not in row for row in predictions))
-            new, total = run_model(MODELS["mo-fast"], root / "data", root / "outputs", manifest, 5, fake, None)
+            new, total = run_model(MODELS["mo-2.0"], root / "data", root / "outputs", manifest, 5, fake, None)
             self.assertEqual((new, total), (5, 10))
             with self.assertRaisesRegex(ValueError, "Prediction IDs mismatch"):
-                build_report(root / "data", root / "outputs/mo-fast-test.jsonl")
-            run_model(MODELS["mo-fast"], root / "data", root / "outputs", manifest, None, fake, None)
-            report = build_report(root / "data", root / "outputs/mo-fast-test.jsonl")
+                build_report(root / "data", root / "outputs/mo-2.0-test.jsonl")
+            run_model(MODELS["mo-2.0"], root / "data", root / "outputs", manifest, None, fake, None)
+            report = build_report(root / "data", root / "outputs/mo-2.0-test.jsonl")
             self.assertEqual(report["pooled"]["n"], 1000)
             self.assertEqual(set(report["by_task"]), set(TASKS))
 

@@ -20,13 +20,11 @@ Data: [`musr_object_placements.jsonl.gz`](../../../data/musr_object_placements.j
 | Model | Accuracy | Rows |
 | --- | ---: | ---: |
 | Mo 1.3.1 | 67.58% | 256 |
-| Mo 1.3.2 | 56.64% | 256 |
 | Jev 1.13 | 49.22% | 256 |
 | Jev 1.14 | 62.11% | 256 |
 | Luna Decisions | 50.78% | 256 |
 | PPLX | 62.89% | 256 |
 | GPT-6.1 | 84.38% | 256 |
-| Mo Fast | 58.59% | 256 |
 | Clef | 67.58% | 256 |
 
 Headline values are exact-answer accuracy. Additional calibration metrics are

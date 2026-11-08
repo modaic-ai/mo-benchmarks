@@ -15,13 +15,11 @@ copied into this repository.
 | Model | accuracy | Rows |
 | --- | ---: | ---: |
 | Mo 1.3.1 | 76.31% | — |
-| Mo 1.3.2 | 85.18% | — |
 | Jev 1.13 | 71.76% | — |
 | Jev 1.14 | 73.20% | — |
 | Luna Decisions | 36.73% | — |
 | PPLX | 76.57% | — |
 | GPT-6.1 | 99.47% | — |
-| Mo Fast | 70.09% | — |
 | Clef | 59.93% | — |
 
 These are raw task scores. `Rows` is omitted because this result export records

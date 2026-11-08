@@ -20,13 +20,11 @@ Data: [`argument_quality_ranking.jsonl.gz`](../../../data/argument_quality_ranki
 | Model | Accuracy | Rows |
 | --- | ---: | ---: |
 | Mo 1.3.1 | 28.88% | 2,469 |
-| Mo 1.3.2 | 47.83% | 2,469 |
 | Jev 1.13 | 18.27% | 2,469 |
 | Jev 1.14 | 19.97% | 2,469 |
 | Luna Decisions | 29.65% | 2,469 |
 | PPLX | 31.23% | 2,469 |
 | GPT-6.1 | 52.57% | 2,469 |
-| Mo Fast | 38.27% | 2,469 |
 | Clef | 26.81% | 2,469 |
 
 Headline values are exact-answer accuracy. Additional calibration metrics are

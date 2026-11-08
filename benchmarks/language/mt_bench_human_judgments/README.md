@@ -20,13 +20,11 @@ Data: [`mt_bench_human_judgments.jsonl.gz`](../../../data/mt_bench_human_judgmen
 | Model | Accuracy | Rows |
 | --- | ---: | ---: |
 | Mo 1.3.1 | 75.70% | 1,000 |
-| Mo 1.3.2 | 76.40% | 1,000 |
 | Jev 1.13 | 77.10% | 1,000 |
 | Jev 1.14 | 76.40% | 1,000 |
 | Luna Decisions | 68.80% | 1,000 |
 | PPLX | 75.50% | 1,000 |
 | GPT-6.1 | 71.90% | 1,000 |
-| Mo Fast | 75.80% | 1,000 |
 | Clef | 76.90% | 1,000 |
 
 Headline values are exact-answer accuracy. Additional calibration metrics are

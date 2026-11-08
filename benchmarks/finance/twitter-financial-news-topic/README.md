@@ -18,13 +18,11 @@ typed question; the target remains outside the model-visible decision.
 | Model | Accuracy | Rows |
 | --- | ---: | ---: |
 | Mo 1.3.1 | 75.00% | 200 |
-| Mo 1.3.2 | 76.50% | 200 |
 | Jev 1.13 | 71.00% | 200 |
 | Jev 1.14 | 72.50% | 200 |
 | Luna Decisions | 70.00% | 200 |
 | PPLX | 74.50% | 200 |
 | GPT-6.1 | 76.00% | 200 |
-| Mo Fast | 73.50% | 200 |
 | Clef | 74.50% | 200 |
 
 Headline values are exact-answer accuracy. Additional calibration metrics are

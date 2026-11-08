@@ -20,13 +20,11 @@ Data: [`or_bench_toxic.jsonl.gz`](../../../data/or_bench_toxic.jsonl.gz) (524 ro
 | Model | Accuracy | Rows |
 | --- | ---: | ---: |
 | Mo 1.3.1 | 74.62% | 524 |
-| Mo 1.3.2 | 74.24% | 524 |
 | Jev 1.13 | 70.99% | 524 |
 | Jev 1.14 | 69.47% | 524 |
 | Luna Decisions | 68.89% | 524 |
 | PPLX | 75.00% | 524 |
 | GPT-6.1 | 75.57% | 524 |
-| Mo Fast | 72.14% | 524 |
 | Clef | 70.80% | 524 |
 
 Headline values are exact-answer accuracy. Additional calibration metrics are

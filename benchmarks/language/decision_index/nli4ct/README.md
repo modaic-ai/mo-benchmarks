@@ -15,13 +15,11 @@ copied into this repository.
 | Model | macro-F1 | Rows |
 | --- | ---: | ---: |
 | Mo 1.3.1 | 86.29% | — |
-| Mo 1.3.2 | 86.00% | — |
 | Jev 1.13 | 84.06% | — |
 | Jev 1.14 | 85.02% | — |
 | Luna Decisions | 78.42% | — |
 | PPLX | 84.88% | — |
 | GPT-6.1 | 88.02% | — |
-| Mo Fast | 77.31% | — |
 | Clef | 82.98% | — |
 
 These are raw task scores. `Rows` is omitted because this result export records

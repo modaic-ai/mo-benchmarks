@@ -20,13 +20,11 @@ Data: [`arc_challenge.jsonl.gz`](../../../data/arc_challenge.jsonl.gz) (1,172 ro
 | Model | Accuracy | Rows |
 | --- | ---: | ---: |
 | Mo 1.3.1 | 97.01% | 1,172 |
-| Mo 1.3.2 | 97.35% | 1,172 |
 | Jev 1.13 | 97.70% | 1,172 |
 | Jev 1.14 | 97.53% | 1,172 |
 | Luna Decisions | 96.25% | 1,172 |
 | PPLX | 96.84% | 1,172 |
 | GPT-6.1 | 98.29% | 1,172 |
-| Mo Fast | 96.59% | 1,172 |
 | Clef | 97.87% | 1,172 |
 
 Headline values are exact-answer accuracy. Additional calibration metrics are

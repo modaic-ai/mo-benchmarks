@@ -20,13 +20,11 @@ Data: [`judge_bench.jsonl.gz`](../../../data/judge_bench.jsonl.gz) (280 rows).
 | Model | Accuracy | Rows |
 | --- | ---: | ---: |
 | Mo 1.3.1 | 80.36% | 280 |
-| Mo 1.3.2 | 80.71% | 280 |
 | Jev 1.13 | 77.86% | 280 |
 | Jev 1.14 | 77.50% | 280 |
 | Luna Decisions | 67.14% | 280 |
 | PPLX | 80.71% | 280 |
 | GPT-6.1 | 94.29% | 280 |
-| Mo Fast | 80.00% | 280 |
 | Clef | 76.07% | 280 |
 
 Headline values are exact-answer accuracy. Additional calibration metrics are

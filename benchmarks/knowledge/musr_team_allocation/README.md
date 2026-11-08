@@ -20,13 +20,11 @@ Data: [`musr_team_allocation.jsonl.gz`](../../../data/musr_team_allocation.jsonl
 | Model | Accuracy | Rows |
 | --- | ---: | ---: |
 | Mo 1.3.1 | 74.00% | 250 |
-| Mo 1.3.2 | 75.60% | 250 |
 | Jev 1.13 | 72.80% | 250 |
 | Jev 1.14 | 79.60% | 250 |
 | Luna Decisions | 67.20% | 250 |
 | PPLX | 75.60% | 250 |
 | GPT-6.1 | 86.80% | 250 |
-| Mo Fast | 72.00% | 250 |
 | Clef | 94.00% | 250 |
 
 Headline values are exact-answer accuracy. Additional calibration metrics are

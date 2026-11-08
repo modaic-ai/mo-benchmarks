@@ -32,7 +32,7 @@ type BuyingModel = { id: string; macro: { f1: number; accuracy: number; auroc: n
 
 const catalog = benchmarkData as Aggregate;
 const indexModel = catalog.decision_index.models.find((model) => model.id === "mo-2.0") ?? catalog.decision_index.models[0];
-const roster = ["mo-2.0", "mo-1.3.2", "mo-1.3.1", "jev-1.14", "luna-decisions", "pplx", "mo-fast", "jev-1.13", "clef", "gpt-6.1"];
+const roster = ["mo-2.0", "mo-1.3.1", "jev-1.14", "luna-decisions", "pplx", "jev-1.13", "clef", "gpt-6.1"];
 const modelOrder = (a: { id: string }, b: { id: string }) => roster.indexOf(a.id) - roster.indexOf(b.id);
 const indexRoster = roster;
 const indexModelOrder = (a: { id: string }, b: { id: string }) => indexRoster.indexOf(a.id) - indexRoster.indexOf(b.id);
@@ -68,8 +68,7 @@ const gtmNames: Record<string, string> = {
   "jev-1.13": "Jev 1.13",
   "jev-1.14": "Jev 1.14",
   "mo-1.3.1": "Mo 1.3.1",
-  "mo-1.3.2": "Mo 1.3.2",
-  "mo-fast": "Mo Fast",
+  "mo-2.0": "Mo 2.0",
   pplx: "PPLX",
   clef: "Clef",
 };
