@@ -58,6 +58,20 @@ node scripts/import-security.mjs
 
 The importer preserves the exact existing test scores for access review and continuation and reads the newly published view scores from the Security README tables. Those new scores retain their published two-decimal percentage precision. The site reports Access-Control Reasoning separately as a calibration/development set. User Intent Guardrails views overlap within each source; its macro is an equal-weight mean of view accuracies, not pooled-example accuracy. F1 is the primary display metric for Noul slices, using the exact values in `data/noul-metrics.json`; Choice and Score slices retain accuracy. The JevBench Noul subset is shown separately and excluded from the macro because it overlaps the difficulty tiers. F1 is computed on answered rows, with coverage retained. Unanswered Jev 1.13 requests count as incorrect only in full-denominator accuracy.
 
+## Refresh Mo 2.0 production-API results
+
+The publication-safe aggregate from the completed production-API panel is in
+`benchmarks/mo-2.0-production-api/metrics.json`. After any full catalog rebuild,
+import its 13 public-transfer, 12 Finance, and two matching Security test rows:
+
+```bash
+node scripts/import-mo-2.0-production-api.mjs
+```
+
+The importer validates the artifact checksum and complete 29-view coverage.
+JevBench and the newer Access-Control Reasoning and User Intent Guardrails
+families were not included in this run and remain explicitly unevaluated.
+
 ## Adding a benchmark
 
 Place its protocol, pinned dependencies, runner, and tests under `benchmarks/<slug>/`. Keep private inputs and row-level outputs in that benchmark's ignored `data/` and `outputs/` directories. Commit a separate aggregate artifact in the top-level `data/` directory, then add its page and a row to the index above.

@@ -1,0 +1,805 @@
+{
+  "rows": 37712,
+  "scored_rows": 37712,
+  "provider_refusals": 0,
+  "coverage": 1.0,
+  "hard": {
+    "decisions": 37240,
+    "exact_accuracy": 0.7533566058002148,
+    "correctness_auroc": 0.7595913909288728,
+    "ece_equal_width_15": 0.09995919198794903,
+    "mce_equal_width_15": 0.1427318725440866,
+    "occupied_bins": 14,
+    "multiclass_brier": 0.3691528510918127,
+    "categorical_nll": 0.735675084600815,
+    "ties": 0,
+    "requested_decisions": 37240,
+    "provider_refusals": 0,
+    "coverage": 1.0,
+    "exact_accuracy_all_requests": 0.7533566058002148
+  },
+  "soft": {
+    "decisions": 472,
+    "expected_agreement": 0.5,
+    "multiclass_brier_to_target_distribution": 0.193811605197321,
+    "cross_entropy_to_target_distribution": 1.0065986691981812,
+    "ties": 0,
+    "requested_decisions": 472,
+    "provider_refusals": 0,
+    "coverage": 1.0
+  },
+  "macro_benchmark_exact_accuracy": 0.7191988976129032,
+  "macro_benchmark_exact_accuracy_all_requests": 0.7191988976129032,
+  "per_benchmark": {
+    "finance/banking77-routing": {
+      "total": 200,
+      "scored": 200,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 200,
+        "exact_accuracy": 0.94,
+        "correctness_auroc": 0.8914007092198581,
+        "ece_equal_width_15": 0.025999142865399345,
+        "mce_equal_width_15": 0.432860347580986,
+        "occupied_bins": 10,
+        "multiclass_brier": 0.10094117071493025,
+        "categorical_nll": 0.2116411297154569,
+        "ties": 0,
+        "requested_decisions": 200,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.94
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "finance/cfpb-routing": {
+      "total": 200,
+      "scored": 200,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 200,
+        "exact_accuracy": 0.445,
+        "correctness_auroc": 0.6540135641259237,
+        "ece_equal_width_15": 0.2666409247774962,
+        "mce_equal_width_15": 0.49745036385527264,
+        "occupied_bins": 11,
+        "multiclass_brier": 0.7919997323359445,
+        "categorical_nll": 2.033008095531101,
+        "ties": 0,
+        "requested_decisions": 200,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.445
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "finance/esg": {
+      "total": 200,
+      "scored": 200,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 200,
+        "exact_accuracy": 0.415,
+        "correctness_auroc": 0.6551333539285347,
+        "ece_equal_width_15": 0.37054091464869066,
+        "mce_equal_width_15": 0.703950226289683,
+        "occupied_bins": 11,
+        "multiclass_brier": 0.9307732802054184,
+        "categorical_nll": 2.7894692408042125,
+        "ties": 0,
+        "requested_decisions": 200,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.415
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "finance/fincalc-nli": {
+      "total": 200,
+      "scored": 200,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 200,
+        "exact_accuracy": 0.925,
+        "correctness_auroc": 0.8634234234234234,
+        "ece_equal_width_15": 0.048804966429020026,
+        "mce_equal_width_15": 0.41390992444485203,
+        "occupied_bins": 10,
+        "multiclass_brier": 0.114194365874549,
+        "categorical_nll": 0.230569629253922,
+        "ties": 0,
+        "requested_decisions": 200,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.925
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "finance/fomc": {
+      "total": 200,
+      "scored": 200,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 200,
+        "exact_accuracy": 0.42,
+        "correctness_auroc": 0.6247947454844006,
+        "ece_equal_width_15": 0.4593198240124534,
+        "mce_equal_width_15": 0.6236832879192721,
+        "occupied_bins": 10,
+        "multiclass_brier": 0.9237036524143408,
+        "categorical_nll": 1.6608772638350362,
+        "ties": 0,
+        "requested_decisions": 200,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.42
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "finance/german-credit": {
+      "total": 200,
+      "scored": 200,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 200,
+        "exact_accuracy": 0.57,
+        "correctness_auroc": 0.5089759281925744,
+        "ece_equal_width_15": 0.2084138814469554,
+        "mce_equal_width_15": 0.5032030229325339,
+        "occupied_bins": 8,
+        "multiclass_brier": 0.6043107805178675,
+        "categorical_nll": 0.8857578267702273,
+        "ties": 0,
+        "requested_decisions": 200,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.57
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "finance/gold-headlines": {
+      "total": 200,
+      "scored": 200,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 200,
+        "exact_accuracy": 0.87,
+        "correctness_auroc": 0.8465959328028294,
+        "ece_equal_width_15": 0.07099497187098995,
+        "mce_equal_width_15": 0.5215896808627343,
+        "occupied_bins": 8,
+        "multiclass_brier": 0.18430288773104667,
+        "categorical_nll": 0.30452875942833607,
+        "ties": 0,
+        "requested_decisions": 200,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.87
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "finance/modernfinbert-sentiment": {
+      "total": 200,
+      "scored": 200,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 200,
+        "exact_accuracy": 0.675,
+        "correctness_auroc": 0.6978917378917379,
+        "ece_equal_width_15": 0.18267989705602306,
+        "mce_equal_width_15": 0.4632093517426857,
+        "occupied_bins": 9,
+        "multiclass_brier": 0.4945505130340133,
+        "categorical_nll": 0.9224271714850559,
+        "ties": 0,
+        "requested_decisions": 200,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.675
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "finance/multifin": {
+      "total": 200,
+      "scored": 200,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 200,
+        "exact_accuracy": 0.67,
+        "correctness_auroc": 0.7068068747173225,
+        "ece_equal_width_15": 0.1341375989353838,
+        "mce_equal_width_15": 0.35207954557549065,
+        "occupied_bins": 11,
+        "multiclass_brier": 0.4904089107265451,
+        "categorical_nll": 0.9296358323905238,
+        "ties": 0,
+        "requested_decisions": 200,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.67
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "finance/numclaim": {
+      "total": 200,
+      "scored": 200,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 200,
+        "exact_accuracy": 0.925,
+        "correctness_auroc": 0.8216216216216217,
+        "ece_equal_width_15": 0.04639248000827012,
+        "mce_equal_width_15": 0.5976691424152,
+        "occupied_bins": 8,
+        "multiclass_brier": 0.11815656867710088,
+        "categorical_nll": 0.24275240319274272,
+        "ties": 0,
+        "requested_decisions": 200,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.925
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "finance/sentivent-event": {
+      "total": 200,
+      "scored": 200,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 200,
+        "exact_accuracy": 0.69,
+        "correctness_auroc": 0.7129499766245909,
+        "ece_equal_width_15": 0.2106508018056153,
+        "mce_equal_width_15": 0.503770140386235,
+        "occupied_bins": 8,
+        "multiclass_brier": 0.4838438716206585,
+        "categorical_nll": 0.7979871257431153,
+        "ties": 0,
+        "requested_decisions": 200,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.69
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "finance/twitter-financial-news-topic": {
+      "total": 200,
+      "scored": 200,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 200,
+        "exact_accuracy": 0.745,
+        "correctness_auroc": 0.6348203711014607,
+        "ece_equal_width_15": 0.14979283969427892,
+        "mce_equal_width_15": 0.44790356306743007,
+        "occupied_bins": 10,
+        "multiclass_brier": 0.42209400742524816,
+        "categorical_nll": 1.106532597657676,
+        "ties": 0,
+        "requested_decisions": 200,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.745
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "okta_composed_test": {
+      "total": 400,
+      "scored": 400,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 382,
+        "exact_accuracy": 0.8507853403141361,
+        "correctness_auroc": 0.7780836707152496,
+        "ece_equal_width_15": 0.026217096447511832,
+        "mce_equal_width_15": 0.08165546612669672,
+        "occupied_bins": 8,
+        "multiclass_brier": 0.2228073774565208,
+        "categorical_nll": 0.3560960226646078,
+        "ties": 0,
+        "requested_decisions": 382,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.8507853403141361
+      },
+      "soft": {
+        "decisions": 18,
+        "expected_agreement": 0.5,
+        "multiclass_brier_to_target_distribution": 0.2624774121053139,
+        "cross_entropy_to_target_distribution": 1.1592588352848878,
+        "ties": 0,
+        "requested_decisions": 18,
+        "provider_refusals": 0,
+        "coverage": 1.0
+      }
+    },
+    "okta_composed_validation": {
+      "total": 1000,
+      "scored": 1000,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 964,
+        "exact_accuracy": 0.8578838174273858,
+        "correctness_auroc": 0.8307663792266481,
+        "ece_equal_width_15": 0.02902718555941802,
+        "mce_equal_width_15": 0.10740114710420756,
+        "occupied_bins": 8,
+        "multiclass_brier": 0.1975689528069903,
+        "categorical_nll": 0.3193298725192428,
+        "ties": 0,
+        "requested_decisions": 964,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.8578838174273858
+      },
+      "soft": {
+        "decisions": 36,
+        "expected_agreement": 0.5,
+        "multiclass_brier_to_target_distribution": 0.1923449945834792,
+        "cross_entropy_to_target_distribution": 1.0453379981007094,
+        "ties": 0,
+        "requested_decisions": 36,
+        "provider_refusals": 0,
+        "coverage": 1.0
+      }
+    },
+    "okta_policy_test": {
+      "total": 2400,
+      "scored": 2400,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 2201,
+        "exact_accuracy": 0.9250340754202635,
+        "correctness_auroc": 0.8385812942787403,
+        "ece_equal_width_15": 0.023070877290577926,
+        "mce_equal_width_15": 0.09861013833584131,
+        "occupied_bins": 8,
+        "multiclass_brier": 0.12166748706458673,
+        "categorical_nll": 0.211906601106472,
+        "ties": 0,
+        "requested_decisions": 2201,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.9250340754202635
+      },
+      "soft": {
+        "decisions": 199,
+        "expected_agreement": 0.5,
+        "multiclass_brier_to_target_distribution": 0.18145755804106645,
+        "cross_entropy_to_target_distribution": 0.9877214300808643,
+        "ties": 0,
+        "requested_decisions": 199,
+        "provider_refusals": 0,
+        "coverage": 1.0
+      }
+    },
+    "okta_policy_validation": {
+      "total": 2656,
+      "scored": 2656,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 2437,
+        "exact_accuracy": 0.9228559704554781,
+        "correctness_auroc": 0.8990426004938366,
+        "ece_equal_width_15": 0.03751261841751906,
+        "mce_equal_width_15": 0.07547121033646254,
+        "occupied_bins": 8,
+        "multiclass_brier": 0.1163056986111743,
+        "categorical_nll": 0.20039742717700218,
+        "ties": 0,
+        "requested_decisions": 2437,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.9228559704554781
+      },
+      "soft": {
+        "decisions": 219,
+        "expected_agreement": 0.5,
+        "multiclass_brier_to_target_distribution": 0.19963475059389196,
+        "cross_entropy_to_target_distribution": 1.004836439765736,
+        "ties": 0,
+        "requested_decisions": 219,
+        "provider_refusals": 0,
+        "coverage": 1.0
+      }
+    },
+    "ood/arc_challenge": {
+      "total": 1172,
+      "scored": 1172,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 1172,
+        "exact_accuracy": 0.9726962457337884,
+        "correctness_auroc": 0.9291392543859649,
+        "ece_equal_width_15": 0.012671612271574918,
+        "mce_equal_width_15": 0.4707798230496518,
+        "occupied_bins": 8,
+        "multiclass_brier": 0.04360649603170581,
+        "categorical_nll": 0.09505487383702703,
+        "ties": 0,
+        "requested_decisions": 1172,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.9726962457337884
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "ood/argument_quality_ranking": {
+      "total": 2469,
+      "scored": 2469,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 2469,
+        "exact_accuracy": 0.6869177804779263,
+        "correctness_auroc": 0.5926275812199467,
+        "ece_equal_width_15": 0.14965439439188605,
+        "mce_equal_width_15": 0.21641416734383367,
+        "occupied_bins": 8,
+        "multiclass_brier": 0.469368922580233,
+        "categorical_nll": 0.7797712065081004,
+        "ties": 0,
+        "requested_decisions": 2469,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.6869177804779263
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "ood/code_judge_bench": {
+      "total": 344,
+      "scored": 344,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 344,
+        "exact_accuracy": 0.7354651162790697,
+        "correctness_auroc": 0.7257959431872475,
+        "ece_equal_width_15": 0.09959851239291283,
+        "mce_equal_width_15": 0.17423825985147412,
+        "occupied_bins": 8,
+        "multiclass_brier": 0.3644298196564508,
+        "categorical_nll": 0.5488821820044208,
+        "ties": 0,
+        "requested_decisions": 344,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.7354651162790697
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "ood/gpqa_diamond": {
+      "total": 198,
+      "scored": 198,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 198,
+        "exact_accuracy": 0.5404040404040404,
+        "correctness_auroc": 0.7766252439149636,
+        "ece_equal_width_15": 0.14002012492748342,
+        "mce_equal_width_15": 0.2976511900948353,
+        "occupied_bins": 11,
+        "multiclass_brier": 0.5703975145500769,
+        "categorical_nll": 1.0659640414977618,
+        "ties": 0,
+        "requested_decisions": 198,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.5404040404040404
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "ood/halueval_summarization": {
+      "total": 10000,
+      "scored": 10000,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 10000,
+        "exact_accuracy": 0.7105,
+        "correctness_auroc": 0.7322108904308552,
+        "ece_equal_width_15": 0.20795250476724758,
+        "mce_equal_width_15": 0.3383582854639064,
+        "occupied_bins": 8,
+        "multiclass_brier": 0.46968162207368613,
+        "categorical_nll": 0.8717643807926386,
+        "ties": 0,
+        "requested_decisions": 10000,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.7105
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "ood/judge_bench": {
+      "total": 280,
+      "scored": 280,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 280,
+        "exact_accuracy": 0.8321428571428572,
+        "correctness_auroc": 0.7608437585608621,
+        "ece_equal_width_15": 0.055883747775347235,
+        "mce_equal_width_15": 0.16417158190420578,
+        "occupied_bins": 8,
+        "multiclass_brier": 0.25273202272013023,
+        "categorical_nll": 0.40295843691921585,
+        "ties": 0,
+        "requested_decisions": 280,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.8321428571428572
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "ood/mmlu_pro": {
+      "total": 12032,
+      "scored": 12032,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 12032,
+        "exact_accuracy": 0.726063829787234,
+        "correctness_auroc": 0.84201841531749,
+        "ece_equal_width_15": 0.053979281995484366,
+        "mce_equal_width_15": 0.12936699606374602,
+        "occupied_bins": 14,
+        "multiclass_brier": 0.38041977051775155,
+        "categorical_nll": 0.8632793985426207,
+        "ties": 0,
+        "requested_decisions": 12032,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.726063829787234
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "ood/mt_bench_human_judgments": {
+      "total": 1000,
+      "scored": 1000,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 1000,
+        "exact_accuracy": 0.768,
+        "correctness_auroc": 0.7009445716594828,
+        "ece_equal_width_15": 0.105352507988175,
+        "mce_equal_width_15": 0.17027621635011503,
+        "occupied_bins": 8,
+        "multiclass_brier": 0.34789927162777334,
+        "categorical_nll": 0.5843349002856761,
+        "ties": 0,
+        "requested_decisions": 1000,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.768
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "ood/musr_murder_mysteries": {
+      "total": 250,
+      "scored": 250,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 250,
+        "exact_accuracy": 0.764,
+        "correctness_auroc": 0.730588339692963,
+        "ece_equal_width_15": 0.11376672733477664,
+        "mce_equal_width_15": 0.2465055207810466,
+        "occupied_bins": 8,
+        "multiclass_brier": 0.3398019862865857,
+        "categorical_nll": 0.5437205984287282,
+        "ties": 0,
+        "requested_decisions": 250,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.764
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "ood/musr_object_placements": {
+      "total": 256,
+      "scored": 256,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 256,
+        "exact_accuracy": 0.57421875,
+        "correctness_auroc": 0.5407227111027897,
+        "ece_equal_width_15": 0.3322873778921499,
+        "mce_equal_width_15": 0.43907402134295775,
+        "occupied_bins": 8,
+        "multiclass_brier": 0.7277084569009618,
+        "categorical_nll": 1.5788646763581677,
+        "ties": 0,
+        "requested_decisions": 256,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.57421875
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "ood/musr_team_allocation": {
+      "total": 250,
+      "scored": 250,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 250,
+        "exact_accuracy": 0.78,
+        "correctness_auroc": 0.7313752913752913,
+        "ece_equal_width_15": 0.1275774463644459,
+        "mce_equal_width_15": 0.5638864636421204,
+        "occupied_bins": 10,
+        "multiclass_brier": 0.3587211594386336,
+        "categorical_nll": 0.7061856087947791,
+        "ties": 0,
+        "requested_decisions": 250,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.78
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "ood/or_bench_toxic": {
+      "total": 524,
+      "scored": 524,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 524,
+        "exact_accuracy": 0.7099236641221374,
+        "correctness_auroc": 0.8062570741369552,
+        "ece_equal_width_15": 0.0918330265887901,
+        "mce_equal_width_15": 0.6791414721492608,
+        "occupied_bins": 11,
+        "multiclass_brier": 0.41036451217872705,
+        "categorical_nll": 0.8689223632541542,
+        "ties": 0,
+        "requested_decisions": 524,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.7099236641221374
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    },
+    "ood/rod101_essay_scoring": {
+      "total": 81,
+      "scored": 81,
+      "provider_refusals": 0,
+      "hard": {
+        "decisions": 81,
+        "exact_accuracy": 0.20987654320987653,
+        "correctness_auroc": 0.5119485294117647,
+        "ece_equal_width_15": 0.15298873542395247,
+        "mce_equal_width_15": 0.24846098289983592,
+        "occupied_bins": 5,
+        "multiclass_brier": 0.8848477623036457,
+        "categorical_nll": 2.0316457481013748,
+        "ties": 0,
+        "requested_decisions": 81,
+        "provider_refusals": 0,
+        "coverage": 1.0,
+        "exact_accuracy_all_requests": 0.20987654320987653
+      },
+      "soft": {
+        "decisions": 0,
+        "requested_decisions": 0,
+        "provider_refusals": 0,
+        "coverage": null
+      }
+    }
+  }
+}
