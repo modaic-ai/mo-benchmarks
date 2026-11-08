@@ -1,0 +1,25 @@
+{
+  "input_sha256": "3d4e820726dcdd3ffecd5ab4fd1e968add9798fe00b597b493392c6325e1895e",
+  "kit_commit": "62d2f51de34a2de64906345b6bc3e98e27ff55c7",
+  "suite_verification": {
+    "edition": "0.3",
+    "rows_file": "/mnt/volume_nyc1_1786949176828/decision-index-v03-provider-json/suite-0.3/selected-rows.jsonl.gz",
+    "sha256": "fe848e010a4aec4a18e9d708a4791761262c24898f1d79446b02dcbe89ba6596",
+    "expected_sha256": "25aac5e890a54a3172c7a0c184b4cc8b9a43f10b6ee89bbad8da923be423c656",
+    "match": true,
+    "uncompressed_sha256": "b2b56d6fb636837ca469e689087bdbf373dda8de7638aa2da6793e6eda0792d5",
+    "uncompressed_match": true,
+    "added_file": "/mnt/volume_nyc1_1786949176828/decision-index-v03-provider-json/suite-0.3/added-rows.jsonl.gz",
+    "added_sha256": "7429f3c9cdddb772c1cfc42bb2a45e8516b0032152b746e6929f1c8b52f4ce89",
+    "added_match": true,
+    "gsm8k_file": "/mnt/volume_nyc1_1786949176828/decision-index-v03-provider-json/suite-0.3/gsm8k-rows.jsonl.gz",
+    "gsm8k_sha256": "759334894858a37d6bd7bd07298eac8e55da236e31dad327ccd06a9979f4738a",
+    "gsm8k_match": true,
+    "exclusions_sha256": "331df32d4b719c7db43214d0e5d85859d39c3b2eb7d0b3812214cce150155e81",
+    "exclusions_match": true,
+    "subsets_match": true
+  },
+  "execution": "local_cpu",
+  "completed": 140178,
+  "complete": true
+}

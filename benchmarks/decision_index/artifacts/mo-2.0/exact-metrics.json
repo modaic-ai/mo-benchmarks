@@ -1,0 +1,231 @@
+{
+  "requests": 140178,
+  "fields": 312320,
+  "scalar_fields": 274732,
+  "answered_scalar_fields": 274732,
+  "provider_refusals": 0,
+  "transport_schema_rejections": 0,
+  "provider_output_exhaustions": 0,
+  "hard_answer_exact_accuracy_all_fields": 0.828789511232765,
+  "hard_answer_exact_accuracy_answered_fields": 0.828789511232765,
+  "catalog_counts": {
+    "1": {
+      "scalar": 4768,
+      "answered_scalar": 4768,
+      "correct": 4723
+    },
+    "2": {
+      "non_scalar": 20995,
+      "scalar": 924,
+      "answered_scalar": 924,
+      "correct": 881
+    },
+    "3": {
+      "scalar": 508,
+      "answered_scalar": 508,
+      "correct": 439
+    },
+    "4": {
+      "scalar": 3080,
+      "answered_scalar": 3080,
+      "correct": 2884
+    },
+    "5": {
+      "scalar": 5500,
+      "answered_scalar": 5500,
+      "correct": 5253
+    },
+    "6": {
+      "scalar": 20000,
+      "answered_scalar": 20000,
+      "correct": 3032
+    },
+    "9": {
+      "scalar": 1590,
+      "answered_scalar": 1590,
+      "correct": 1589
+    },
+    "10": {
+      "scalar": 2500,
+      "answered_scalar": 2500,
+      "correct": 1716
+    },
+    "11": {
+      "scalar": 2091,
+      "answered_scalar": 2091,
+      "correct": 1865
+    },
+    "12": {
+      "scalar": 3200,
+      "answered_scalar": 3200,
+      "correct": 2577
+    },
+    "20": {
+      "scalar": 5000,
+      "answered_scalar": 5000,
+      "correct": 4661
+    },
+    "21": {
+      "scalar": 2628,
+      "answered_scalar": 2628,
+      "correct": 1747
+    },
+    "22": {
+      "scalar": 2000,
+      "answered_scalar": 2000,
+      "correct": 1455
+    },
+    "23": {
+      "scalar": 5000,
+      "answered_scalar": 5000,
+      "correct": 3522
+    },
+    "24": {
+      "scalar": 14033,
+      "answered_scalar": 14033,
+      "correct": 12297
+    },
+    "25": {
+      "scalar": 196,
+      "answered_scalar": 196,
+      "correct": 118
+    },
+    "26": {
+      "scalar": 2376,
+      "answered_scalar": 2376,
+      "correct": 2357
+    },
+    "27": {
+      "scalar": 1172,
+      "answered_scalar": 1172,
+      "correct": 1136
+    },
+    "28": {
+      "scalar": 1267,
+      "answered_scalar": 1267,
+      "correct": 1203
+    },
+    "29": {
+      "scalar": 10042,
+      "answered_scalar": 10042,
+      "correct": 9852
+    },
+    "31": {
+      "scalar": 5000,
+      "answered_scalar": 5000,
+      "correct": 1026
+    },
+    "32": {
+      "scalar": 752,
+      "answered_scalar": 752,
+      "correct": 527
+    },
+    "33": {
+      "scalar": 15517,
+      "answered_scalar": 15517,
+      "correct": 13723
+    },
+    "34": {
+      "scalar": 10,
+      "answered_scalar": 10,
+      "correct": 6
+    },
+    "36": {
+      "non_scalar": 6593,
+      "scalar": 447,
+      "answered_scalar": 447,
+      "correct": 285
+    },
+    "37": {
+      "scalar": 5000,
+      "answered_scalar": 5000,
+      "correct": 3521
+    },
+    "38": {
+      "scalar": 91092,
+      "answered_scalar": 91092,
+      "correct": 90561
+    },
+    "39": {
+      "scalar": 2129,
+      "answered_scalar": 2129,
+      "correct": 2026
+    },
+    "40": {
+      "scalar": 11600,
+      "answered_scalar": 11600,
+      "correct": 10660
+    },
+    "41": {
+      "scalar": 3006,
+      "answered_scalar": 3006,
+      "correct": 2408
+    },
+    "42": {
+      "scalar": 5500,
+      "answered_scalar": 5500,
+      "correct": 4817
+    },
+    "43": {
+      "scalar": 570,
+      "answered_scalar": 570,
+      "correct": 475
+    },
+    "44": {
+      "scalar": 5000,
+      "answered_scalar": 5000,
+      "correct": 4619
+    },
+    "45": {
+      "scalar": 501,
+      "answered_scalar": 501,
+      "correct": 73
+    },
+    "50": {
+      "scalar": 1676,
+      "answered_scalar": 1676,
+      "correct": 992
+    },
+    "57": {
+      "scalar": 12032,
+      "answered_scalar": 12032,
+      "correct": 8667
+    },
+    "58": {
+      "scalar": 5507,
+      "answered_scalar": 5507,
+      "correct": 4943
+    },
+    "62": {
+      "scalar": 3652,
+      "answered_scalar": 3652,
+      "correct": 3289
+    },
+    "64": {
+      "scalar": 528,
+      "answered_scalar": 528,
+      "correct": 430
+    },
+    "59": {
+      "scalar": 2700,
+      "answered_scalar": 2700,
+      "correct": 0
+    },
+    "61": {
+      "scalar": 4000,
+      "answered_scalar": 4000,
+      "correct": 3533
+    },
+    "56": {
+      "scalar": 8000,
+      "answered_scalar": 8000,
+      "correct": 5617,
+      "non_scalar": 10000
+    },
+    "30": {
+      "scalar": 2638,
+      "answered_scalar": 2638,
+      "correct": 2190
+    }
+  }
+}

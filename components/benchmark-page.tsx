@@ -31,11 +31,13 @@ type Aggregate = {
 type BuyingModel = { id: string; macro: { f1: number; accuracy: number; auroc: number; ece: number } };
 
 const catalog = benchmarkData as Aggregate;
-const indexModel = catalog.decision_index.models.find((model) => model.id === "mo-1.3.2") ?? catalog.decision_index.models[0];
+const indexModel = catalog.decision_index.models.find((model) => model.id === "mo-2.0") ?? catalog.decision_index.models[0];
 const roster = ["mo-1.3.2", "mo-1.3.1", "jev-1.14", "luna-decisions", "pplx", "mo-fast", "jev-1.13", "clef", "gpt-6.1"];
 const modelOrder = (a: { id: string }, b: { id: string }) => roster.indexOf(a.id) - roster.indexOf(b.id);
+const indexRoster = ["mo-2.0", ...roster];
+const indexModelOrder = (a: { id: string }, b: { id: string }) => indexRoster.indexOf(a.id) - indexRoster.indexOf(b.id);
 const isReference = (id: string) => id === "gpt-6.1";
-const indexModels = [...catalog.decision_index.models].sort(modelOrder);
+const indexModels = [...catalog.decision_index.models].sort(indexModelOrder);
 const decisionModels = indexModels.filter((model) => !isReference(model.id));
 const domainOrder = ["gtm", "tools", "security", "arts", "finance", "language", "retrieval", "knowledge", "safety"];
 const domains = [...catalog.domains].sort((a, b) => domainOrder.indexOf(a.id) - domainOrder.indexOf(b.id));
@@ -156,7 +158,7 @@ export function BenchmarkPage() {
           <p className="mt-3 max-w-[650px] text-[13px] leading-[1.65] text-[#696969]">Compare decision models across the Decision Index, JevBench, public transfer benchmarks, Finance, Security, and GTM.</p>
         </div>
         <div className="border-l-[3px] border-[#2D6598] pl-4">
-          <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-[#777]">Mo 1.3.2 balanced skill</p>
+          <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-[#777]">{indexModel.name} balanced skill</p>
           <p className="mt-1 text-[32px] font-semibold tracking-[-0.04em] text-[#171717]">{indexScore(indexModel.scores.balanced_skill)}</p>
           <p className="mt-1 text-[10px] text-[#888]">Balanced raw {indexScore(indexModel.scores.balanced_raw)}</p>
         </div>
@@ -247,7 +249,7 @@ export function BenchmarkPage() {
       </section>
 
       <footer className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t-2 border-[#222] pt-4 text-[10px] text-[#888]">
-        <p>Modaic Benchmarks · October 2026</p>
+        <p>Modaic Benchmarks · November 2026</p>
         <a href="https://github.com/modaic-ai/mo-benchmarks" target="_blank" rel="noreferrer" className="text-[#2a6496] hover:underline">Source &amp; methods ↗</a>
       </footer>
     </main>
